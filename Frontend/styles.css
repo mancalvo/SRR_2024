@@ -193,3 +193,9 @@ body {
 .form-label {
     margin-bottom: 15px; /* Margen inferior más pequeño para el label */
 }
+
+
+
+.table-active {
+  background-color: #d1e7dd; /* Color de fondo al seleccionar una fila */
+}
