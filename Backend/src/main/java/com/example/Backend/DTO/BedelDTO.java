@@ -1,26 +1,19 @@
-package com.example.Backend.Entity;
+package com.example.Backend.DTO;
 
 import com.example.Backend.Enum.Tipo_Turno;
-import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "bedeles")
-public class Bedel {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@NoArgsConstructor
+@Getter
+@Setter
+public class BedelDTO {
     private Long id;
     private String apellido;
     private String nombre;
-
-    @Enumerated(EnumType.STRING)
     private Tipo_Turno turno;
-
 }

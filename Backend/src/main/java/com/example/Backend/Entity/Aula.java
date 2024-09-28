@@ -12,9 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED) // Estrategia de herencia JOINED
 @Table(name = "aulas")
-@Inheritance(strategy = InheritanceType.JOINED)
-public class Aula {
+public abstract class Aula {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,7 +22,5 @@ public class Aula {
     private String piso;
     private int capacidad;
     private boolean habilitada;
-    @OneToMany(mappedBy = "aula")
-    private List<ReservaDetalle> reservas;
 
 }

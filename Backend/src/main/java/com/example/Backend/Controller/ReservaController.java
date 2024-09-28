@@ -1,7 +1,8 @@
 package com.example.Backend.Controller;
 
+import com.example.Backend.DTO.ReservaEsporadicaDTO;
 import com.example.Backend.Entity.Reserva;
-import com.example.Backend.Services.IReservaServices;
+import com.example.Backend.Services.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,42 +16,60 @@ import java.util.Optional;
 public class ReservaController {
 
     @Autowired
-    private IReservaServices reservaServices;
+    private ReservaService reservaService;
 
-    // Crear una nueva reserva
-    @PostMapping
-    public ResponseEntity<Reserva> createReserva(@RequestBody Reserva reserva) {
-        reservaServices.create(reserva);
-        return ResponseEntity.status(HttpStatus.CREATED).body(reserva);
+    /**
+     * Endpoint para crear una reserva periódica.
+     *
+     * @param reservaPeriodicaDTO DTO de la reserva periódica.
+     * @return Respuesta de éxito o error.
+     */
+    @PostMapping("/periodica")
+    public ResponseEntity<String> crearReservaPeriodica(@RequestBody ReservaPeriodicaDTO reservaPeriodicaDTO) {
+        try {
+            // Convertir DTO a entidad
+            Reserva reserva = reservaService.convertirToEntidad(reservaPeriodicaDTO);
+            // Procesar la reserva
+            reservaService.procesarReserva(reserva);
+            return ResponseEntity.ok("Reserva periódica procesada exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al procesar la reserva periódica: " + e.getMessage());
+        }
     }
 
-    // Actualizar una reserva existente
-    @PutMapping("/{id}")
-    public ResponseEntity<Reserva> updateReserva(@PathVariable Long id, @RequestBody Reserva updatedReserva) {
-        updatedReserva.setId(id); // Asegúrate de que la reserva tenga el ID correcto
-        reservaServices.update(updatedReserva);
-        return ResponseEntity.ok(updatedReserva);
+    /**
+     * Endpoint para crear una reserva esporádica.
+     *
+     * @param reservaEsporadicaDTO DTO de la reserva esporádica.
+     * @return Respuesta de éxito o error.
+     */
+    @PostMapping("/esporadica")
+    public ResponseEntity<String> crearReservaEsporadica(@RequestBody ReservaEsporadicaDTO reservaEsporadicaDTO) {
+        try {
+            // Convertir DTO a entidad
+            Reserva reserva = reservaService.convertirToEntidad(reservaEsporadicaDTO);
+            // Procesar la reserva
+            reservaService.procesarReserva(reserva);
+            return ResponseEntity.ok("Reserva esporádica procesada exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al procesar la reserva esporádica: " + e.getMessage());
+        }
     }
 
-    // Eliminar una reserva por su ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReserva(@PathVariable Long id) {
-        reservaServices.deleteById(id);
-        return ResponseEntity.noContent().build();
+    // Opcional: Endpoints para obtener reservas como DTOs
+    /*
+    @GetMapping("/periodica/{id}")
+    public ResponseEntity<ReservaPeriodicaDTO> obtenerReservaPeriodica(@PathVariable Long id) {
+        ReservaPeriodicaDTO dto = reservaService.obtenerReservaPeriodicaDTO(id);
+        return ResponseEntity.ok(dto);
     }
 
-    // Obtener una reserva por su ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Reserva> getReservaById(@PathVariable Long id) {
-        Optional<Reserva> optionalReserva = reservaServices.findById(id);
-        return optionalReserva.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/esporadica/{id}")
+    public ResponseEntity<ReservaEsporadicaDTO> obtenerReservaEsporadica(@PathVariable Long id) {
+        ReservaEsporadicaDTO dto = reservaService.obtenerReservaEsporadicaDTO(id);
+        return ResponseEntity.ok(dto);
     }
+    */
 
-    // Listar todas las reservas
-    @GetMapping
-    public ResponseEntity<List<Reserva>> getAllReservas() {
-        List<Reserva> reservas = reservaServices.findAll();
-        return ResponseEntity.ok(reservas);
-    }
 }
 

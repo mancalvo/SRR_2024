@@ -1,54 +1,54 @@
 package com.example.Backend.Controller;
 
-import com.example.Backend.Entity.Bedel;
+import com.example.Backend.DTO.BedelDTO;
 import com.example.Backend.Services.IBedelServices;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
+
+
 
 @RestController
 @RequestMapping("/bedeles")
 public class BedelController {
 
-    @Autowired
-    private IBedelServices bedelServices;
+    private final IBedelServices bedelServices;
+
+    public BedelController(IBedelServices bedelServices) {
+        this.bedelServices = bedelServices;
+    }
 
     @PostMapping
-    public ResponseEntity<Bedel> create(@RequestBody Bedel bedel) {
-        bedelServices.create(bedel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(bedel);
+    public ResponseEntity<BedelDTO> create(@RequestBody BedelDTO bedel) {
+        BedelDTO createdBedel = bedelServices.create(bedel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdBedel);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Bedel> update(@PathVariable Long id, @RequestBody Bedel bedel) {
-        Optional<Bedel> existingBedel = bedelServices.findById(id);
-        if (existingBedel.isPresent()) {
-            bedel.setId(id);
-            bedelServices.update(bedel);
-            return ResponseEntity.ok(bedel);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<BedelDTO> update(@PathVariable Long id, @RequestBody BedelDTO bedelDto) {
+        BedelDTO updatedBedel = bedelServices.update(id, bedelDto);
+        return ResponseEntity.ok(updatedBedel);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        bedelServices.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return bedelServices.deleteById(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Bedel> findById(@PathVariable Long id) {
-        Optional<Bedel> bedel = bedelServices.findById(id);
-        return bedel.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<BedelDTO> findById(@PathVariable Long id) {
+        BedelDTO bedel = bedelServices.findById(id);
+        return ResponseEntity.ok(bedel);
     }
 
+
     @GetMapping
-    public ResponseEntity<List<Bedel>> findAll() {
-        List<Bedel> bedeles = bedelServices.findAll();
-        return ResponseEntity.ok(bedeles);
+    public ResponseEntity<List<BedelDTO>> findAll() {
+        List<BedelDTO> bedeles = bedelServices.findAll();
+        return bedeles.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(bedeles);
     }
 }

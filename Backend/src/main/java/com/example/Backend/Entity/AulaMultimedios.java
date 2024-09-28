@@ -15,7 +15,7 @@ import lombok.Setter;
 public class AulaMultimedios extends Aula{
 
     private boolean televisor;
-    private boolean cañon;
+    private boolean canion;
     private boolean computadora;
     private String pizarron;
     private boolean aireAcondicionado;

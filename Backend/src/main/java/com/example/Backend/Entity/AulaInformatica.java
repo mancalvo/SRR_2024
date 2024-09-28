@@ -16,7 +16,7 @@ public class AulaInformatica extends Aula{
 
     private int cantidadPCs;
     private String pizarron;
-    private boolean cañon;
+    private boolean canion;
     private boolean aireAcondicionado;
 
 
