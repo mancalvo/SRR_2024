@@ -34,9 +34,8 @@ public class BedelController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        return bedelServices.deleteById(id)
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.notFound().build();
+        bedelServices.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
@@ -49,6 +48,8 @@ public class BedelController {
     @GetMapping
     public ResponseEntity<List<BedelDTO>> findAll() {
         List<BedelDTO> bedeles = bedelServices.findAll();
-        return bedeles.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(bedeles);
+        return bedeles.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(bedeles);
     }
 }

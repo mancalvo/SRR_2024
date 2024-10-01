@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface IBedelServices {
     BedelDTO create(BedelDTO bedel);
     BedelDTO update(Long id, BedelDTO bedel);
-    boolean deleteById(Long id);
+    void deleteById(Long id);
     BedelDTO findById(Long id);
     List<BedelDTO> findAll();
 }

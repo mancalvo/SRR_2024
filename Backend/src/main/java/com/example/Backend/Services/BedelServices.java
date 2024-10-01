@@ -2,18 +2,14 @@ package com.example.Backend.Services;
 
 import com.example.Backend.DTO.BedelDTO;
 import com.example.Backend.Entity.Bedel;
-import com.example.Backend.Exceptions.BedelAlreadyExistsException;
 import com.example.Backend.Exceptions.BedelNotFoundException;
 import com.example.Backend.Exceptions.InvalidBedelDataException;
 import com.example.Backend.Mapper.BedelMapper;
 import com.example.Backend.Repository.BedelRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,13 +44,10 @@ public class BedelServices implements IBedelServices {
     }
 
     @Override
-    public boolean deleteById(Long id) {
-        return repoBedel.findById(id)
-                .map(bedel -> {
-                    repoBedel.deleteById(id);
-                    return true;
-                })
-                .orElse(false);
+    public void deleteById(Long id) {
+        Bedel bedel = repoBedel.findById(id)
+                .orElseThrow(() -> new BedelNotFoundException(id));
+        repoBedel.delete(bedel);
     }
 
     @Override
