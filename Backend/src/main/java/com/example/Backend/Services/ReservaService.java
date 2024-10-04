@@ -1,40 +1,46 @@
 package com.example.Backend.Services;
 
+import com.example.Backend.DTO.ReservaDTO;
 import com.example.Backend.Entity.Reserva;
 import com.example.Backend.Entity.ReservaEsporadica;
 import com.example.Backend.Entity.ReservaPeriodica;
+import com.example.Backend.Exceptions.ReservaDataException;
+import com.example.Backend.Mapper.ReservaMapper;
 import com.example.Backend.Repository.ReservaRepository;
 import com.example.Backend.Strategy.ReservaContext;
 import com.example.Backend.Strategy.ReservaEsporadicaStrategy;
 import com.example.Backend.Strategy.ReservaPeriodicaStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ReservaService {
 
-    private final ReservaRepository reservaRepository;
-    private final ReservaContext reservaContext;
+    @Autowired
+    private ReservaContext reservaContext;
 
-    public ReservaService(ReservaRepository reservaRepository) {
-        this.reservaRepository = reservaRepository;
-        this.reservaContext = new ReservaContext();
-    }
+    @Autowired
+    private ReservaMapper reservaMapper;
 
-    public void procesarReserva(Reserva reserva) {
+    @Autowired
+    private ReservaPeriodicaStrategy reservaPeriodicaStrategy;
+
+    @Autowired
+    private ReservaEsporadicaStrategy reservaEsporadicaStrategy;
+
+    public void procesarReserva(ReservaDTO reservaDTO) {
+
+        Reserva reserva = reservaMapper.convertirToEntidad(reservaDTO);
+
         // Seleccionar la estrategia basada en el tipo de reserva
         if (reserva instanceof ReservaPeriodica) {
-            reservaContext.setEstrategia(new ReservaPeriodicaStrategy());
+            reservaContext.setEstrategia(reservaPeriodicaStrategy);
         } else if (reserva instanceof ReservaEsporadica) {
-            reservaContext.setEstrategia(new ReservaEsporadicaStrategy());
+            reservaContext.setEstrategia(reservaEsporadicaStrategy);
         } else {
-            throw new IllegalArgumentException("Tipo de reserva desconocido");
+            throw new ReservaDataException("Tipo de reserva desconocido");
         }
 
-        // Procesar la reserva con la estrategia seleccionada
         reservaContext.procesar(reserva);
-
-        // Guardar la reserva en la base de datos
-        reservaRepository.save(reserva);
     }
-
 }
