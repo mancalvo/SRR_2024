@@ -1,13 +1,12 @@
 package com.example.Backend.Entity;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -15,12 +14,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@DiscriminatorValue("Periodica")
 public class ReservaPeriodica extends Reserva {
 
     private String periodo; // Ej: "1 Cuatrimestre", "2 Cuatrimestres", "Anual"
 
-    @ElementCollection
-    private List<DiaReserva> diasReserva; // Relación para los días de la semana
+    @OneToMany(mappedBy = "reservaPeriodica", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReservaPeriodicaDiasReserva> diasReserva = new ArrayList<>();
+
+    public void addDiaReserva(ReservaPeriodicaDiasReserva diaReserva) {
+        diasReserva.add(diaReserva);
+        diaReserva.setReservaPeriodica(this);
+    }
+
+    public void removeDiaReserva(ReservaPeriodicaDiasReserva diaReserva) {
+        diasReserva.remove(diaReserva);
+        diaReserva.setReservaPeriodica(null);
+    }
 
 }

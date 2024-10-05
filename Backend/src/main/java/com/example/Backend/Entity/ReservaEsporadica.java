@@ -2,6 +2,7 @@ package com.example.Backend.Entity;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,6 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@DiscriminatorValue("Esporadica")
 public class ReservaEsporadica extends Reserva {
 
     private LocalDate fecha;
@@ -24,5 +24,6 @@ public class ReservaEsporadica extends Reserva {
     private LocalTime horarioFinal;
 
     @ManyToOne
+    @JoinColumn(name = "aula_id")
     private Aula aula;
 }
