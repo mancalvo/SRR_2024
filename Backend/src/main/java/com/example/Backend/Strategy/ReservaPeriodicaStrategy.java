@@ -1,7 +1,7 @@
 package com.example.Backend.Strategy;
 
 import com.example.Backend.Entity.Aula;
-import com.example.Backend.Entity.DiaReserva;
+import com.example.Backend.Entity.ReservaPeriodicaDiasReserva;
 import com.example.Backend.Entity.Reserva;
 import com.example.Backend.Entity.ReservaPeriodica;
 import com.example.Backend.Enum.DiaSemana;
@@ -9,8 +9,8 @@ import com.example.Backend.Exceptions.AulaNoDisponibleException;
 import com.example.Backend.Exceptions.ReservaDataException;
 import com.example.Backend.Repository.AulaRepository;
 import com.example.Backend.Repository.ReservaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -24,24 +24,30 @@ public class ReservaPeriodicaStrategy implements ReservaStrategy {
     private AulaRepository aulaRepository;
 
     @Override
+    @Transactional
     public void procesarReserva(Reserva reserva) {
         ReservaPeriodica reservaPeriodica = (ReservaPeriodica) reserva;
 
         validarDatosEntrada(reservaPeriodica);
 
         // Validar los días de la semana
-        for (DiaReserva diaReserva : reservaPeriodica.getDiasReserva()) {
-            if (diaReserva.getAula() == null) {
-                throw new ReservaDataException("El aula no puede ser nula para el día: " + diaReserva.getDiaSemana());
+        for (ReservaPeriodicaDiasReserva reservaPeriodicaDiasReserva : reservaPeriodica.getDiasReserva()) {
+            if (reservaPeriodicaDiasReserva.getAula() == null) {
+                throw new ReservaDataException("El aula no puede ser nula para el día: " + reservaPeriodicaDiasReserva.getDiaSemana());
             }
 
             // Validar disponibilidad del aula
-            if (!aulaDisponible(diaReserva, reservaPeriodica.getCantidadAlumnos())) {
-                throw new AulaNoDisponibleException("El aula " + diaReserva.getAula().getNumero() + " no está disponible el día " + diaReserva.getDiaSemana() + " en el horario " + diaReserva.getHorarioInicio() + " a " + diaReserva.getHorarioFinal());
+            if (!aulaDisponible(reservaPeriodicaDiasReserva, reservaPeriodica.getCantidadAlumnos())) {
+                throw new AulaNoDisponibleException("El aula " + reservaPeriodicaDiasReserva.getAula().getNumero() + " no está disponible el día " + reservaPeriodicaDiasReserva.getDiaSemana() + " en el horario " + reservaPeriodicaDiasReserva.getHorarioInicio() + " a " + reservaPeriodicaDiasReserva.getHorarioFinal());
             }
         }
 
         reservaRepository.save(reservaPeriodica);
+    }
+
+    @Override
+    public boolean soporta(String tipoReserva) {
+        return "PERIODICA".equalsIgnoreCase(tipoReserva);
     }
 
     private void validarDatosEntrada(ReservaPeriodica reservaPeriodica) {
@@ -55,11 +61,11 @@ public class ReservaPeriodicaStrategy implements ReservaStrategy {
     }
 
 
-    private boolean aulaDisponible(DiaReserva diaReserva, int cantidadAlumnos) {
-        Aula aula = aulaRepository.getById(diaReserva.getAula().getId());
-        DiaSemana diaSemana = diaReserva.getDiaSemana();
-        LocalTime horarioInicio = diaReserva.getHorarioInicio();
-        LocalTime horarioFinal = diaReserva.getHorarioFinal();
+    private boolean aulaDisponible(ReservaPeriodicaDiasReserva reservaPeriodicaDiasReserva, int cantidadAlumnos) {
+        Aula aula = aulaRepository.getById(reservaPeriodicaDiasReserva.getAula().getId());
+        DiaSemana diaSemana = reservaPeriodicaDiasReserva.getDiaSemana();
+        LocalTime horarioInicio = reservaPeriodicaDiasReserva.getHorarioInicio();
+        LocalTime horarioFinal = reservaPeriodicaDiasReserva.getHorarioFinal();
 
         // Convertir DiaSemana a ordinal para la consulta de ReservaEsporadica
         int diaSemanaOrdinal = convertirDiaSemanaADiaSemanaOrdinal(diaSemana);
@@ -100,7 +106,7 @@ public class ReservaPeriodicaStrategy implements ReservaStrategy {
             case SABADO:
                 return 7;
             default:
-                throw new ReservaDataException("DiaSemana desconocido: " + diaSemana);
+                throw new ReservaDataException("No se puede realizar reserva el dia " + diaSemana);
         }
     }
 }
