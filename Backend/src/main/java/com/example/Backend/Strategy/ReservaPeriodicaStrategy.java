@@ -1,57 +1,76 @@
 package com.example.Backend.Strategy;
 
-import com.example.Backend.Entity.Aula;
-import com.example.Backend.Entity.ReservaPeriodicaDiasReserva;
-import com.example.Backend.Entity.Reserva;
-import com.example.Backend.Entity.ReservaPeriodica;
+import com.example.Backend.Entity.*;
 import com.example.Backend.Enum.DiaSemana;
 import com.example.Backend.Exceptions.AulaNoDisponibleException;
 import com.example.Backend.Exceptions.ReservaDataException;
 import com.example.Backend.Repository.AulaRepository;
+import com.example.Backend.Repository.ReservaPeriodicaDiasReservaRepository;
 import com.example.Backend.Repository.ReservaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 public class ReservaPeriodicaStrategy implements ReservaStrategy {
 
+    private final ReservaPeriodicaDiasReservaRepository reservaPeriodicaDiasReservaRepository;
+    private final AulaRepository aulaRepository;
+    private final ReservaRepository reservaRepository;
+
     @Autowired
-    private ReservaRepository reservaRepository;
-    @Autowired
-    private AulaRepository aulaRepository;
+    public ReservaPeriodicaStrategy(ReservaPeriodicaDiasReservaRepository reservaPeriodicaDiasReservaRepository,
+                                    AulaRepository aulaRepository, ReservaRepository reservaRepository) {
+        this.reservaPeriodicaDiasReservaRepository = reservaPeriodicaDiasReservaRepository;
+        this.aulaRepository = aulaRepository;
+        this.reservaRepository = reservaRepository;
+    }
 
     @Override
     @Transactional
     public void procesarReserva(Reserva reserva) {
+        if (!(reserva instanceof ReservaPeriodica)) {
+            throw new IllegalArgumentException("La reserva proporcionada no es de tipo periódica");
+        }
 
         ReservaPeriodica reservaPeriodica = (ReservaPeriodica) reserva;
 
         validarDatosEntrada(reservaPeriodica);
 
-        // Validar los días de la semana
-        for (ReservaPeriodicaDiasReserva reservaPeriodicaDiasReserva : reservaPeriodica.getDiasReserva()) {
+        // Establecer la relación en cada ReservaPeriodicaDiasReserva
+        for (ReservaPeriodicaDiasReserva diaReserva : reservaPeriodica.getDiasReserva()) {
+            diaReserva.setReservaPeriodica(reservaPeriodica); // Asegúrate de que la relación esté establecida
 
-            if (reservaPeriodicaDiasReserva.getAula() == null) {
-                throw new ReservaDataException("El aula no puede ser nula para el día: " + reservaPeriodicaDiasReserva.getDiaSemana());
+            // Verificar que el aula no sea nula
+            if (diaReserva.getAula() == null) {
+                throw new ReservaDataException("El aula no puede ser nula para el día: " + diaReserva.getDiaSemana());
             }
 
-            // Validar disponibilidad del aula
-            if (!aulaDisponible(reservaPeriodicaDiasReserva, reservaPeriodica.getCantidadAlumnos())) {
-                throw new AulaNoDisponibleException("El aula " + reservaPeriodicaDiasReserva.getAula().getNumero() + " no está disponible el día " + reservaPeriodicaDiasReserva.getDiaSemana() + " en el horario " + reservaPeriodicaDiasReserva.getHorarioInicio() + " a " + reservaPeriodicaDiasReserva.getHorarioFinal());
+            // Obtener reservas existentes para esa aula y día
+            List<ReservaPeriodicaDiasReserva> reservasExistentes = reservaPeriodicaDiasReservaRepository.findByAulaAndDiaSemana(
+                    diaReserva.getAula(), diaReserva.getDiaSemana());
+
+            // Validar si alguna reserva existente se solapa en horario
+            for (ReservaPeriodicaDiasReserva reservaExistente : reservasExistentes) {
+                if (horariosSeSolapan(diaReserva.getHorarioInicio(), diaReserva.getHorarioFinal(),
+                        reservaExistente.getHorarioInicio(), reservaExistente.getHorarioFinal())) {
+                    throw new AulaNoDisponibleException("El aula " + diaReserva.getAula().getNumero() +
+                            " no está disponible el día " + diaReserva.getDiaSemana() +
+                            " de " + diaReserva.getHorarioInicio() + " a " + diaReserva.getHorarioFinal());
+                }
             }
         }
 
-        reservaRepository.save(reservaPeriodica);
-    }
+        // Guardar la reserva periódica
+        reservaRepository.save(reservaPeriodica); // Guarda la reserva periódica
 
-    @Override
-    public boolean soporta(String tipoReserva) {
-        return "PERIODICA".equalsIgnoreCase(tipoReserva);
+        // Ya que tienes la configuración de Cascade, esto guardará las reservas diarias automáticamente
+        // reservaPeriodicaDiasReservaRepository.saveAll(reservaPeriodica.getDiasReserva());
     }
-
     private void validarDatosEntrada(ReservaPeriodica reservaPeriodica) {
         if (reservaPeriodica.getPeriodo() == null || reservaPeriodica.getPeriodo().isEmpty()) {
             throw new ReservaDataException("El periodo de la reserva periódica no puede estar vacío.");
@@ -59,39 +78,16 @@ public class ReservaPeriodicaStrategy implements ReservaStrategy {
         if (reservaPeriodica.getCantidadAlumnos() <= 0) {
             throw new ReservaDataException("La cantidad de alumnos debe ser mayor a cero.");
         }
-
     }
 
-
-    private boolean aulaDisponible(ReservaPeriodicaDiasReserva reservaPeriodicaDiasReserva, int cantidadAlumnos) {
-        Aula aula = aulaRepository.getById(reservaPeriodicaDiasReserva.getAula().getId());
-        DiaSemana diaSemana = reservaPeriodicaDiasReserva.getDiaSemana();
-        LocalTime horarioInicio = reservaPeriodicaDiasReserva.getHorarioInicio();
-        LocalTime horarioFinal = reservaPeriodicaDiasReserva.getHorarioFinal();
-
-        // Convertir DiaSemana a ordinal para la consulta de ReservaEsporadica
-        int diaSemanaOrdinal = convertirDiaSemanaADiaSemanaOrdinal(diaSemana);
-
-        // Verificar solapamiento con ReservaPeriodica
-        boolean existeReservaPeriodica = reservaRepository.existsReservaPeriodicaOverlap(
-                aula, diaSemana, horarioFinal, horarioInicio);
-
-        // Verificar solapamiento con ReservaEsporadica
-        boolean existeReservaEsporadica = reservaRepository.existsReservaEsporadicaOverlap(
-                aula, diaSemanaOrdinal, horarioFinal, horarioInicio);
-
-        if (existeReservaEsporadica || existeReservaPeriodica) {
-            return false;
-        }
-
-        // Verificar capacidad del aula
-        if (cantidadAlumnos > aula.getCapacidad()) {
-            throw new AulaNoDisponibleException("La capacidad del aula " + aula.getNumero() + " es insuficiente para la cantidad de alumnos: " + cantidadAlumnos);
-        }
-
-        return true;
+    private boolean horariosSeSolapan(LocalTime inicio1, LocalTime fin1, LocalTime inicio2, LocalTime fin2) {
+        return inicio1.isBefore(fin2) && fin1.isAfter(inicio2);
     }
 
+    @Override
+    public boolean soporta(String tipoReserva) {
+        return "PERIODICA".equalsIgnoreCase(tipoReserva);
+    }
 
     private int convertirDiaSemanaADiaSemanaOrdinal(DiaSemana diaSemana) {
         switch (diaSemana) {
