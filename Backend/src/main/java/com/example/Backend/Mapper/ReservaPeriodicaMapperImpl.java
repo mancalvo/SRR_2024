@@ -29,17 +29,32 @@ public class ReservaPeriodicaMapperImpl implements ReservaPeriodicaMapper{
 
         for (DiaReservaDTO diaDTO : dto.getDiasReserva()) {
             ReservaPeriodicaDiasReserva diaReserva = new ReservaPeriodicaDiasReserva();
-            diaReserva.setDiaSemana(DiaSemana.valueOf(diaDTO.getDiaSemana().name()));
+            try {
+                // Convertir el String a Enum
+                DiaSemana diaSemana = DiaSemana.valueOf(diaDTO.getDiaSemana().toUpperCase());
+                diaReserva.setDiaSemana(diaSemana);
+            } catch (IllegalArgumentException e) {
+                throw new ReservaDataException("Día de la semana inválido: " + diaDTO.getDiaSemana());
+            }
+
             diaReserva.setHorarioInicio(diaDTO.getHorarioInicio());
             diaReserva.setHorarioFinal(diaDTO.getHorarioFinal());
+
+            // Verificación del aulaId
+            if (diaDTO.getAulaId() == null) {
+                throw new ReservaDataException("El ID del aula no puede ser nulo.");
+            }
+
+            // Buscar el aula en el repositorio si el aulaId no es nulo
             Aula aula = aulaRepository.findById(diaDTO.getAulaId())
                     .orElseThrow(() -> new ReservaDataException("Aula no encontrada con ID: " + diaDTO.getAulaId()));
-            diaReserva.setAula(aula);
 
-            // Utilizar el método de asistencia para establecer la relación
+            diaReserva.setAula(aula);
             reserva.addDiaReserva(diaReserva);
         }
 
         return reserva;
     }
+
+
 }

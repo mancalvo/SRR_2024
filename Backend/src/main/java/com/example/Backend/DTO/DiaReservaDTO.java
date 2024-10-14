@@ -13,7 +13,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Getter @Setter
 public class DiaReservaDTO {
-    private DiaSemana diaSemana;
+    private String diaSemana;
     private LocalDate fecha;
     private LocalTime horarioInicio;
     private LocalTime horarioFinal;

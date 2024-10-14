@@ -34,6 +34,7 @@ public class BedelServices implements IBedelServices {
 
     @Override
     public BedelDTO update(Long id, BedelDTO bedelDto) {
+        validateBedelData(bedelDto);
         Bedel bedel = repoBedel.findById(id)
                 .orElseThrow(() -> new BedelNotFoundException(id));
 
@@ -73,15 +74,21 @@ public class BedelServices implements IBedelServices {
         if (bedelDto.getApellido() == null || bedelDto.getApellido().isEmpty()) {
             throw new InvalidBedelDataException("El apellido del Bedel no puede estar vacío.");
         }
-        if (bedelDto.getTurno() == null || bedelDto.getTurno().name().isEmpty()) {
-            throw new InvalidBedelDataException("El tipo de turno no puede estar vacío.");
+
+        // Validar que el turno no sea nulo
+        if (bedelDto.getTurno() == null) {
+            throw new InvalidBedelDataException("El tipo de turno no puede ser nulo.");
         }
 
+        // Validar que el turno sea un valor válido del enum
         try {
             Tipo_Turno.valueOf(bedelDto.getTurno().name());
-        } catch (HttpMessageNotReadableException e) {
+        } catch (IllegalArgumentException e) {
             throw new InvalidBedelDataException("El tipo de turno no es válido.");
         }
+
     }
+
+
 
 }
