@@ -26,12 +26,14 @@ public class ReservaPeriodicaStrategy implements ReservaStrategy {
     @Override
     @Transactional
     public void procesarReserva(Reserva reserva) {
+
         ReservaPeriodica reservaPeriodica = (ReservaPeriodica) reserva;
 
         validarDatosEntrada(reservaPeriodica);
 
         // Validar los días de la semana
         for (ReservaPeriodicaDiasReserva reservaPeriodicaDiasReserva : reservaPeriodica.getDiasReserva()) {
+
             if (reservaPeriodicaDiasReserva.getAula() == null) {
                 throw new ReservaDataException("El aula no puede ser nula para el día: " + reservaPeriodicaDiasReserva.getDiaSemana());
             }

@@ -26,6 +26,11 @@ public class ReservaEsporadicaMapperImpl implements ReservaEsporadicaMapper{
         reserva.setHorarioInicio(dto.getDiasReserva().get(0).getHorarioInicio());
         reserva.setHorarioFinal(dto.getDiasReserva().get(0).getHorarioFinal());
 
+        // Verificación del aulaId
+        if (dto.getDiasReserva().get(0).getAulaId() == null) {
+            throw new ReservaDataException("El ID del aula no puede ser nulo.");
+        }
+
         Long aulaId = dto.getDiasReserva().get(0).getAulaId();
         Aula aula = aulaRepository.findById(aulaId)
                 .orElseThrow(() -> new ReservaDataException("Aula no encontrada con ID: " + aulaId));
