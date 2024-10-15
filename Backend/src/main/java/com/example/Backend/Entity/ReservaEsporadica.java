@@ -24,6 +24,6 @@ public class ReservaEsporadica extends Reserva {
     private LocalTime horarioFinal;
 
     @ManyToOne
-    @JoinColumn(name = "aula_id")
+    @JoinColumn(name = "aula_id", nullable = false)
     private Aula aula;
 }

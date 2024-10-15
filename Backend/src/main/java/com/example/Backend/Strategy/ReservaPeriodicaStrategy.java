@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservaPeriodicaStrategy implements ReservaStrategy {
@@ -50,26 +51,23 @@ public class ReservaPeriodicaStrategy implements ReservaStrategy {
                 throw new ReservaDataException("El aula no puede ser nula para el día: " + diaReserva.getDiaSemana());
             }
 
-            // Obtener reservas existentes para esa aula y día
+            // Obtener reservas existentes para esa aula y día, excluyendo la reserva actual
             List<ReservaPeriodicaDiasReserva> reservasExistentes = reservaPeriodicaDiasReservaRepository.findByAulaAndDiaSemana(
-                    diaReserva.getAula(), diaReserva.getDiaSemana());
+                            diaReserva.getAula(), diaReserva.getDiaSemana()).stream()
+                    .filter(r -> !r.getReservaPeriodica().getId().equals(reservaPeriodica.getId()))
+                    .collect(Collectors.toList());
 
             // Validar si alguna reserva existente se solapa en horario
-            for (ReservaPeriodicaDiasReserva reservaExistente : reservasExistentes) {
+            for (ReservaPeriodicaDiasReserva reservaPeriodicaDiasReserva : reservasExistentes) {
                 if (horariosSeSolapan(diaReserva.getHorarioInicio(), diaReserva.getHorarioFinal(),
-                        reservaExistente.getHorarioInicio(), reservaExistente.getHorarioFinal())) {
+                        reservaPeriodicaDiasReserva.getHorarioInicio(), reservaPeriodicaDiasReserva.getHorarioFinal())) {
                     throw new AulaNoDisponibleException("El aula " + diaReserva.getAula().getNumero() +
                             " no está disponible el día " + diaReserva.getDiaSemana() +
                             " de " + diaReserva.getHorarioInicio() + " a " + diaReserva.getHorarioFinal());
                 }
             }
         }
-
-        // Guardar la reserva periódica
-        reservaRepository.save(reservaPeriodica); // Guarda la reserva periódica
-
-        // Ya que tienes la configuración de Cascade, esto guardará las reservas diarias automáticamente
-        // reservaPeriodicaDiasReservaRepository.saveAll(reservaPeriodica.getDiasReserva());
+        reservaRepository.save(reservaPeriodica);
     }
     private void validarDatosEntrada(ReservaPeriodica reservaPeriodica) {
         if (reservaPeriodica.getPeriodo() == null || reservaPeriodica.getPeriodo().isEmpty()) {

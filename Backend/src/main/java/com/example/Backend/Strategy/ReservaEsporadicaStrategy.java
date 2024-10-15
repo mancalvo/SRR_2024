@@ -16,6 +16,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservaEsporadicaStrategy implements ReservaStrategy {
@@ -49,9 +50,11 @@ public class ReservaEsporadicaStrategy implements ReservaStrategy {
             throw new ReservaDataException("El aula no puede ser nula.");
         }
 
-        // Obtener reservas esporádicas existentes para esa aula y fecha
+        // Obtener reservas esporádicas existentes para esa aula y fecha, excluyendo la reserva actual
         List<ReservaEsporadica> reservasExistentes = reservaEsporadicaRepository.findByAulaAndFecha(
-                aula, reservaEsporadica.getFecha());
+                        aula, reservaEsporadica.getFecha()).stream()
+                .filter(r -> !r.getId().equals(reservaEsporadica.getId()))
+                .collect(Collectors.toList());
 
         // Validar si alguna reserva existente se solapa en horario
         for (ReservaEsporadica reservaExistente : reservasExistentes) {
@@ -66,7 +69,9 @@ public class ReservaEsporadicaStrategy implements ReservaStrategy {
         // Obtener reservas periódicas existentes para esa aula y día de la semana
         DiaSemana diaSemana = convertirDayOfWeekADiaSemana(reservaEsporadica.getFecha().getDayOfWeek());
         List<ReservaPeriodicaDiasReserva> reservasPeriodicas = reservaPeriodicaDiasReservaRepository.findByAulaAndDiaSemana(
-                aula, diaSemana);
+                        aula, diaSemana).stream()
+                .filter(r -> !r.getReservaPeriodica().getId().equals(reservaEsporadica.getId()))
+                .collect(Collectors.toList());
 
         for (ReservaPeriodicaDiasReserva reservaPeriodicaDiasReserva : reservasPeriodicas) {
             if (horariosSeSolapan(reservaEsporadica.getHorarioInicio(), reservaEsporadica.getHorarioFinal(),
@@ -77,7 +82,6 @@ public class ReservaEsporadicaStrategy implements ReservaStrategy {
             }
         }
 
-        // Guardar la reserva esporádica
         reservaEsporadicaRepository.save(reservaEsporadica);
     }
 

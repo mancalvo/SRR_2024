@@ -39,8 +39,6 @@ public class ReservaService {
         reservaContext.procesarReserva(reserva);
     }
 
-
-    // Método para obtener todas las reservas
     public List<ReservaDTO> obtenerTodasLasReservas() {
         List<Reserva> reservas = reservaRepository.findAll();
         return reservas.stream()
@@ -51,6 +49,40 @@ public class ReservaService {
                 .collect(Collectors.toList());
     }
 
+    public ReservaDTO buscarReservaPorId(Long id) {
+        Reserva reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new ReservaDataException("Reserva no encontrada para el id: " + id));
+        return convertirAReservaDTO(reserva);
+    }
+
+
+    @Transactional
+    public void actualizarReserva(Long id, ReservaDTO reservaDTO) {
+        Reserva reservaExistente = reservaRepository.findById(id)
+                .orElseThrow(() -> new ReservaDataException("Reserva no encontrada para el id: " + id));
+
+        String tipoReservaExistente = reservaExistente.getTipoReserva();
+        String tipoReservaNueva = reservaDTO.getTipoReserva().toUpperCase();
+
+        if (!tipoReservaExistente.equalsIgnoreCase(tipoReservaNueva)) {
+            reservaRepository.delete(reservaExistente);
+            Reserva nuevaReserva = reservaMapper.convertirToEntidad(reservaDTO);
+            nuevaReserva.setId(id);
+            reservaContext.procesarReserva(nuevaReserva);
+        } else {
+            reservaMapper.actualizarEntidadDesdeDto(reservaDTO, reservaExistente);
+            reservaContext.procesarReserva(reservaExistente);
+        }
+    }
+
+    @Transactional
+    public void eliminarReserva(Long id) {
+        Reserva reservaExistente = reservaRepository.findById(id)
+                .orElseThrow(() -> new ReservaDataException("Reserva no encontrada para el id: " + id));
+
+        reservaRepository.delete(reservaExistente);
+
+    }
 
     private ReservaDTO convertirAReservaDTO(Reserva reserva) {
         if (reserva instanceof ReservaPeriodica) {
