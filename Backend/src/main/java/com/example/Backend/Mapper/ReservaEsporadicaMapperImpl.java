@@ -38,4 +38,5 @@ public class ReservaEsporadicaMapperImpl implements ReservaEsporadicaMapper{
 
         return reserva;
     }
+
 }

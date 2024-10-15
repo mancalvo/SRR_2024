@@ -30,7 +30,6 @@ public class ReservaPeriodicaMapperImpl implements ReservaPeriodicaMapper{
         for (DiaReservaDTO diaDTO : dto.getDiasReserva()) {
             ReservaPeriodicaDiasReserva diaReserva = new ReservaPeriodicaDiasReserva();
             try {
-                // Convertir el String a Enum
                 DiaSemana diaSemana = DiaSemana.valueOf(diaDTO.getDiaSemana().toUpperCase());
                 diaReserva.setDiaSemana(diaSemana);
             } catch (IllegalArgumentException e) {
