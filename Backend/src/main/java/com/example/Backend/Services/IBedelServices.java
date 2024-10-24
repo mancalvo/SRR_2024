@@ -12,5 +12,6 @@ public interface IBedelServices {
     void deleteById(Long id);
     BedelDTO findById(Long id);
     List<BedelDTO> findAll();
+    BedelDTO activarBedel(BedelDTO bedelDto);
 }
 

@@ -1,12 +1,7 @@
 package com.example.Backend.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.List;
+import lombok.*;
 
 @Getter @Setter
 @NoArgsConstructor
@@ -21,6 +16,5 @@ public abstract class Aula {
     private String numero;
     private String piso;
     private int capacidad;
-    private boolean habilitada;
 
 }

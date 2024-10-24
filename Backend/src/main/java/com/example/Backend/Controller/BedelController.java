@@ -31,11 +31,17 @@ public class BedelController {
         return ResponseEntity.ok(updatedBedel);
     }
 
+    @PutMapping("/active")
+    public ResponseEntity<String> activarBedel(@RequestBody BedelDTO bedelDto) {
+        BedelDTO updatedBedel = bedelServices.activarBedel(bedelDto);
+        return ResponseEntity.ok("Bedel activado correctamente");
+    }
+
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         bedelServices.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Bedel eliminado correctamente");
     }
 
     @GetMapping("/{id}")
