@@ -22,5 +22,5 @@ public class Bedel {
 
     @Enumerated(EnumType.STRING)
     private Tipo_Turno turno;
-
+    private Boolean activo;
 }

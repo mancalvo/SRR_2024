@@ -13,6 +13,7 @@ public abstract class BedelMapper {
         bedelDTO.setNombre(bedel.getNombre());
         bedelDTO.setApellido(bedel.getApellido());
         bedelDTO.setTurno(bedel.getTurno());
+        bedelDTO.setActivo(bedel.getActivo());
         return bedelDTO;
     }
 
@@ -22,6 +23,7 @@ public abstract class BedelMapper {
         bedel.setNombre(dto.getNombre());
         bedel.setApellido(dto.getApellido());
         bedel.setTurno(dto.getTurno());
+        bedel.setActivo(dto.getActivo());
         return bedel;
     }
 

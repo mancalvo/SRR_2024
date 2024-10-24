@@ -28,6 +28,7 @@ public class BedelServices implements IBedelServices {
         validateBedelData(bedelDto);
 
         Bedel bedel = BedelMapper.DtoToBedel(bedelDto);
+        bedel.setActivo(true);
         Bedel savedBedel = repoBedel.save(bedel);
         return BedelMapper.BedelToDTO(savedBedel);
     }
@@ -41,6 +42,7 @@ public class BedelServices implements IBedelServices {
         Optional.ofNullable(bedelDto.getNombre()).ifPresent(bedel::setNombre);
         Optional.ofNullable(bedelDto.getApellido()).ifPresent(bedel::setApellido);
         Optional.ofNullable(bedelDto.getTurno()).ifPresent(bedel::setTurno);
+        Optional.ofNullable(bedelDto.getActivo()).ifPresent(bedel::setActivo);
 
         Bedel savedBedel = repoBedel.save(bedel);
         return BedelMapper.BedelToDTO(savedBedel);
@@ -50,22 +52,41 @@ public class BedelServices implements IBedelServices {
     public void deleteById(Long id) {
         Bedel bedel = repoBedel.findById(id)
                 .orElseThrow(() -> new BedelNotFoundException(id));
-        repoBedel.delete(bedel);
+        bedel.setActivo(false);
+        repoBedel.save(bedel);
     }
 
     @Override
     public BedelDTO findById(Long id) {
-        Bedel bedel = repoBedel.findById(id)
+        Bedel bedel = repoBedel.findByIdAndActive(id)
                 .orElseThrow(() -> new BedelNotFoundException(id));
         return BedelMapper.BedelToDTO(bedel);
     }
 
+
     @Override
     public List<BedelDTO> findAll() {
-        return repoBedel.findAll().stream()
+        return repoBedel.findAllActive().stream()
                 .map(BedelMapper::BedelToDTO)
                 .collect(Collectors.toList());
     }
+
+
+    @Override
+    public BedelDTO activarBedel(BedelDTO bedelDto) {
+        if(bedelDto.getNombre().isEmpty() ||  bedelDto.getApellido().isEmpty()){
+            throw new InvalidBedelDataException("Se debe ingresar el nombre y el apellido");
+        }
+
+        Bedel bedel = repoBedel.findByNombreAndApellido(bedelDto.getNombre(), bedelDto.getApellido())
+                .orElseThrow(() -> new InvalidBedelDataException("El bedel con nombre " + bedelDto.getNombre() + " y apellido " + bedelDto.getApellido() + " no fue encontrado"));
+
+        bedel.setActivo(true);
+        Bedel bedelActualizado = repoBedel.save(bedel);
+
+        return BedelMapper.BedelToDTO(bedelActualizado);
+    }
+
 
     private void validateBedelData(BedelDTO bedelDto) {
         if (bedelDto.getNombre() == null || bedelDto.getNombre().isEmpty()) {
@@ -85,6 +106,10 @@ public class BedelServices implements IBedelServices {
             Tipo_Turno.valueOf(bedelDto.getTurno().name());
         } catch (IllegalArgumentException e) {
             throw new InvalidBedelDataException("El tipo de turno no es válido.");
+        }
+
+        if(repoBedel.existsByNombreAndApellido(bedelDto.getNombre(), bedelDto.getApellido())){
+            throw new InvalidBedelDataException("Ya existe el bedel: " + bedelDto.getNombre()+ " " + bedelDto.getApellido());
         }
 
     }

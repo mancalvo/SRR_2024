@@ -16,4 +16,5 @@ public class BedelDTO {
     private String apellido;
     private String nombre;
     private Tipo_Turno turno;
+    private Boolean activo;
 }
