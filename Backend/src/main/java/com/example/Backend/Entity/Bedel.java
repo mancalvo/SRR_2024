@@ -19,7 +19,7 @@ public class Bedel {
     private Long id;
     private String apellido;
     private String nombre;
-
+    private String contrasena;
     @Enumerated(EnumType.STRING)
     private Tipo_Turno turno;
     private Boolean activo;

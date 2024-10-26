@@ -1,17 +1,16 @@
 package com.example.Backend.Services;
 
-import com.example.Backend.DTO.BedelDTO;
-import com.example.Backend.Entity.Bedel;
+import com.example.Backend.DTO.BedelDTORequest;
+import com.example.Backend.DTO.BedelDTOResponse;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface IBedelServices {
-    BedelDTO create(BedelDTO bedel);
-    BedelDTO update(Long id, BedelDTO bedel);
+    BedelDTOResponse create(BedelDTORequest bedel);
+    BedelDTOResponse update(Long id, BedelDTORequest bedel);
     void deleteById(Long id);
-    BedelDTO findById(Long id);
-    List<BedelDTO> findAll();
-    BedelDTO activarBedel(BedelDTO bedelDto);
+    BedelDTOResponse findById(Long id);
+    List<BedelDTOResponse> findAll();
+    BedelDTOResponse activarBedel(BedelDTORequest bedelDtoRequest);
 }
 
