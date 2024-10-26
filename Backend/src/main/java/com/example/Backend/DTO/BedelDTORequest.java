@@ -11,10 +11,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class BedelDTO {
+public class BedelDTORequest {
     private Long id;
     private String apellido;
     private String nombre;
+    private String contrasena;
+    private String repetirContrasena;
     private Tipo_Turno turno;
     private Boolean activo;
 }

@@ -1,6 +1,7 @@
 package com.example.Backend.Controller;
 
-import com.example.Backend.DTO.BedelDTO;
+import com.example.Backend.DTO.BedelDTORequest;
+import com.example.Backend.DTO.BedelDTOResponse;
 import com.example.Backend.Services.IBedelServices;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,20 +21,20 @@ public class BedelController {
     }
 
     @PostMapping
-    public ResponseEntity<BedelDTO> create(@RequestBody BedelDTO bedel) {
-        BedelDTO createdBedel = bedelServices.create(bedel);
+    public ResponseEntity<BedelDTOResponse> create(@RequestBody BedelDTORequest bedel) {
+        BedelDTOResponse createdBedel = bedelServices.create(bedel);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBedel);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BedelDTO> update(@PathVariable Long id, @RequestBody BedelDTO bedelDto) {
-        BedelDTO updatedBedel = bedelServices.update(id, bedelDto);
+    public ResponseEntity<BedelDTOResponse> update(@PathVariable Long id, @RequestBody BedelDTORequest bedelDtoRequest) {
+        BedelDTOResponse updatedBedel = bedelServices.update(id, bedelDtoRequest);
         return ResponseEntity.ok(updatedBedel);
     }
 
     @PutMapping("/active")
-    public ResponseEntity<String> activarBedel(@RequestBody BedelDTO bedelDto) {
-        BedelDTO updatedBedel = bedelServices.activarBedel(bedelDto);
+    public ResponseEntity<String> activarBedel(@RequestBody BedelDTORequest bedelDtoRequest) {
+        bedelServices.activarBedel(bedelDtoRequest);
         return ResponseEntity.ok("Bedel activado correctamente");
     }
 
@@ -45,15 +46,15 @@ public class BedelController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BedelDTO> findById(@PathVariable Long id) {
-        BedelDTO bedel = bedelServices.findById(id);
+    public ResponseEntity<BedelDTOResponse> findById(@PathVariable Long id) {
+        BedelDTOResponse bedel = bedelServices.findById(id);
         return ResponseEntity.ok(bedel);
     }
 
 
     @GetMapping
-    public ResponseEntity<List<BedelDTO>> findAll() {
-        List<BedelDTO> bedeles = bedelServices.findAll();
+    public ResponseEntity<List<BedelDTOResponse>> findAll() {
+        List<BedelDTOResponse> bedeles = bedelServices.findAll();
         return bedeles.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(bedeles);
