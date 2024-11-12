@@ -9,36 +9,27 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(BedelNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleBedelNotFoundException(BedelNotFoundException ex) {
+    @ExceptionHandler(BedelException.class)
+    public ResponseEntity<ErrorResponse> handleBedelException(BedelException ex) {
         ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
 
-    @ExceptionHandler(InvalidBedelDataException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidBedelDataException(InvalidBedelDataException ex) {
-        ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
 
     @ExceptionHandler(ReservaDataException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidReservaDataException(ReservaDataException ex) {
+    public ResponseEntity<ErrorResponse> handleReservaException(ReservaDataException ex) {
         ErrorResponse error = new ErrorResponse(ex.getMessage(),HttpStatus.CONFLICT.value());
         return new ResponseEntity<>(error,HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(AulaNoDisponibleException.class)
-    public ResponseEntity<ErrorResponse> handleAulaNoDisponible(AulaNoDisponibleException ex) {
+    @ExceptionHandler(AulaException.class)
+    public ResponseEntity<ErrorResponse> handleAulaException(AulaException ex) {
         ErrorResponse error = new ErrorResponse(ex.getMessage(),HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
-        ErrorResponse error = new ErrorResponse(ex.getMessage(),HttpStatus.BAD_REQUEST.value());
-        return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
-    }
+
 /*
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
