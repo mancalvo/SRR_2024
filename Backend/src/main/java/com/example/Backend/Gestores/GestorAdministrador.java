@@ -1,5 +1,6 @@
 package com.example.Backend.Gestores;
 
+import com.example.Backend.DAO.AdministradorDAO;
 import com.example.Backend.DAO.BedelDAO;
 import com.example.Backend.DTO.UsuarioDTO;
 import com.example.Backend.Entidades.Usuario;
@@ -7,14 +8,19 @@ import com.example.Backend.Enum.Tipo_Usuario;
 import com.example.Backend.Exceptions.BedelException;
 import com.example.Backend.Gestores.Externos.GestorContrasenia;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 public class GestorAdministrador {
 
-    private final BedelDAO bedelDAO;
+    @Autowired
     private final GestorContrasenia gestorContrasenia;
+    @Autowired
+    private final GestorBedel gestorBedel;
+    @Autowired
+    private final AdministradorDAO administradorDAO;
 
     public Integer registrarNuevoAdministrador(UsuarioDTO usuarioDTO) {
         if (!validarPoliticasContrasenia(usuarioDTO.getContrasenia())) {
@@ -34,7 +40,7 @@ public class GestorAdministrador {
         bedel.setContrasenia(usuarioDTO.getContrasenia());
         bedel.setTipoUsuario(usuarioDTO.getTipoUsuario());
 
-        bedel = bedelDAO.save(bedel);
+        bedel = administradorDAO.save(bedel);
         return bedel.getIdUsuario();
     }
 
@@ -43,7 +49,7 @@ public class GestorAdministrador {
     }
 
     public Boolean encontrarBedelPorNyA(String nombre, String apellido) {
-        return bedelDAO.existsByNombreAndApellido(nombre,apellido);
+        return administradorDAO.existsByNombreAndApellido(nombre,apellido);
     }
 
     public void validarUsuario(UsuarioDTO usuarioDTO) {
@@ -75,4 +81,14 @@ public class GestorAdministrador {
     }
 
 
+    public Integer registrarNuevoUsuario(UsuarioDTO usuarioDTO) {
+        Integer id = 0;
+        switch (usuarioDTO.getTipoUsuario()) {
+            case ADMINISTRADOR: id = registrarNuevoAdministrador(usuarioDTO);
+            break;
+            case BEDEL: id = gestorBedel.registrarNuevoBedel(usuarioDTO);
+            break;
+        }
+        return id;
+   }
 }
