@@ -1,44 +1,49 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'; 
 import BedelModal from '../components/BedelModal';
 
 function Bedel() {
-  const [showModal, setShowModal] = useState(false);
-  const [bedelList, setBedelList] = useState([]);
-  const [editBedel, setEditBedel] = useState(null); // Para editar un bedel
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [listaBedeles, setListaBedeles] = useState([]);
+  const [editarBedel, setEditarBedel] = useState(null);
 
   useEffect(() => {
-    // Datos simulados
-    const simulatedData = [
-      { id: 1, nombre: 'Dardo Sanchez', turno: 'MAÑANA' },
-      { id: 2, nombre: 'Lionel Messi', turno: 'TARDE' },
-      { id: 3, nombre: 'Cristiano Ronaldo', turno: 'NOCHE' },
-    ];
-    setBedelList(simulatedData);
+    // Cargar los bedeles desde el backend
+    const obtenerBedeles = async () => {
+      try {
+        const respuesta = await axios.get('http://localhost:8080/usuarios/bedels'); 
+        setListaBedeles(respuesta.data);
+      } catch (error) {
+        console.error('Error al cargar bedeles:', error);
+      }
+    };
+
+    obtenerBedeles();
   }, []);
 
-  const handleShowModal = (bedel = null) => {
-    setEditBedel(bedel);  // Si es un Bedel para editar, se carga aquí
-    setShowModal(true);
+  const manejarMostrarModal = (bedel = null) => {
+    setEditarBedel(bedel);
+    setMostrarModal(true);
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setEditBedel(null);  // Limpiar el bedel a editar al cerrar el modal
+  const manejarCerrarModal = () => {
+    setMostrarModal(false);
+    setEditarBedel(null);
   };
 
-  const handleSaveBedel = (bedel) => {
-    if (editBedel) {
+  const manejarGuardarBedel = (bedel) => {
+    if (editarBedel) {
       // Actualizar el bedel existente
-      setBedelList(prevList => prevList.map(b => b.id === bedel.id ? bedel : b));
+      setListaBedeles(prevLista => prevLista.map(b => (b.idUsuario === bedel.idUsuario ? bedel : b)));
     } else {
       // Agregar un nuevo bedel
-      setBedelList(prevList => [...prevList, { ...bedel, id: Date.now() }]); // Asignamos un ID único
+      setListaBedeles(prevLista => [...prevLista, { ...bedel, idUsuario: Date.now() }]);
     }
-    handleCloseModal();  // Cerrar el modal después de guardar
+    manejarCerrarModal();
   };
 
-  const handleDeleteBedel = (id) => {
-    setBedelList(prevList => prevList.filter(bedel => bedel.id !== id));
+  const manejarEliminarBedel = (idUsuario) => {
+    setListaBedeles(prevLista => prevLista.filter(bedel => bedel.idUsuario !== idUsuario));
   };
 
   return (
@@ -58,7 +63,7 @@ function Bedel() {
         </div>
         <div className="col-6">
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn btn-outline-success" id="btnAgregar" onClick={() => handleShowModal()}>
+            <button type="button" className="btn btn-outline-success" id="btnAgregar" onClick={() => manejarMostrarModal()}>
               Agregar
             </button>
           </div>
@@ -69,7 +74,7 @@ function Bedel() {
         <div className="col">
           <div className="table-responsive">
             <table className="table table-hover table-bordered">
-              <caption>Cantidad de Bedel: {bedelList.length}</caption>
+              <caption>Cantidad de Bedel: {listaBedeles.length}</caption>
               <thead>
                 <tr className="table-dark text-center align-middle">
                   <th>Nombre Y Apellido</th>
@@ -79,16 +84,16 @@ function Bedel() {
               </thead>
 
               <tbody className="text-center align-middle">
-                {bedelList.map((bedel) => (
+                {listaBedeles.map((bedel) => (
                   <tr key={bedel.id}>
                     <td>{bedel.nombre}</td>
                     <td>{bedel.turno}</td>
                     <td>
                       <div className="d-flex justify-content-evenly align-items-center">
-                        <button type="button" className="btn btn-warning me-1" onClick={() => handleShowModal(bedel)}>
+                        <button type="button" className="btn btn-warning me-1" onClick={() => manejarMostrarModal(bedel)}>
                           Editar
                         </button>
-                        <button type="button" className="btn btn-danger ms-1" onClick={() => handleDeleteBedel(bedel.id)}>
+                        <button type="button" className="btn btn-danger ms-1" onClick={() => manejarEliminarBedel(bedel.id)}>
                           Eliminar
                         </button>
                       </div>
@@ -102,7 +107,7 @@ function Bedel() {
       </div>
 
       {/* Renderizar el Modal */}
-      {showModal && <BedelModal handleClose={handleCloseModal} handleSave={handleSaveBedel} bedel={editBedel} />}
+      {mostrarModal && <BedelModal manejarCerrar={manejarCerrarModal} manejarGuardar={manejarGuardarBedel} bedel={editarBedel} />}
     </div>
   );
 }

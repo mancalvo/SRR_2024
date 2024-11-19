@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ControllerUsuario {
 
     @Autowired
@@ -37,7 +38,7 @@ public class ControllerUsuario {
     @GetMapping("/bedels")
     public ResponseEntity<List<BedelDTO>> obtenerTodosLosBedels() {
         List<BedelDTO> bedels = gestorBedel.obtenerTodosLosBedels();
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(bedels);
+        return ResponseEntity.ok(bedels);
     }
 
 
