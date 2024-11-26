@@ -199,3 +199,13 @@ body {
 .table-active {
   background-color: #d1e7dd; /* Color de fondo al seleccionar una fila */
 }
+
+.custom-form-check .form-check-input {
+  background-color: #f8f9fa; /* Un gris claro */
+  border-color: #ced4da; /* Color del borde */
+}
+
+.custom-form-check .form-check-input:checked {
+  background-color: #6C757D; /* Color gris oscuro cuando está marcado */
+  border-color: #6C757D; /* Color del borde al estar marcado */
+}
