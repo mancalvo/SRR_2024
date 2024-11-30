@@ -1,13 +1,14 @@
 import React from 'react';
-import NavbarBedel from '../components/NavbarBedel'; // Asegúrate de tener el Navbar correspondiente
-import Footer from '../components/Footer'; // Usamos el Footer común
+import NavbarAdmin from '../components/NavbarAdmin'; 
+import Footer from '../components/Footer'; 
+import Bedel from '../components/Bedel'; 
 
 function BedelPage() {
   return (
     <>
-      <NavbarBedel />
+      <NavbarAdmin />
       <div className="container">
-        <h1>Bienvenido Bedel</h1>
+        <Bedel />
       </div>
       <Footer />
     </>
@@ -15,4 +16,3 @@ function BedelPage() {
 }
 
 export default BedelPage;
-

@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../App.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../App.css";
 
 function Login() {
-  const [usuario, setUsuario] = useState('');
-  const [contrasena, setContrasena] = useState('');
+  const [usuario, setUsuario] = useState("");
+  const [contrasena, setContrasena] = useState("");
   const navigate = useNavigate();
 
   const manejarEnvio = (e) => {
     e.preventDefault();
 
     // Lógica de validación de usuarios y contraseñas
-    if (usuario === 'admin' && contrasena === 'admin') {
-      localStorage.setItem('tipoUsuario', 'ADMINISTRADOR');
-      navigate('/admin'); // Redirige a la página de Administrador
-    } else if (usuario === 'dardo' && contrasena === 'dardo') {
-      localStorage.setItem('tipoUsuario', 'BEDEL');
-      navigate('/bedel'); // Redirige a la página de Bedel
+    if (usuario === "admin" && contrasena === "admin") {
+      localStorage.setItem("tipoUsuario", "ADMINISTRADOR");
+      navigate("/admin"); // Redirige a la página de Administrador
+    } else if (usuario === "dardo" && contrasena === "dardo") {
+      localStorage.setItem("tipoUsuario", "BEDEL");
+      navigate("/bedel"); // Redirige a la página de Bedel
     } else {
-      alert('Credenciales incorrectas.');
+      alert("Credenciales incorrectas.");
     }
 
     // La siguiente parte está comentada para no realizar la conexión con la base de datos
@@ -45,12 +45,17 @@ function Login() {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center" style={{ flex: 1, marginTop: '50px' }}>
-      <div className="form-container encuadro col-md-6">
+    <div
+      className="container d-flex justify-content-center align-items-center"
+      style={{ flex: 1, marginTop: "50px" }}
+    >
+      <div className="form-container encuadro inicio-sesion-cuadro col-md-6">
         <h2 className="text-center mb-4">INICIO DE SESION</h2>
         <form onSubmit={manejarEnvio}>
           <div className="mb-3">
-            <label htmlFor="usuario" className="form-label">Nombre de Usuario</label>
+            <label htmlFor="usuario" className="form-label">
+              Nombre de Usuario
+            </label>
             <input
               type="text"
               id="usuario"
@@ -61,7 +66,9 @@ function Login() {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="contrasena" className="form-label">Contraseña</label>
+            <label htmlFor="contrasena" className="form-label">
+              Contraseña
+            </label>
             <input
               type="password"
               id="contrasena"
@@ -72,10 +79,21 @@ function Login() {
             />
           </div>
           <div className="form-check mb-3 custom-form-check">
-            <input className="form-check-input" type="checkbox" id="rememberMe" />
-            <label className="form-check-label custom-form-check" htmlFor="rememberMe">Recordarme</label>
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="rememberMe"
+            />
+            <label
+              className="form-check-label custom-form-check"
+              htmlFor="rememberMe"
+            >
+              Recordarme
+            </label>
           </div>
-          <button type="submit" className="btn btn-dark w-100">Ingresar</button>
+          <button type="submit" className="btn btn-dark w-100">
+            Ingresar
+          </button>
         </form>
       </div>
     </div>

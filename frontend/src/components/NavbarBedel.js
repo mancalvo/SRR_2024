@@ -1,12 +1,20 @@
-// src/components/Navbar.js
 import React from 'react';
-import { Link } from 'react-router-dom';  // Importa Link desde react-router-dom
+import { Link, useNavigate  } from 'react-router-dom';  
 
 function Navbar() {
+
+  const navigate = useNavigate(); 
+
+ 
+  const handleLogout = () => {
+    localStorage.removeItem('tipoUsuario'); 
+    navigate('/login'); 
+  };
+
   return (
     <nav className="navbar navbar-expand-lg bg-dark border-bottom border-body" data-bs-theme="dark">
       <div className="container">
-        {/* Aquí cambiamos el <a> por un <Link> para redirigir al inicio */}
+        
         <Link className="navbar-brand" to="/">Navbar</Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false">
           <span className="navbar-toggler-icon"></span>
@@ -21,7 +29,7 @@ function Navbar() {
                 <Link className="nav-link" to="/aulas">Aulas Disponibles</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/bedel">Bedel</Link>
+                <button className="nav-link btn" onClick={handleLogout}>Cerrar Sesion</button> 
               </li>
             </ul>
           </div>

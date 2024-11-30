@@ -8,7 +8,7 @@
 
 
 body {
-background-color: #f0f0f0; 
+background-color: #f0f0f0 !important; 
 display: flex;
 flex-direction: column;
 min-height: 100vh; 
@@ -209,3 +209,18 @@ background-color: #d1e7dd; /* Color de fondo al seleccionar una fila */
   background-color: #6C757D; /* Color gris oscuro cuando está marcado */
   border-color: #6C757D; /* Color del borde al estar marcado */
 }
+
+.inicio-sesion-cuadro {
+  position: absolute;
+  top: 45%; /* Cambiado de 50% a 45% para moverlo hacia arriba */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+}
+

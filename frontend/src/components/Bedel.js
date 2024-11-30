@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'; 
-import BedelModal from '../components/BedelModal';
+import BedelModal from './BedelModal';
 
 function Bedel() {
   const [mostrarModal, setMostrarModal] = useState(false);
