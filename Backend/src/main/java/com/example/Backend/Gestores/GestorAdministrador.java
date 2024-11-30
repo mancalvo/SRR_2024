@@ -1,7 +1,6 @@
 package com.example.Backend.Gestores;
 
 import com.example.Backend.DAO.AdministradorDAO;
-import com.example.Backend.DAO.BedelDAO;
 import com.example.Backend.DTO.UsuarioDTO;
 import com.example.Backend.Entidades.Usuario;
 import com.example.Backend.Enum.Tipo_Usuario;
