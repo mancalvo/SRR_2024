@@ -12,22 +12,21 @@ function NavbarAdmin() {
   return (
     <nav className="navbar navbar-expand-lg bg-dark border-bottom border-body" data-bs-theme="dark">
       <div className="container">
-        <Link className="navbar-brand" to="/">Navbar</Link>
+        <Link className="navbar-brand" to="/">Inicio</Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false">
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="container">
-          <div className="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul className="navbar-nav">
-              {/* Cambiar el 'to' a la ruta correcta '/bedel' */}
-              <li className="nav-item">
-                <Link className="nav-link" to="/bedel">Bedel</Link>
-              </li>
-              <li className="nav-item">
-                <button className="nav-link btn" onClick={handleLogout}>Cerrar Sesion</button> 
-              </li>
-            </ul>
-          </div>
+        <div className="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul className="navbar-nav me-auto"> 
+            <li className="nav-item">
+              <Link className="nav-link" to="/adminBedels">Administrar Bedeles</Link>
+            </li>
+          </ul>
+          <ul className="navbar-nav ms-auto"> 
+            <li className="nav-item">
+              <button className="nav-link btn" onClick={handleLogout}>Cerrar Sesion</button> 
+            </li>
+          </ul>
         </div>
       </div>
     </nav>
@@ -35,4 +34,3 @@ function NavbarAdmin() {
 }
 
 export default NavbarAdmin;
-

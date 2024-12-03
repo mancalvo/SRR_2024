@@ -8,6 +8,9 @@ import {
 import Login from "./pages/Login";
 import AdminPage from "./pages/AdminPage";
 import BedelPage from "./pages/BedelPage";
+import CrudBedels from "./pages/CrudBedels";
+import AulaPage from "./pages/AulaPage";
+import NuevaReservaPage from "./pages/NuevaReservaPage";
 import "./App.css";
 
 function App() {
@@ -28,18 +31,21 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Ruta predeterminada: verifica tipo de usuario y redirige */}
+       
         <Route path="/" element={<RedirectByRole />} />
 
-        {/* Ruta para login */}
         <Route path="/login" element={<Login />} />
 
-        {/* Ruta para Administradores */}
         <Route path="/admin" element={<AdminPage />} />
 
-        {/* Ruta para Bedeles */}
         <Route path="/bedel" element={<BedelPage />} />
-        
+
+        <Route path="/adminBedels" element={<CrudBedels />} />
+      
+        <Route path="/aulas" element={<AulaPage />} />
+
+        <Route path="/nueva-reserva" element={<NuevaReservaPage />} />
+
       </Routes>
     </Router>
   );

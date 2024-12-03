@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class BedelDTO {
 
     private Integer idUsuario;
+    private String nombreUsuario;
     private String nombre;
     private String apellido;
     private Tipo_Turno tipoTurno;

@@ -4,6 +4,7 @@ import com.example.Backend.DAO.BedelDAO;
 import com.example.Backend.DTO.BedelDTO;
 import com.example.Backend.DTO.UsuarioDTO;
 import com.example.Backend.Entidades.Usuario;
+import com.example.Backend.Enum.Tipo_Turno;
 import com.example.Backend.Enum.Tipo_Usuario;
 import com.example.Backend.Exceptions.BedelException;
 import com.example.Backend.Gestores.Externos.GestorContrasenia;
@@ -88,23 +89,30 @@ public class GestorBedel {
     }
 
 
-    public BedelDTO buscarBedelPorId(Integer id) {
-        Optional<Usuario> bedel = bedelDAO.buscarBedelPorId(id);
+    public UsuarioDTO buscarBedelPorId(Integer id) {
+        Optional<Usuario> usuarioBBDD = bedelDAO.buscarBedelPorId(id);
 
-        if (bedel.isEmpty()) {
+        if (usuarioBBDD.isEmpty()) {
             throw new BedelException("No se encontró un Bedel con el ID: " + id);
         }
 
-        Usuario usuario = bedel.get();
+        UsuarioDTO usuariodto = new UsuarioDTO();
 
         // Convertimos el Usuario a BedelDTO
-        BedelDTO bedelDTO = new BedelDTO();
-        bedelDTO.setIdUsuario(usuario.getIdUsuario());
-        bedelDTO.setNombre(usuario.getNombre());
-        bedelDTO.setApellido(usuario.getApellido());
-        bedelDTO.setTipoTurno(usuario.getTipoTurno());
 
-        return bedelDTO;
+
+        usuariodto.setIdUsuario(usuarioBBDD.get().getIdUsuario());
+        usuariodto.setNombre(usuarioBBDD.get().getNombre());
+        usuariodto.setApellido(usuarioBBDD.get().getApellido());
+        usuariodto.setNombreUsuario(usuarioBBDD.get().getNombreUsuario());
+        usuariodto.setContrasenia(usuarioBBDD.get().getContrasenia());
+        usuariodto.setTipoUsuario(usuarioBBDD.get().getTipoUsuario());
+        usuariodto.setTipoTurno(usuarioBBDD.get().getTipoTurno());
+        usuariodto.setActivo(usuarioBBDD.get().getActivo());
+
+        return usuariodto;
+
+
     }
 
     public List<BedelDTO> obtenerTodosLosBedels() {
@@ -112,6 +120,7 @@ public class GestorBedel {
         return bedels.stream().map(usuario -> {
             BedelDTO dto = new BedelDTO();
             dto.setIdUsuario(usuario.getIdUsuario());
+            dto.setNombreUsuario(usuario.getNombreUsuario());
             dto.setNombre(usuario.getNombre());
             dto.setApellido(usuario.getApellido());
             dto.setTipoTurno(usuario.getTipoTurno());
@@ -120,17 +129,18 @@ public class GestorBedel {
     }
 
 
-    public void actualizarBedel(Integer id, BedelDTO bedelDTO) {
+    public void actualizarBedel(Integer id, UsuarioDTO usuarioDTO) {
         Optional<Usuario> usuarioOpt = bedelDAO.buscarBedelPorId(id);
         if (usuarioOpt.isEmpty()) {
-            throw new BedelException("No se encontro el bedel que se quiere modificar"); // No se encontró el usuario
+            throw new BedelException("No se encontro el usuario que se quiere modificar"); // No se encontró el usuario
         }
 
         Usuario usuario = usuarioOpt.get();
 
-        usuario.setNombre(bedelDTO.getNombre());
-        usuario.setApellido(bedelDTO.getApellido());
-        usuario.setTipoTurno(bedelDTO.getTipoTurno());
+        usuario.setNombre(usuarioDTO.getNombre());
+        usuario.setApellido(usuarioDTO.getApellido());
+        usuario.setTipoTurno(usuarioDTO.getTipoTurno());
+        usuario.setContrasenia(usuarioDTO.getContrasenia());
 
         bedelDAO.save(usuario);
     }

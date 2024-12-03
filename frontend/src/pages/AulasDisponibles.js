@@ -1,4 +1,3 @@
-// src/pages/AulasDisponibles.js
 import React from 'react';
 
 function AulasDisponibles() {

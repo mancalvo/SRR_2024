@@ -30,9 +30,9 @@ public class ControllerUsuario {
     }
 
     @GetMapping("/bedel/{id}")
-    public ResponseEntity<BedelDTO> buscarBedel(@PathVariable Integer id) {
-        BedelDTO bedelDTO = gestorBedel.buscarBedelPorId(id);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(bedelDTO);
+    public ResponseEntity<UsuarioDTO> buscarBedel(@PathVariable Integer id) {
+        UsuarioDTO usuario = gestorBedel.buscarBedelPorId(id);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(usuario);
     }
 
     @GetMapping("/bedels")
@@ -43,8 +43,8 @@ public class ControllerUsuario {
 
 
     @PutMapping("/bedel/{id}")
-    public ResponseEntity<String> modificarBedel(@PathVariable Integer id, @RequestBody BedelDTO bedelDTO) {
-        gestorBedel.actualizarBedel(id, bedelDTO);
+    public ResponseEntity<String> modificarBedel(@PathVariable Integer id, @RequestBody UsuarioDTO usuarioDTO) {
+        gestorBedel.actualizarBedel(id, usuarioDTO);
         return ResponseEntity.ok("Bedel con ID " + id + " actualizado correctamente.");
     }
 
