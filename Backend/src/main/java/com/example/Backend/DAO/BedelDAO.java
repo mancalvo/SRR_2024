@@ -20,5 +20,5 @@ public interface BedelDAO extends JpaRepository <Usuario,Integer> {
     @Query("SELECT u FROM Usuario u WHERE u.tipoUsuario = 'BEDEL' AND u.activo = true")
     List<Usuario> buscarTodosLosBedels();
 
-
+    Optional<Usuario> findByNombreUsuarioAndContrasenia(String nombreUsuario, String contrasenia);
 }

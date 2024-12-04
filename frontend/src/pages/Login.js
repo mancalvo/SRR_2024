@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Importamos axios para hacer la solicitud HTTP
 import "../App.css";
 
 function Login() {
@@ -7,41 +8,32 @@ function Login() {
   const [contrasena, setContrasena] = useState("");
   const navigate = useNavigate();
 
-  const manejarEnvio = (e) => {
+  const manejarEnvio = async (e) => {
     e.preventDefault();
 
-    // Lógica de validación de usuarios y contraseñas
-    if (usuario === "admin" && contrasena === "admin") {
-      localStorage.setItem("tipoUsuario", "ADMINISTRADOR");
-      navigate("/admin"); // Redirige a la página de Administrador
-    } else if (usuario === "dardo" && contrasena === "dardo") {
-      localStorage.setItem("tipoUsuario", "BEDEL");
-      navigate("/bedel"); // Redirige a la página de Bedel
-    } else {
-      alert("Credenciales incorrectas.");
-    }
-
-    // La siguiente parte está comentada para no realizar la conexión con la base de datos
-    /*
     try {
-      const respuesta = await axios.post('/inicioSesion', { usuario, contrasena });
-      const { estado, tipo_Usuario } = respuesta.data;
-
-      if (estado) {
-        localStorage.setItem('tipoUsuario', tipo_Usuario); // Guarda el tipo de usuario
-        if (tipo_Usuario === 'ADMINISTRADOR') {
-          navigate('/admin'); // Redirige a la página de Administrador
-        } else if (tipo_Usuario === 'BEDEL') {
-          navigate('/bedel'); // Redirige a la página de Bedel
+      const response = await axios.post(
+        "http://localhost:8080/login/iniciarSesion",
+        {
+          nombreUsuario: usuario,
+          contrasenia: contrasena,
         }
-      } else {
-        alert('Credenciales incorrectas.');
+      );
+
+      alert(response.data.mensaje);
+
+      if (response.data.habilitado) {
+        if (response.data.tipoUsuario === "ADMINISTRADOR") {
+          localStorage.setItem("tipoUsuario", "ADMINISTRADOR");
+          navigate("/admin");
+        } else if (response.data.tipoUsuario === "BEDEL") {
+          localStorage.setItem("tipoUsuario", "BEDEL");
+          navigate("/bedel");
+        }
       }
-    } catch (error) {
-      console.error('Error en el inicio de sesión:', error);
-      alert('Ocurrió un error, por favor intenta de nuevo.');
+    } catch (err) {
+      alert("Hubo un error al intentar iniciar sesión.");
     }
-    */
   };
 
   return (
