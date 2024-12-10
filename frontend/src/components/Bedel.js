@@ -6,7 +6,9 @@ function Bedel() {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [listaBedeles, setListaBedeles] = useState([]);
   const [editarBedel, setEditarBedel] = useState(null);
-  const [busqueda, setBusqueda] = useState(""); // Estado para almacenar el término de búsqueda
+  const [busqueda, setBusqueda] = useState("");
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [bedelesPorPagina] = useState(5); // Número de registros por página
 
   const obtenerBedeles = async () => {
     try {
@@ -24,20 +26,17 @@ function Bedel() {
     obtenerBedeles();
   }, []);
 
-  // Función para mostrar el modal, pasando el bedel a editar si es necesario
   const manejarMostrarModal = (bedel = null) => {
     setEditarBedel(bedel);
     setMostrarModal(true);
   };
 
-  // Función para cerrar el modal y cargar nuevamente la lista de bedeles
   const manejarCerrarModal = () => {
     setMostrarModal(false);
     setEditarBedel(null);
-    obtenerBedeles(); // Vuelve a cargar los bedeles
+    obtenerBedeles();
   };
 
-  // Función para eliminar un bedel 
   const manejarEliminarBedel = async (idUsuario) => {
     try {
       const respuesta = await axios.delete(
@@ -46,7 +45,6 @@ function Bedel() {
 
       alert(respuesta.data);
 
-      // Después de eliminarlo, actualizamos la lista de bedeles
       setListaBedeles((prevLista) =>
         prevLista.filter((bedel) => bedel.idUsuario !== idUsuario)
       );
@@ -56,11 +54,17 @@ function Bedel() {
     }
   };
 
-  // Filtrar la lista de bedeles según el término de búsqueda
   const bedelesFiltrados = listaBedeles.filter((bedel) => {
     const nombreCompleto = `${bedel.nombre} ${bedel.apellido}`.toLowerCase();
     return nombreCompleto.includes(busqueda.toLowerCase());
   });
+
+  // Calcular los índices de inicio y fin para la paginación
+  const indiceInicio = (paginaActual - 1) * bedelesPorPagina;
+  const indiceFin = indiceInicio + bedelesPorPagina;
+  const bedelesPaginados = bedelesFiltrados.slice(indiceInicio, indiceFin);
+
+  const totalPaginas = Math.ceil(bedelesFiltrados.length / bedelesPorPagina);
 
   return (
     <div className="container">
@@ -77,7 +81,7 @@ function Bedel() {
             type="text"
             placeholder="Buscar"
             value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)} // Actualizamos el estado con el valor del input
+            onChange={(e) => setBusqueda(e.target.value)}
           />
           <button
             type="button"
@@ -105,7 +109,6 @@ function Bedel() {
         <div className="col">
           <div className="table-responsive">
             <table className="table table-hover table-bordered">
-              <caption>Cantidad de Bedel: {bedelesFiltrados.length}</caption>
               <thead>
                 <tr className="table-dark text-center align-middle">
                   <th>Nombre Y Apellido</th>
@@ -116,7 +119,7 @@ function Bedel() {
               </thead>
 
               <tbody className="text-center align-middle">
-                {bedelesFiltrados.map((bedel) => (
+                {bedelesPaginados.map((bedel) => (
                   <tr key={bedel.idUsuario}>
                     <td>{`${bedel.nombre} ${bedel.apellido}`}</td>
                     <td>{bedel.tipoTurno}</td>
@@ -133,9 +136,7 @@ function Bedel() {
                         <button
                           type="button"
                           className="btn btn-danger ms-1"
-                          onClick={() =>
-                            manejarEliminarBedel(bedel.idUsuario)
-                          }
+                          onClick={() => manejarEliminarBedel(bedel.idUsuario)}
                         >
                           Eliminar
                         </button>
@@ -146,15 +147,39 @@ function Bedel() {
               </tbody>
             </table>
           </div>
+
+          {/* Cantidad de Bedel y Paginación */}
+          <div className="d-flex justify-content-between ">
+            <span>Cantidad de Bedel: {bedelesFiltrados.length}</span>
+
+            <div>
+              <button
+                className="btn btn-outline-dark btn-sm me-2"
+                disabled={paginaActual === 1}
+                onClick={() => setPaginaActual(paginaActual - 1)}
+              >
+                &laquo;
+              </button>
+              <span>
+                Página {paginaActual} de {totalPaginas}
+              </span>
+              <button
+                className="btn btn-outline-dark btn-sm ms-2"
+                disabled={paginaActual === totalPaginas}
+                onClick={() => setPaginaActual(paginaActual + 1)}
+              >
+                &raquo;
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Renderizar el Modal */}
       {mostrarModal && (
         <BedelModal
           cerrar={manejarCerrarModal}
           bedel={editarBedel}
-          actualizarBedeles={obtenerBedeles} // Pasamos la función para actualizar los bedeles
+          actualizarBedeles={obtenerBedeles}
         />
       )}
     </div>

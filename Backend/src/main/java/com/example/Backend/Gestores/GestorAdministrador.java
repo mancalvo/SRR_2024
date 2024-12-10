@@ -81,13 +81,19 @@ public class GestorAdministrador {
 
 
     public Integer registrarNuevoUsuario(UsuarioDTO usuarioDTO) {
+        if (administradorDAO.existsByNombreUsuario(usuarioDTO.getNombreUsuario())) {
+            throw new BedelException("El usuario ya se encuentra registrado");
+        }
         Integer id = 0;
         switch (usuarioDTO.getTipoUsuario()) {
-            case ADMINISTRADOR: id = registrarNuevoAdministrador(usuarioDTO);
-            break;
-            case BEDEL: id = gestorBedel.registrarNuevoBedel(usuarioDTO);
-            break;
+            case ADMINISTRADOR:
+                id = registrarNuevoAdministrador(usuarioDTO);
+                break;
+            case BEDEL:
+                id = gestorBedel.registrarNuevoBedel(usuarioDTO);
+                break;
         }
         return id;
-   }
+    }
+
 }

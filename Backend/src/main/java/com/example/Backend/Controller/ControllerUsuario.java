@@ -2,6 +2,7 @@ package com.example.Backend.Controller;
 
 import com.example.Backend.DTO.BedelDTO;
 import com.example.Backend.DTO.UsuarioDTO;
+import com.example.Backend.Enum.Tipo_Turno;
 import com.example.Backend.Gestores.GestorAdministrador;
 import com.example.Backend.Gestores.GestorBedel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +55,15 @@ public class ControllerUsuario {
         gestorBedel.eliminarBedel(id);
         return ResponseEntity.ok("Bedel con ID " + id + " eliminado correctamente.");
     }
+
+    @GetMapping("/bedels/AYT")
+    public ResponseEntity<List<BedelDTO>> buscarBedelesPorApellidoYTurno(
+            @RequestParam String apellido,
+            @RequestParam Tipo_Turno tipoTurno) {
+        List<BedelDTO> bedeles = gestorBedel.buscarBedelesPorApellidoYTurno(apellido, tipoTurno);
+        return ResponseEntity.ok(bedeles);
+    }
+
+
 }
 

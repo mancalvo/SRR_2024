@@ -11,5 +11,5 @@ public interface AdministradorDAO extends JpaRepository<Usuario,Integer> {
     boolean existsByNombreAndApellido(String nombre, String apellido);
 
     Optional<Usuario> findByNombreUsuarioAndContrasenia(String nombreUsuario, String contrasenia);
-
+    boolean existsByNombreUsuario(String nombreUsuario);
 }

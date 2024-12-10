@@ -2,11 +2,8 @@ package com.example.Backend.Gestores;
 
 
 import com.example.Backend.DAO.AdministradorDAO;
-import com.example.Backend.DAO.BedelDAO;
 import com.example.Backend.DTO.LoginDTO;
 import com.example.Backend.Entidades.Usuario;
-import com.example.Backend.Enum.Tipo_Usuario;
-import com.example.Backend.Exceptions.BedelException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +14,6 @@ public class GestorUsuarios {
 
     @Autowired
     private AdministradorDAO administradorDAO;
-    @Autowired
-    private BedelDAO bedelDAO;
 
     public LoginDTO iniciarSesion(LoginDTO loginDTO) {
         LoginDTO response = new LoginDTO();

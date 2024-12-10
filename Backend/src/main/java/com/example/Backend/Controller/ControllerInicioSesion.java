@@ -1,7 +1,6 @@
 package com.example.Backend.Controller;
 
 import com.example.Backend.DTO.LoginDTO;
-import com.example.Backend.DTO.UsuarioDTO;
 import com.example.Backend.Gestores.GestorUsuarios;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

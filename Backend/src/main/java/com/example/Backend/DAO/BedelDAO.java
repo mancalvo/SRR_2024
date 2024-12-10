@@ -1,6 +1,7 @@
 package com.example.Backend.DAO;
 
 import com.example.Backend.Entidades.Usuario;
+import com.example.Backend.Enum.Tipo_Turno;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,5 +21,7 @@ public interface BedelDAO extends JpaRepository <Usuario,Integer> {
     @Query("SELECT u FROM Usuario u WHERE u.tipoUsuario = 'BEDEL' AND u.activo = true")
     List<Usuario> buscarTodosLosBedels();
 
-    Optional<Usuario> findByNombreUsuarioAndContrasenia(String nombreUsuario, String contrasenia);
+    List<Usuario> findByApellido(String apellido);
+    List<Usuario> findByTipoTurno(Tipo_Turno tipoTurno);
+    List<Usuario> findByApellidoAndTipoTurno(String apellido, Tipo_Turno tipoTurno);
 }

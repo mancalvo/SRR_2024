@@ -157,5 +157,31 @@ public class GestorBedel {
         bedelDAO.save(usuario);
     }
 
+    public List<BedelDTO> buscarBedelesPorApellidoYTurno(String apellido, Tipo_Turno turno) {
+        List<Usuario> bedeles;
+
+        if (apellido != null && turno != null) {
+            bedeles = bedelDAO.findByApellidoAndTipoTurno(apellido, turno);
+        } else if (apellido != null) {
+            bedeles = bedelDAO.findByApellido(apellido);
+        } else if (turno != null) {
+            bedeles = bedelDAO.findByTipoTurno(turno);
+        } else {
+            bedeles = bedelDAO.findAll();
+        }
+
+        return bedeles.stream()
+                .filter(usuario -> usuario.getTipoTurno() != null)
+                .map(usuario -> new BedelDTO(
+                        usuario.getIdUsuario(),
+                        usuario.getNombreUsuario(),
+                        usuario.getNombre(),
+                        usuario.getApellido(),
+                        usuario.getTipoTurno()
+                ))
+                .collect(Collectors.toList());
+
+
+    }
 }
 

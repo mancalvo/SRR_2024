@@ -21,7 +21,7 @@ const ModalBedel = ({ cerrar, bedel, actualizarBedeles }) => {
 
   const guardarBedel = async (e) => {
     e.preventDefault();
-
+  
     const nuevoBedel = {
       idUsuario: bedel?.idUsuario || null,
       nombre,
@@ -33,7 +33,7 @@ const ModalBedel = ({ cerrar, bedel, actualizarBedeles }) => {
       contrasenia: password,
       repetirContrasenia: confirmarPassword,
     };
-
+  
     try {
       const respuesta = bedel?.idUsuario
         ? await fetch(
@@ -53,23 +53,26 @@ const ModalBedel = ({ cerrar, bedel, actualizarBedeles }) => {
             },
             body: JSON.stringify(nuevoBedel),
           });
-
+  
       if (respuesta.ok) {
         const mensaje = await respuesta.text();
         alert(mensaje);
-
+  
         // Llamar a actualizarBedeles para recargar la lista de bedeles después de guardar
         actualizarBedeles();
-
+  
         cerrar();
       } else {
-        alert("Error al guardar el usuario");
+        const errorData = await respuesta.json(); // Procesar la respuesta como JSON
+        alert(errorData.message || "Error al guardar el usuario"); // Mostrar solo el mensaje
       }
     } catch (error) {
       console.error("Error:", error);
       alert("Hubo un problema al guardar el usuario");
     }
   };
+  
+  
 
   const manejarCambioTurno = (e) => {
     const turnoMayuscula = e.target.value.toUpperCase();
