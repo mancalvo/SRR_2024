@@ -8,8 +8,8 @@ function Bedel() {
   const [editarBedel, setEditarBedel] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [paginaActual, setPaginaActual] = useState(1);
-  const [bedelesPorPagina] = useState(5); // Número de registros por página
-
+  const [bedelesPorPagina] = useState(5);
+  
   const obtenerBedeles = async () => {
     try {
       const respuesta = await axios.get(
@@ -37,14 +37,21 @@ function Bedel() {
     obtenerBedeles();
   };
 
-  const manejarEliminarBedel = async (idUsuario) => {
+  const manejarEliminarBedel = async (idUsuario, nombre, apellido) => {
+    const confirmacion = window.confirm(`¿Estás seguro de que deseas borrar el bedel ${nombre} ${apellido}?`);
+    
+    if (!confirmacion) {
+      // Si el usuario cancela, no hacemos nada
+      return;
+    }
+  
     try {
       const respuesta = await axios.delete(
         `http://localhost:8080/usuarios/bedel/${idUsuario}`
       );
-
+  
       alert(respuesta.data);
-
+  
       setListaBedeles((prevLista) =>
         prevLista.filter((bedel) => bedel.idUsuario !== idUsuario)
       );
@@ -54,10 +61,23 @@ function Bedel() {
     }
   };
 
+  const normalizarTexto = (texto) =>
+    texto
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, ""); // Elimina marcas diacríticas (acentos)
+  
   const bedelesFiltrados = listaBedeles.filter((bedel) => {
-    const nombreCompleto = `${bedel.nombre} ${bedel.apellido}`.toLowerCase();
-    return nombreCompleto.includes(busqueda.toLowerCase());
+    const nombreCompleto = normalizarTexto(`${bedel.nombre} ${bedel.apellido}`);
+    const turno = normalizarTexto(bedel.tipoTurno);
+    const busquedaNormalizada = normalizarTexto(busqueda);
+    return (
+      nombreCompleto.includes(busquedaNormalizada) ||
+      turno.includes(busquedaNormalizada)
+    );
   });
+  
+  
 
   // Calcular los índices de inicio y fin para la paginación
   const indiceInicio = (paginaActual - 1) * bedelesPorPagina;
@@ -136,7 +156,7 @@ function Bedel() {
                         <button
                           type="button"
                           className="btn btn-danger ms-1"
-                          onClick={() => manejarEliminarBedel(bedel.idUsuario)}
+                          onClick={() => manejarEliminarBedel(bedel.idUsuario, bedel.nombre, bedel.apellido)}
                         >
                           Eliminar
                         </button>
@@ -149,8 +169,8 @@ function Bedel() {
           </div>
 
           {/* Cantidad de Bedel y Paginación */}
-          <div className="d-flex justify-content-between ">
-            <span>Cantidad de Bedel: {bedelesFiltrados.length}</span>
+          <div className="d-flex justify-content-between">
+            <span>Cantidad de Bedeles: {bedelesFiltrados.length}</span>
 
             <div>
               <button

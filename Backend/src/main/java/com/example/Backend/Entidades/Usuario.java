@@ -18,20 +18,20 @@ public class Usuario {
     @Column(name = "id_usuario")
     private Integer idUsuario;
 
-    @Column(name = "nombre", nullable = false)
+    @Column(name = "nombre")
     private String nombre;
 
-    @Column(name = "apellido", nullable = false)
+    @Column(name = "apellido")
     private String apellido;
 
-    @Column(name = "nombre_usuario", nullable = false)
+    @Column(name = "nombre_usuario")
     private String nombreUsuario;
 
-    @Column(name = "contraseña", nullable = false)
+    @Column(name = "contraseña")
     private String contrasenia;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_usuario", nullable = false)
+    @Column(name = "tipo_usuario")
     private Tipo_Usuario tipoUsuario;
 
     @Enumerated(EnumType.STRING)
