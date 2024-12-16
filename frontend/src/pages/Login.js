@@ -10,7 +10,7 @@ function Login() {
 
   const manejarEnvio = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await axios.post(
         "http://localhost:8080/login/iniciarSesion",
@@ -19,15 +19,20 @@ function Login() {
           contrasenia: contrasena,
         }
       );
-
+  
       alert(response.data.mensaje);
-
+  
       if (response.data.habilitado) {
+        // Guardar el tipo de usuario en el localStorage
+        localStorage.setItem("tipoUsuario", response.data.tipoUsuario);
+  
+        // Guardar el nombre del usuario en el localStorage
+        localStorage.setItem("nombreUsuario", response.data.nombreUsuario); // <-- Aquí guardas el nombre de usuario
+  
+        // Navegar según el tipo de usuario
         if (response.data.tipoUsuario === "ADMINISTRADOR") {
-          localStorage.setItem("tipoUsuario", "ADMINISTRADOR");
           navigate("/admin");
         } else if (response.data.tipoUsuario === "BEDEL") {
-          localStorage.setItem("tipoUsuario", "BEDEL");
           navigate("/bedel");
         }
       }
@@ -35,6 +40,7 @@ function Login() {
       alert("Hubo un error al intentar iniciar sesión.");
     }
   };
+  
 
   return (
     <div

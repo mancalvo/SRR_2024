@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
 
-// Funciones simuladas para obtener datos
 const fetchSolicitantes = async () => [
   { id: "1", nombre: "Sanchez Dardo" },
   { id: "2", nombre: "Benjamin Pozzi" },
@@ -29,8 +28,7 @@ const fetchTiposAula = async () => [
   { id: "3", nombre: "Aula sin recursos" },
 ];
 
-// Componente principal
-const Seccion1 = ({ formData, setFormData, siguienteSeccion }) => {
+const Seccion1 = ({ formData, setFormData, setDatosFormulario, siguienteSeccion }) => {
   const [solicitantes, setSolicitantes] = useState([]);
   const [catedras, setCatedras] = useState([]);
   const [tiposReserva, setTiposReserva] = useState([]);
@@ -50,40 +48,31 @@ const Seccion1 = ({ formData, setFormData, siguienteSeccion }) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const { solicitante, correo, catedra, cantAlumnos, tipoReserva, tipoAula } =
-    formData;
-
   return (
     <div className="col-6 form-container encuadro2 mb-5">
       <div id="seccion1">
         <div className="row mb-2">
           <div className="col-sm-6">
-            <label htmlFor="nombreS" className="form-label">
-              Solicitante:
-            </label>
+            <label htmlFor="nombreS" className="form-label">Solicitante:</label>
             <select
               id="nombreS"
               className="form-select"
-              value={solicitante || ""}
+              value={formData.solicitante || ""}
               onChange={(e) => handleChange("solicitante", e.target.value)}
             >
               <option value="">Seleccionar</option>
               {solicitantes.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.nombre}
-                </option>
+                <option key={s.id} value={s.id}>{s.nombre}</option>
               ))}
             </select>
           </div>
           <div className="col-sm-6">
-            <label htmlFor="correoContacto" className="form-label">
-              Correo:
-            </label>
+            <label htmlFor="correoContacto" className="form-label">Correo:</label>
             <input
               type="email"
               className="form-control"
               id="correoContacto"
-              value={correo || ""}
+              value={formData.correo || ""}
               onChange={(e) => handleChange("correo", e.target.value)}
             />
           </div>
@@ -91,33 +80,27 @@ const Seccion1 = ({ formData, setFormData, siguienteSeccion }) => {
 
         <div className="row mb-2">
           <div className="col-sm-6">
-            <label htmlFor="nombreCatedra" className="form-label">
-              Cátedra:
-            </label>
+            <label htmlFor="nombreCatedra" className="form-label">Cátedra:</label>
             <select
               id="nombreCatedra"
               className="form-select"
-              value={catedra || ""}
+              value={formData.catedra || ""}
               onChange={(e) => handleChange("catedra", e.target.value)}
             >
               <option value="">Seleccionar</option>
               {catedras.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.nombre}
-                </option>
+                <option key={c.id} value={c.id}>{c.nombre}</option>
               ))}
             </select>
           </div>
           <div className="col-sm-6">
-            <label htmlFor="cantAlumnos" className="form-label">
-              Cantidad de Alumnos:
-            </label>
+            <label htmlFor="cantAlumnos" className="form-label">Cantidad de Alumnos:</label>
             <input
               type="number"
               className="form-control"
               id="cantAlumnos"
               min="0"
-              value={cantAlumnos || ""}
+              value={formData.cantAlumnos || ""}
               onChange={(e) => handleChange("cantAlumnos", e.target.value)}
             />
           </div>
@@ -125,38 +108,30 @@ const Seccion1 = ({ formData, setFormData, siguienteSeccion }) => {
 
         <div className="row mb-2">
           <div className="col-sm-6">
-            <label htmlFor="tipoReserva" className="form-label">
-              Tipo de Reserva:
-            </label>
+            <label htmlFor="tipoReserva" className="form-label">Tipo de Reserva:</label>
             <select
               id="tipoReserva"
               className="form-select"
-              value={tipoReserva || ""}
+              value={formData.tipoReserva || ""}
               onChange={(e) => handleChange("tipoReserva", e.target.value)}
             >
               <option value="">Seleccionar</option>
               {tiposReserva.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {r.nombre}
-                </option>
+                <option key={r.id} value={r.id}>{r.nombre}</option>
               ))}
             </select>
           </div>
           <div className="col-sm-6">
-            <label htmlFor="tipoAula" className="form-label">
-              Tipo de Aula:
-            </label>
+            <label htmlFor="tipoAula" className="form-label">Tipo de Aula:</label>
             <select
               id="tipoAula"
               className="form-select"
-              value={tipoAula || ""}
+              value={formData.tipoAula || ""}
               onChange={(e) => handleChange("tipoAula", e.target.value)}
             >
               <option value="">Seleccionar</option>
               {tiposAula.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.nombre}
-                </option>
+                <option key={a.id} value={a.id}>{a.nombre}</option>
               ))}
             </select>
           </div>
@@ -166,7 +141,13 @@ const Seccion1 = ({ formData, setFormData, siguienteSeccion }) => {
           <button
             type="button"
             className="btn btn-warning w-50"
-            onClick={siguienteSeccion}
+            onClick={() => {
+              if (!formData.tipoReserva) {
+                alert("Por favor, selecciona un tipo de reserva.");
+              } else {
+                siguienteSeccion();
+              }
+            }}
           >
             Siguiente
           </button>

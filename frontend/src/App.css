@@ -107,29 +107,30 @@ width: 200px;
 
 
 .custom-header {
-background-color: #6C757D;
-color: white  ; 
+  background-color: #6C757D;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-
-.custom-header {
-display: flex;
-align-items: center;
-justify-content: center;
-}
 
 .custom-form-check {
-display: flex;
-align-items: center;
+  display: flex !important;
+  align-items: center !important; /* Alinea el checkbox y el texto verticalmente */
+  gap: 0.2rem !important; /* Espaciado entre el checkbox y el texto */
 }
 
+.custom-form-check input[type="checkbox"] {
+  transform: translateY(1px) !important; /* Ajusta la posición vertical */
+}
 
 .custom-form-check .form-check-input {
-margin-right: 5px;
-margin-top: auto; 
-margin-bottom: auto; 
-border-color: #fff; 
-box-shadow: none; 
+  margin-right: 5px !important;
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+  border-color: #6C757D !important;
+  box-shadow: none !important;
 }
 
 .custom-form-check .form-check-input:checked {
@@ -272,4 +273,15 @@ background-color: #d1e7dd; /* Color de fondo al seleccionar una fila */
 
 .flex-grow-1 {
   flex-grow: 1;
+}
+
+.card-footer {
+  padding: 0.1rem; /* Reduce el padding interno */
+  font-size: 0.85rem; /* Ajusta el tamaño de la fuente */
+  margin: 0; /* Elimina márgenes adicionales */
+}
+
+
+.table td, .table th {
+  vertical-align: middle;
 }

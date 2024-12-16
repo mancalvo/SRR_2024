@@ -21,9 +21,7 @@ function Navbar() {
             <li className="nav-item">
               <Link className="nav-link" to="/nueva-reserva">Nueva Reserva</Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/aulas">Aulas Disponibles</Link>
-            </li>
+            
           </ul>
           <ul className="navbar-nav ms-auto"> 
             <li className="nav-item">

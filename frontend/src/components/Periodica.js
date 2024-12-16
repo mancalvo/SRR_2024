@@ -8,7 +8,7 @@ const Seccion2 = ({ volverSeccion, guardarReserva }) => {
   return (
     <div className="form-container encuadro mb-0 mt-2 " style={{ width: "auto", overflowX: "auto" }}>
       <div id="seccion2">
-        <h5 className="text-center">SELECCIONAR DIAS Y HORARIOS</h5>
+        <h5 className="text-center">RESERVA PERIODICA</h5>
 
         {/* Contenedor de las cartas */}
         <div

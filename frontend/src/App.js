@@ -41,8 +41,6 @@ function App() {
         <Route path="/bedel" element={<BedelPage />} />
 
         <Route path="/adminBedels" element={<CrudBedels />} />
-      
-        <Route path="/aulas" element={<AulaPage />} />
 
         <Route path="/nueva-reserva" element={<NuevaReservaPage />} />
 

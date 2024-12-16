@@ -74,7 +74,7 @@ const DisponibilidadAula = ({ isOpen, onClose, actualizarAulaSeleccionada }) => 
               onClick={handleConfirm}
               disabled={!aulaSeleccionada}
             >
-              Confirmar
+              Seleccionar
             </button>
           </div>
         </div>

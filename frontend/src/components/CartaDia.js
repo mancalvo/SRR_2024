@@ -4,12 +4,12 @@ import DisponibilidadAula from "./DisponibilidadAula";
 
 const CartaDia = ({ dia, id }) => {
   const [horaInicial, setHoraInicial] = useState("--:--");
+  const [horaFinal, setHoraFinal] = useState("--:--");
   const [opcionesHoraInicial, setOpcionesHoraInicial] = useState([]);
   const [opcionesHoraFinal, setOpcionesHoraFinal] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
-  const [isCardDisabled, setIsCardDisabled] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [aulaSeleccionada, setAulaSeleccionada] = useState(null); // Estado para el aula seleccionada
+  const [aulaSeleccionada, setAulaSeleccionada] = useState(null);
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
@@ -70,21 +70,30 @@ const CartaDia = ({ dia, id }) => {
     generarOpcionesFinales(seleccion);
   };
 
+  const handleHoraFinalChange = (e) => {
+    const seleccion = e.target.value;
+    setHoraFinal(seleccion);
+  };
+
   const handleCheckboxChange = (e) => {
     setIsChecked(e.target.checked);
-    setIsCardDisabled(!e.target.checked);
-    
-    // Si se deselecciona el checkbox, se borra el aula asignada
+
+    // Limpia los valores si se desactiva
     if (!e.target.checked) {
-      setAulaSeleccionada(null); // Borra el aula asignada
+      setHoraInicial("--:--");
+      setHoraFinal("--:--");
+      setOpcionesHoraFinal([]);
+      setAulaSeleccionada(null);
     }
   };
+
+  const isButtonDisabled = !isChecked || horaInicial === "--:--" || horaFinal === "--:--";
 
   return (
     <div className="col-auto mt-3">
       <div className="card text-center" id={`carta${id}`}>
-        <div className="card-header custom-header">
-          <div className="form-check custom-form-check">
+        <div className="card-header custom-header ">
+          <div className="form-check custom-form-check ">
             <input
               className="form-check-input"
               type="checkbox"
@@ -98,7 +107,7 @@ const CartaDia = ({ dia, id }) => {
           </div>
         </div>
         <div
-          className={`card-body ${isCardDisabled ? "disabled" : ""}`}
+          className={`card-body ${!isChecked ? "disabled" : ""}`}
           id={`cardBody${id}`}
         >
           <div className="d-flex align-items-center justify-content-center">
@@ -116,6 +125,8 @@ const CartaDia = ({ dia, id }) => {
                       id={`horaInicial${id}`}
                       className="form-select"
                       onChange={handleHoraInicialChange}
+                      value={horaInicial}
+                      disabled={!isChecked}
                     >
                       {opcionesHoraInicial.map((opcion) => (
                         <option key={opcion.value} value={opcion.value}>
@@ -133,7 +144,13 @@ const CartaDia = ({ dia, id }) => {
                     Hora Final
                   </label>
                   <div className="custom-select-container">
-                    <select id={`horaFinal${id}`} className="form-select">
+                    <select
+                      id={`horaFinal${id}`}
+                      className="form-select"
+                      onChange={handleHoraFinalChange}
+                      value={horaFinal}
+                      disabled={!isChecked || horaInicial === "--:--"}
+                    >
                       {opcionesHoraFinal.map((opcion) => (
                         <option key={opcion.value} value={opcion.value}>
                           {opcion.text}
@@ -148,15 +165,20 @@ const CartaDia = ({ dia, id }) => {
           <button
             className="btn btn-outline-secondary btn-sm mt-1"
             onClick={handleOpenModal}
+            disabled={isButtonDisabled}
           >
             Seleccionar Aula
           </button>
         </div>
         <div
-          className="card-footer text-body-secondary aula-asignada text-center d-flex align-items-center justify-content-center"
+          className="card-footer text-body-secondary aula-asignada text-center align-items-center justify-content-center mt-auto"
           id={`aula${id}`}
         >
-          {aulaSeleccionada ? <p>{aulaSeleccionada.nombre}</p> : <p></p>}
+          {aulaSeleccionada ? (
+            <p className="mb-0">{aulaSeleccionada.nombre}</p>
+          ) : (
+            <p className="mb-0"> </p>
+          )}
         </div>
 
         <DisponibilidadAula

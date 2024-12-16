@@ -1,28 +1,32 @@
 import React, { useState } from "react";
 import Seccion1 from "./Seccion1";
-import Seccion2 from "./Seccion2";
+import Periodica from "./Periodica";
+import Esporadica from "./Esporadica"; 
 import "../App.css";
 
 function NuevaReservaMain() {
   const [currentSection, setCurrentSection] = useState(1);
 
-  // Estado global para todas las secciones
   const [formData, setFormData] = useState({
     solicitante: "",
     correo: "",
     catedra: "",
     cantAlumnos: "",
-    tipoReserva: "",
+    tipoReserva: "", 
     tipoAula: "",
     dias: [],
   });
 
   const siguienteSeccion = () => {
-    setCurrentSection((prev) => prev + 1);
+    if (formData.tipoReserva === "4") {
+      setCurrentSection(2); // Sección 2 para Esporádica
+    } else {
+      setCurrentSection(3); // Sección 3 para Periódica
+    }
   };
 
   const volverSeccion = () => {
-    setCurrentSection((prev) => prev - 1);
+    setCurrentSection(1); // Vuelve siempre a la primera sección
   };
 
   const guardarReserva = () => {
@@ -38,7 +42,7 @@ function NuevaReservaMain() {
         </div>
       </div>
 
-      <div class="row">
+      <div className="row">
         <form
           id="formulario"
           onSubmit={(e) => {
@@ -53,12 +57,21 @@ function NuevaReservaMain() {
             />
           )}
 
-          {currentSection === 2 && (
-            <Seccion2
+          {currentSection === 3 && (
+            <Periodica
               formData={formData}
               setFormData={setFormData}
               volverSeccion={volverSeccion}
-              guardarReserva={guardarReserva}
+              
+            />
+          )}
+
+          {currentSection === 2 && (
+            <Esporadica
+              formData={formData}
+              setFormData={setFormData}
+              volverSeccion={volverSeccion}
+              
             />
           )}
         </form>
