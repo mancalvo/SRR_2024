@@ -29,10 +29,7 @@ function NuevaReservaMain() {
     setCurrentSection(1); // Vuelve siempre a la primera sección
   };
 
-  const guardarReserva = () => {
-    console.log("Reserva enviada:", formData);
-    alert("Reserva simulada en consola");
-  };
+  
 
   return (
     <div className="container">
