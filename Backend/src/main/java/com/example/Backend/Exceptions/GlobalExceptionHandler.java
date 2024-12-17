@@ -16,8 +16,8 @@ public class GlobalExceptionHandler {
 
 
 
-    @ExceptionHandler(ReservaDataException.class)
-    public ResponseEntity<ErrorResponse> handleReservaException(ReservaDataException ex) {
+    @ExceptionHandler(ReservaException.class)
+    public ResponseEntity<ErrorResponse> handleReservaException(ReservaException ex) {
         ErrorResponse error = new ErrorResponse(ex.getMessage(),HttpStatus.CONFLICT.value());
         return new ResponseEntity<>(error,HttpStatus.CONFLICT);
     }

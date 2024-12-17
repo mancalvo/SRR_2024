@@ -2,6 +2,7 @@ package com.example.Backend.DAO;
 
 import com.example.Backend.Entidades.Usuario;
 import com.example.Backend.Enum.Tipo_Turno;
+import com.example.Backend.Enum.Tipo_Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,4 +25,7 @@ public interface BedelDAO extends JpaRepository <Usuario,Integer> {
     List<Usuario> findByApellido(String apellido);
     List<Usuario> findByTipoTurno(Tipo_Turno tipoTurno);
     List<Usuario> findByApellidoAndTipoTurno(String apellido, Tipo_Turno tipoTurno);
+
+    Optional<Usuario> findByNombreUsuarioAndTipoUsuarioAndActivo(String nombreUsuario, Tipo_Usuario tipoUsuario, boolean activo);
+
 }
