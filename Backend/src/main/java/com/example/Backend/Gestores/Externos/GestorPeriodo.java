@@ -94,5 +94,33 @@ public class GestorPeriodo {
                 .orElse(null);
     }
 
+    /**
+     * Calcula la fecha de inicio para un periodo dado un tipo de periodo.
+     *
+     * @param tipoPeriodo Tipo_Periodo.
+     * @return Fecha de inicio del periodo o null si no se encuentra.
+     */
+    public LocalDate calcularFechaInicio(Tipo_Periodo tipoPeriodo) {
+        Periodo periodo = traerPeriodo(tipoPeriodo);
+        if (periodo != null) {
+            return periodo.getFechaInicio();
+        }
+        throw new IllegalArgumentException("No se encontró un periodo para el tipo especificado.");
+    }
+
+    /**
+     * Calcula la fecha final para un periodo dado un tipo de periodo.
+     *
+     * @param tipoPeriodo Tipo_Periodo.
+     * @return Fecha final del periodo o null si no se encuentra.
+     */
+    public LocalDate calcularFechaFinal(Tipo_Periodo tipoPeriodo) {
+        Periodo periodo = traerPeriodo(tipoPeriodo);
+        if (periodo != null) {
+            return periodo.getFechaFin();
+        }
+        throw new IllegalArgumentException("No se encontró un periodo para el tipo especificado.");
+    }
+
 
 }
