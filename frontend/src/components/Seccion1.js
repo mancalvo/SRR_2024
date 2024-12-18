@@ -156,5 +156,4 @@ const Seccion1 = ({ formData, setFormData, setDatosFormulario, siguienteSeccion 
     </div>
   );
 };
-
 export default Seccion1;

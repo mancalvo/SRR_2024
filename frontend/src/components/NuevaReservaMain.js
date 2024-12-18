@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Seccion1 from "./Seccion1";
 import Periodica from "./Periodica";
-import Esporadica from "./Esporadica"; 
+import Esporadica from "./Esporadica";
 import "../App.css";
 
 function NuevaReservaMain() {
@@ -12,9 +12,10 @@ function NuevaReservaMain() {
     correo: "",
     catedra: "",
     cantAlumnos: "",
-    tipoReserva: "", 
-    tipoAula: "",
-    dias: [],
+    tipoReserva: "",  // Aquí guardamos el texto, no el ID
+    tipoAula: "",     // "Multimedios", "Sin Recursos", "Informática"
+    periodo: null,    // Solo para reservas periódicas
+    detallesReserva: [], // Para esporádicas, el array de detalles con fecha, horarios
   });
 
   const siguienteSeccion = () => {
