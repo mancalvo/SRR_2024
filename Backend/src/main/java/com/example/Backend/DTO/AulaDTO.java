@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AulaDTO {
 
-    private String nombre; // Nombre del aula
+    private String nombre;
     private int capacidad;
     private String tipoAula;
 

@@ -46,8 +46,6 @@ public class GestorReserva {
     private GestorPeriodo gestorPeriodos;
 
 
-
-
     public Integer crearReserva(ReservaDTO reservaDTO) {
         mostrarDatos(reservaDTO);
         if (!validarDisponibilidadAula(reservaDTO.getDetalleReserva(), tipoPeriodo(reservaDTO.getPeriodo()))) {
@@ -74,15 +72,14 @@ public class GestorReserva {
                     diaPeriodica.setHoraFinal(detalle.getHorarioFinal());
                     Aula aula = obtenerAula(detalle.getAulaId(), reservaDTO.getTipoAula());
                     diaPeriodica.setAula(aula);
-                    diaPeriodica.setReserva(reservaPeriodica); // Asegúrate de vincular al reservaPeriodica actual
-                    reservaPeriodica.getDiasPeriodica().add(diaPeriodica); // Ahora no lanzará NullPointerException
+                    diaPeriodica.setReserva(reservaPeriodica); // Vinculamos al reservaPeriodica actual
+                    reservaPeriodica.getDiasPeriodica().add(diaPeriodica); // Agregamos el diaPeriodica
                 }
 
 
                 return reservaPeriodicaDAO.save(reservaPeriodica).getIdReservaPeriodica();
 
             case "ESPORADICA":
-                // Código para reserva esporádica
                 ReservaEsporadica reservaEsporadica = new ReservaEsporadica();
                 reservaEsporadica.setSolicitante(reservaDTO.getSolicitante());
                 reservaEsporadica.setCantidadAlumnos(reservaDTO.getCantidadAlumnos());
@@ -101,7 +98,7 @@ public class GestorReserva {
                     diaEsporadica.setHoraFinal(detalle.getHorarioFinal());
                     Aula aula = obtenerAula(detalle.getAulaId(), reservaDTO.getTipoAula());
                     diaEsporadica.setAula(aula);
-                    diaEsporadica.setReserva(reservaEsporadica); // Asegúrate de vincular al reservaEsporadica actual
+                    diaEsporadica.setReserva(reservaEsporadica); // Vinculamos al reservaEsporadica actual
                     reservaEsporadica.getDiasEsporadica().add(diaEsporadica);
                 }
 
@@ -302,7 +299,6 @@ public class GestorReserva {
 
 
     private void mostrarDatos(ReservaDTO reservaDTO) {
-        // Mostrar los datos principales de ReservaDTO
         System.out.println("Nombre Usuario: " + reservaDTO.getNombreUsuario());
         System.out.println("Solicitante: " + reservaDTO.getSolicitante());
         System.out.println("Correo: " + reservaDTO.getCorreo());
@@ -313,7 +309,6 @@ public class GestorReserva {
         System.out.println("Tipo de Aula: " + reservaDTO.getTipoAula());
         System.out.println("Cantidad de Alumnos: " + reservaDTO.getCantidadAlumnos());
 
-        // Mostrar los detalles de cada reserva en la lista detalleReserva
         if (reservaDTO.getDetalleReserva() != null && !reservaDTO.getDetalleReserva().isEmpty()) {
             System.out.println("Detalles de la Reserva:");
             for (DetalleReservaDTO detalle : reservaDTO.getDetalleReserva()) {

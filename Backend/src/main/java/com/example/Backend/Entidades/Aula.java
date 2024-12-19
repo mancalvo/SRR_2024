@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "aula") // Tabla base
+@Table(name = "aula")
 @Inheritance(strategy = InheritanceType.JOINED) // Estrategia de herencia para crear tablas separadas
 @Data
 @NoArgsConstructor

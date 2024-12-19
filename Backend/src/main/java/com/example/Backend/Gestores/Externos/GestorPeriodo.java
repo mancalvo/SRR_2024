@@ -25,11 +25,7 @@ public class GestorPeriodo {
         periodos.add(new Periodo(4, Tipo_Periodo.ESPORADICA, 2024, LocalDate.of(2024, 5, 20), LocalDate.of(2024, 5, 20)));
     }
 
-    /**
-     * Devuelve el periodo actual en función de la fecha actual.
-     *
-     * @return Periodo actual o null si no hay ninguno activo.
-     */
+
     public Periodo obtenerPeriodoActual() {
         // LocalDate hoy = LocalDate.now(); // Comentado para probar con una fecha específica
         LocalDate hoy = LocalDate.of(2024, 5, 20); // Fecha fija (20/05/2024)
@@ -41,52 +37,12 @@ public class GestorPeriodo {
     }
 
 
-    /**
-     * Devuelve todos los periodos disponibles.
-     *
-     * @return Lista de periodos.
-     */
+
     public List<Periodo> obtenerTodosLosPeriodos() {
         return periodos;
     }
 
-    /**
-     * Filtra y devuelve periodos de tipo general PERIODICA.
-     *
-     * @return Lista de periodos periódicos.
-     */
-    public List<Periodo> obtenerPeriodosPeriodicos() {
-        return periodos.stream()
-                .filter(periodo -> esPeriodoPeriodico(periodo.getTipo()))
-                .collect(Collectors.toList());
-    }
 
-    /**
-     * Filtra y devuelve periodos ESPORADICOS.
-     *
-     * @return Lista de periodos esporádicos.
-     */
-    public List<Periodo> obtenerPeriodosEsporadicos() {
-        return periodos.stream()
-                .filter(periodo -> periodo.getTipo() == Tipo_Periodo.ESPORADICA)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Determina si un Tipo_Periodo es PERIODICO.
-     */
-    private boolean esPeriodoPeriodico(Tipo_Periodo tipo) {
-        return tipo == Tipo_Periodo.PRIMER_CUATRIMESTRE
-                || tipo == Tipo_Periodo.SEGUNDO_CUATRIMESTRE
-                || tipo == Tipo_Periodo.ANUAL;
-    }
-
-    /**
-     * Obtiene un periodo específico dado un Tipo_Periodo.
-     *
-     * @param tipoPeriodo Tipo de periodo buscado.
-     * @return Periodo correspondiente o null si no existe.
-     */
     public Periodo traerPeriodo(Tipo_Periodo tipoPeriodo) {
         return periodos.stream()
                 .filter(periodo -> periodo.getTipo().equals(tipoPeriodo))
@@ -94,12 +50,6 @@ public class GestorPeriodo {
                 .orElse(null);
     }
 
-    /**
-     * Calcula la fecha de inicio para un periodo dado un tipo de periodo.
-     *
-     * @param tipoPeriodo Tipo_Periodo.
-     * @return Fecha de inicio del periodo o null si no se encuentra.
-     */
     public LocalDate calcularFechaInicio(Tipo_Periodo tipoPeriodo) {
         Periodo periodo = traerPeriodo(tipoPeriodo);
         if (periodo != null) {
@@ -108,12 +58,6 @@ public class GestorPeriodo {
         throw new IllegalArgumentException("No se encontró un periodo para el tipo especificado.");
     }
 
-    /**
-     * Calcula la fecha final para un periodo dado un tipo de periodo.
-     *
-     * @param tipoPeriodo Tipo_Periodo.
-     * @return Fecha final del periodo o null si no se encuentra.
-     */
     public LocalDate calcularFechaFinal(Tipo_Periodo tipoPeriodo) {
         Periodo periodo = traerPeriodo(tipoPeriodo);
         if (periodo != null) {

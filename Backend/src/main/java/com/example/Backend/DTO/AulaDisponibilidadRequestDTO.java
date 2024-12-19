@@ -21,8 +21,8 @@ public class AulaDisponibilidadRequestDTO {
     private LocalDate fecha; // Fecha de la reserva (solo esporádica)
     private String dia; // Día de la semana (solo periódica)
     @JsonFormat(pattern = "HH:mm")
-    private String horaInicio; // Hora de inicio (formato HH:mm)
+    private String horaInicio;
     @JsonFormat(pattern = "HH:mm")
-    private String horaFinal; // Hora de fin (formato HH:mm)
+    private String horaFinal;
 
 }

@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReservaSolapadaDTO {
-    private String docente; // Apellido y nombre del docente
-    private String curso;   // Nombre de la cátedra/seminario
-    private String email;   // Correo electrónico de contacto
+    private String docente;
+    private String curso;
+    private String email;
     private String horaInicio;
     private String horaFinal;
 }

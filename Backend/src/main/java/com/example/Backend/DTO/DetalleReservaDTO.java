@@ -14,15 +14,15 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DetalleReservaDTO {
-    private DiaSemana diaSemana; // Solo para reservas periódicas
+    private DiaSemana diaSemana;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate fecha; // Solo para reservas esporádicas
+    private LocalDate fecha;
 
     @JsonFormat(pattern = "HH:mm")
     private LocalTime horarioInicio;
 
     @JsonFormat(pattern = "HH:mm")
     private LocalTime horarioFinal;
-    private Integer aulaId; // Identificador del aula
+    private Integer aulaId;
 }

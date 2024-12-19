@@ -13,7 +13,6 @@ import java.util.List;
 
 @Repository
 public interface ReservaPeriodicaDAO extends JpaRepository<ReservaPeriodica, Integer> {
-    // List<ReservaPeriodica> findByDiasPeriodica_Aula_Numero(Integer aulaId);
 
     @Query("SELECT rp FROM ReservaPeriodica rp " +
             "JOIN rp.diasPeriodica dp " +

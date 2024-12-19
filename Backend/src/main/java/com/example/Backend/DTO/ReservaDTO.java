@@ -20,8 +20,8 @@ public class ReservaDTO {
     private String catedra;
     private LocalDate fechaRealizada;
     private String tipoReserva; // "Periódica" o "Esporádica"
-    private Tipo_Periodo periodo; // Puede ser null para reservas esporádicas
-    private Tipo_Aula tipoAula; // "Multimedios", "Sin Recursos" o "Informática"
+    private Tipo_Periodo periodo;
+    private Tipo_Aula tipoAula;
     private Integer cantidadAlumnos;
 
     private List<DetalleReservaDTO> detalleReserva;
