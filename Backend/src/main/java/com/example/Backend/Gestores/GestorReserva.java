@@ -49,12 +49,10 @@ public class GestorReserva {
 
 
     public Integer crearReserva(ReservaDTO reservaDTO) {
-        //mostrarDatos(reservaDTO);
-        if (!validarDisponibilidadAula(reservaDTO.getDetalleReserva(), reservaDTO.getPeriodo())) {
+        mostrarDatos(reservaDTO);
+        if (!validarDisponibilidadAula(reservaDTO.getDetalleReserva(), tipoPeriodo(reservaDTO.getPeriodo()))) {
             throw new ReservaException("Aulas no disponibles");
         }
-
-        System.out.println("Tipo de Reserva recibido: " + reservaDTO.getTipoReserva());
 
         switch (reservaDTO.getTipoReserva()) {
             case "PERIODICA":
@@ -116,7 +114,12 @@ public class GestorReserva {
     }
 
     // ======================================================================================================================
-
+    private Tipo_Periodo tipoPeriodo(Tipo_Periodo tipoPeriodo) {
+        if(tipoPeriodo == null){
+            return Tipo_Periodo.ESPORADICA;
+        }
+        return tipoPeriodo;
+    }
     public boolean validarDisponibilidadAula(List<DetalleReservaDTO> listaDetalleReserva, Tipo_Periodo tipoReserva) {
         for (DetalleReservaDTO detalle : listaDetalleReserva) {
 

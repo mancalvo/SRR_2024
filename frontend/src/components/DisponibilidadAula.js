@@ -15,8 +15,8 @@ const DisponibilidadAula = ({ isOpen, onClose, actualizarAulaSeleccionada }) => 
 
   const handleConfirm = () => {
     const aula = aulas.find((aula) => aula.id === aulaSeleccionada);
-    actualizarAulaSeleccionada(aula); // Llamamos al callback con el aula seleccionada
-    onClose(); // Cerramos el modal
+    actualizarAulaSeleccionada(aula); 
+    onClose();
   };
 
   if (!isOpen) return null;

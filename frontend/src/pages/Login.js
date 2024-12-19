@@ -23,13 +23,9 @@ function Login() {
       alert(response.data.mensaje);
   
       if (response.data.habilitado) {
-        // Guardar el tipo de usuario en el localStorage
         localStorage.setItem("tipoUsuario", response.data.tipoUsuario);
+        localStorage.setItem("nombreUsuario", response.data.nombreUsuario); 
   
-        // Guardar el nombre del usuario en el localStorage
-        localStorage.setItem("nombreUsuario", response.data.nombreUsuario); // <-- Aquí guardas el nombre de usuario
-  
-        // Navegar según el tipo de usuario
         if (response.data.tipoUsuario === "ADMINISTRADOR") {
           navigate("/admin");
         } else if (response.data.tipoUsuario === "BEDEL") {

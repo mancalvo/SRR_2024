@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import DisponibilidadAula from "./DisponibilidadAula"; // Importar el modal para seleccionar aula
+import DisponibilidadAula from "./DisponibilidadAula"; 
 
 function ReservaModal({ reserva, onGuardar, onCerrar }) {
   const [fecha, setFecha] = useState(reserva?.fecha || "");
@@ -8,7 +8,7 @@ function ReservaModal({ reserva, onGuardar, onCerrar }) {
   const [opcionesHoraInicial, setOpcionesHoraInicial] = useState([]);
   const [opcionesHoraFinal, setOpcionesHoraFinal] = useState([]);
   const [aulaSeleccionada, setAulaSeleccionada] = useState(null);
-  const [modalAulaAbierto, setModalAulaAbierto] = useState(false); // Estado para abrir/cerrar el modal de aulas
+  const [modalAulaAbierto, setModalAulaAbierto] = useState(false); 
 
   useEffect(() => {
     generarOpcionesIniciales();
@@ -67,7 +67,7 @@ function ReservaModal({ reserva, onGuardar, onCerrar }) {
   };
 
   const handleSeleccionarAula = () => {
-    setModalAulaAbierto(true); // Abre el modal de selección de aula
+    setModalAulaAbierto(true); 
   };
 
   const manejarGuardar = () => {

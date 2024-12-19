@@ -65,7 +65,7 @@ function Bedel() {
     texto
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, ""); // Elimina marcas diacríticas (acentos)
+      .replace(/[\u0300-\u036f]/g, "");  // Sacamos los acentos
   
   const bedelesFiltrados = listaBedeles.filter((bedel) => {
     const nombreCompleto = normalizarTexto(`${bedel.nombre} ${bedel.apellido}`);
@@ -79,7 +79,6 @@ function Bedel() {
   
   
 
-  // Calcular los índices de inicio y fin para la paginación
   const indiceInicio = (paginaActual - 1) * bedelesPorPagina;
   const indiceFin = indiceInicio + bedelesPorPagina;
   const bedelesPaginados = bedelesFiltrados.slice(indiceInicio, indiceFin);
@@ -168,7 +167,6 @@ function Bedel() {
             </table>
           </div>
 
-          {/* Cantidad de Bedel y Paginación */}
           <div className="d-flex justify-content-between">
             <span>Cantidad de Bedeles: {bedelesFiltrados.length}</span>
 

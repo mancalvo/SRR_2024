@@ -2,16 +2,11 @@ package com.example.Backend.Gestores;
 
 
 import com.example.Backend.DAO.*;
-import com.example.Backend.DTO.AulaDTO;
 import com.example.Backend.DTO.AulaDisponibilidadRequestDTO;
-import com.example.Backend.DTO.AulaDisponibilidadResponseDTO;
-import com.example.Backend.DTO.ReservaSolapadaDTO;
 import com.example.Backend.Entidades.*;
 import com.example.Backend.Enum.DiaSemana;
 import com.example.Backend.Enum.Tipo_Periodo;
-import com.example.Backend.Exceptions.ReservaException;
 import com.example.Backend.Gestores.Externos.GestorPeriodo;
-import com.example.Backend.Gestores.Externos.Periodo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

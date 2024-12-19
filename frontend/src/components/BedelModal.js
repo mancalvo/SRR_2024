@@ -63,8 +63,8 @@ const ModalBedel = ({ cerrar, bedel, actualizarBedeles }) => {
   
         cerrar();
       } else {
-        const errorData = await respuesta.json(); // Procesar la respuesta como JSON
-        alert(errorData.message || "Error al guardar el usuario"); // Mostrar solo el mensaje
+        const errorData = await respuesta.json(); 
+        alert(errorData.message || "Error al guardar el usuario"); 
       }
     } catch (error) {
       console.error("Error:", error);
@@ -200,7 +200,7 @@ const ModalBedel = ({ cerrar, bedel, actualizarBedeles }) => {
                 >
                   Cancelar
                 </button>
-                <button type="submit" className="btn btn-success">
+                <button type="submit" className="btn btn-warning">
                   {bedel ? "Actualizar" : "Guardar"} Bedel
                 </button>
               </div>

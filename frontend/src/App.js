@@ -9,7 +9,6 @@ import Login from "./pages/Login";
 import AdminPage from "./pages/AdminPage";
 import BedelPage from "./pages/BedelPage";
 import CrudBedels from "./pages/CrudBedels";
-import AulaPage from "./pages/AulaPage";
 import NuevaReservaPage from "./pages/NuevaReservaPage";
 import "./App.css";
 

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import ReservaModal from "./ReservaModal"; // Importar el modal
+import React, { useState, useEffect } from "react";
+import ReservaModal from "./ReservaModal";
 
-function Esporadica({ volverSeccion }) {
+function Esporadica({  setFormData, volverSeccion, enviarReserva }) {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [listaReservas, setListaReservas] = useState([]);
   const [reservaActual, setReservaActual] = useState(null);
@@ -17,22 +17,30 @@ function Esporadica({ volverSeccion }) {
   };
 
   const manejarAgregarReserva = (nuevaReserva) => {
+    console.log("ID AULA ESPORADICA.js: ", nuevaReserva.aulaSeleccionada.id);
+    const reservaConIdAula = {
+      ...nuevaReserva,
+      aulaId: nuevaReserva.aulaSeleccionada.id, 
+    };
+  
     if (reservaActual) {
       // Editar reserva existente
       setListaReservas((prevLista) =>
         prevLista.map((reserva) =>
-          reserva.id === reservaActual.id ? nuevaReserva : reserva
+          reserva.id === reservaActual.id ? reservaConIdAula : reserva
         )
       );
     } else {
       // Agregar nueva reserva
       setListaReservas((prevLista) => [
         ...prevLista,
-        { ...nuevaReserva, id: Date.now() }, // Asegúrate de que nuevaReserva tenga todos los campos
+        { ...reservaConIdAula, id: Date.now() },
       ]);
     }
+    console.log("Reserva con ID de aula:", reservaConIdAula);
     manejarCerrarModal();
   };
+  
 
   const manejarEliminarReserva = (id) => {
     if (window.confirm("¿Estás seguro de que deseas eliminar esta reserva?")) {
@@ -41,6 +49,30 @@ function Esporadica({ volverSeccion }) {
       );
     }
   };
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      detallesReserva: listaReservas.map((reserva) => ({
+        fecha: reserva.fecha,
+        horarioInicio: reserva.horaInicial, 
+        horarioFinal: reserva.horaFinal,   
+        aulaId: reserva.aulaId, 
+        aulaSeleccionada: reserva.aulaSeleccionada,
+      })),
+    }));
+    console.log("Detalles de la reserva actualizados:", listaReservas);
+  }, [listaReservas, setFormData]);
+  
+
+  const manejarGuardarReserva = () => {
+    if (listaReservas.length === 0) {
+      alert("Debes agregar al menos una reserva antes de guardar.");
+    } else {
+      enviarReserva();
+    }
+  };
+  
 
   return (
     <div className="container">
@@ -52,7 +84,6 @@ function Esporadica({ volverSeccion }) {
 
       <div className="row">
         <div className="col-6 d-flex justify-content-start align-items-center">
-          {/* Eliminar input de búsqueda */}
         </div>
         <div className="col-6">
           <div className="d-flex justify-content-end">
@@ -86,7 +117,14 @@ function Esporadica({ volverSeccion }) {
                     <td>{reserva.fecha}</td>
                     <td>{reserva.horaInicial}</td>
                     <td>{reserva.horaFinal}</td>
-                    <td>{reserva.aulaSeleccionada ? reserva.aulaSeleccionada.nombre : "No asignada"}</td>
+                    <td>
+                      {reserva.aulaSeleccionada
+                        ? typeof reserva.aulaSeleccionada === "object"
+                          ? reserva.aulaSeleccionada.nombre 
+                          : `Aula  ${reserva.aulaSeleccionada}` 
+                        : "No asignada"}
+                    </td>
+
                     <td className="text-center">
                       <button
                         className="btn btn-warning me-2"
@@ -109,7 +147,7 @@ function Esporadica({ volverSeccion }) {
         </div>
       </div>
 
-      {/* Mostrar la cantidad de reservas */}
+    
       <div className="d-flex justify-content-start mt-0 mb-3">
         <span>Cantidad de Reservas: {listaReservas.length}</span>
       </div>
@@ -122,7 +160,7 @@ function Esporadica({ volverSeccion }) {
         />
       )}
 
-      {/* Contenedor de los botones */}
+    
       <div className="mt-3 d-flex justify-content-center">
         <div className="col-8 d-flex justify-content-between">
           <button
@@ -137,6 +175,7 @@ function Esporadica({ volverSeccion }) {
             type="button"
             className="btn btn-warning w-50"
             aria-label="Guardar reserva"
+            onClick={manejarGuardarReserva}
           >
             Guardar Reserva
           </button>

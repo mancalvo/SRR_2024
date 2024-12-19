@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../App.css";
 import DisponibilidadAula from "./DisponibilidadAula";
 
-const CartaDia = ({ dia, id }) => {
+const CartaDia = ({ dia, id , agregarDia }) => {
   const [horaInicial, setHoraInicial] = useState("--:--");
   const [horaFinal, setHoraFinal] = useState("--:--");
   const [opcionesHoraInicial, setOpcionesHoraInicial] = useState([]);
@@ -16,7 +16,10 @@ const CartaDia = ({ dia, id }) => {
 
   const actualizarAulaSeleccionada = (aula) => {
     setAulaSeleccionada(aula);
+    agregarDia(dia, horaInicial, horaFinal, aula);
   };
+
+  
 
   useEffect(() => {
     generarOpcionesIniciales();
