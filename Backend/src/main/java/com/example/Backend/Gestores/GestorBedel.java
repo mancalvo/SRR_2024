@@ -164,7 +164,7 @@ public class GestorBedel {
         bedelDAO.save(usuario);
     }
 
-    public List<BedelDTO> buscarBedelesPorApellidoYTurno(String apellido, Tipo_Turno turno) {
+    public List<UsuarioDTO> buscarBedelesPorApellidoYTurno(String apellido, Tipo_Turno turno) {
         List<Usuario> bedeles;
 
         if (apellido != null && turno != null) {
@@ -178,12 +178,16 @@ public class GestorBedel {
         }
 
         return bedeles.stream()
-                .map(usuario -> new BedelDTO(
+                .map(usuario -> new UsuarioDTO(
                         usuario.getIdUsuario(),
-                        usuario.getNombreUsuario(),
                         usuario.getNombre(),
                         usuario.getApellido(),
-                        usuario.getTipoTurno()
+                        usuario.getNombreUsuario(),
+                        usuario.getContrasenia(),
+                        usuario.getContrasenia(),
+                        usuario.getTipoUsuario(),
+                        usuario.getTipoTurno(),
+                        usuario.getActivo()
                 ))
                 .collect(Collectors.toList());
     }
