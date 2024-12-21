@@ -1,4 +1,4 @@
-package com.example.Backend.Gestores.Externos;
+package com.example.Backend.Entidades;
 
 import com.example.Backend.Enum.Tipo_Periodo;
 import lombok.*;

@@ -27,6 +27,7 @@ public class DiaPeriodica {
     private LocalTime horaFinal;
 
     @Column(name = "dia_semana")
+    @Enumerated(EnumType.STRING)
     private DiaSemana diaSemana;
 
     @ManyToOne

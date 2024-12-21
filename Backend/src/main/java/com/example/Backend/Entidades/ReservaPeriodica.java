@@ -1,5 +1,6 @@
 package com.example.Backend.Entidades;
 
+import com.example.Backend.Enum.Tipo_Aula;
 import com.example.Backend.Enum.Tipo_Periodo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,23 +23,30 @@ public class ReservaPeriodica {
     @Column(name = "id_reservaPeriodica")
     private Integer idReservaPeriodica;
 
-    @Column(name = "cantidad_alumnos")
-    private Integer cantidadAlumnos;
-
     @Column(name = "solicitante")
     private String solicitante;
-
-    @Column(name = "catedra")
-    private String catedra;
-
-    @Column(name = "fecha")
-    private LocalDate fecha;
 
     @Column(name = "correo")
     private String correo;
 
-    @Column(name = "periodo")
-    private Tipo_Periodo periodo;
+    @Column(name = "catedra")
+    private String catedra;
+
+    @Column(name = "cantidad_alumnos")
+    private Integer cantidadAlumnos;
+
+    @Column(name = "fecha")
+    private LocalDate fecha;
+
+    @Column(name = "tipo_periodo")
+    @Enumerated(EnumType.STRING)
+    private Tipo_Periodo tipoPeriodo;
+
+    @Transient  // No se mapea con la BBDD
+    private Tipo_Aula tipoAula;
+
+    @Transient // No se mapea con la BBDD
+    private Periodo periodo;
 
     @ManyToOne
     @JoinColumn(name = "id_bedel")

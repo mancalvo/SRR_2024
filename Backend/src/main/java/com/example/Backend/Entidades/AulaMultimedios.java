@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AulaMultimedios extends Aula {
+
     @Column(name = "ventilador")
     private Boolean ventilador;
 

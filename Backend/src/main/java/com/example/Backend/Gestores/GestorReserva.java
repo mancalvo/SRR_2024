@@ -4,20 +4,14 @@ import com.example.Backend.DAO.*;
 import com.example.Backend.DTO.DetalleReservaDTO;
 import com.example.Backend.DTO.ReservaDTO;
 import com.example.Backend.Entidades.*;
-import com.example.Backend.Enum.DiaSemana;
 import com.example.Backend.Enum.Tipo_Aula;
 import com.example.Backend.Enum.Tipo_Periodo;
 import com.example.Backend.Enum.Tipo_Usuario;
 import com.example.Backend.Exceptions.ReservaException;
 import com.example.Backend.Gestores.Externos.GestorPeriodo;
-import com.example.Backend.Gestores.Externos.Periodo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,8 +54,8 @@ public class GestorReserva {
                 reservaPeriodica.setCatedra(reservaDTO.getCatedra());
                 reservaPeriodica.setFecha(reservaDTO.getFechaRealizada());
                 reservaPeriodica.setCorreo(reservaDTO.getCorreo());
-                reservaPeriodica.setPeriodo(reservaDTO.getPeriodo());
-
+                reservaPeriodica.setTipoAula(reservaDTO.getTipoAula());
+                reservaPeriodica.setTipoPeriodo(reservaDTO.getPeriodo());
                 Usuario bedel = buscarBedelPorNombreUsuario(reservaDTO.getNombreUsuario());
                 reservaPeriodica.setBedel(bedel);
 
@@ -86,6 +80,7 @@ public class GestorReserva {
                 reservaEsporadica.setCatedra(reservaDTO.getCatedra());
                 reservaEsporadica.setFecha(reservaDTO.getFechaRealizada());
                 reservaEsporadica.setCorreo(reservaDTO.getCorreo());
+                reservaEsporadica.setTipoAula(reservaDTO.getTipoAula());
 
                 Usuario bedel1 = buscarBedelPorNombreUsuario(reservaDTO.getNombreUsuario());
                 reservaEsporadica.setBedel(bedel1);
@@ -117,6 +112,7 @@ public class GestorReserva {
         return tipoPeriodo;
     }
     public boolean validarDisponibilidadAula(List<DetalleReservaDTO> listaDetalleReserva, Tipo_Periodo tipoReserva) {
+        /*
         for (DetalleReservaDTO detalle : listaDetalleReserva) {
 
             switch (tipoReserva) {
@@ -139,9 +135,11 @@ public class GestorReserva {
                     throw new IllegalArgumentException("Tipo de reserva no válido: " + tipoReserva);
             }
         }
+
+         */
         return true;
     }
-
+    /*
     private boolean validarDisponibilidadEsporadica(DetalleReservaDTO detalle) {
         // Validar si existe una reserva esporádica en la fecha y aula
         if (reservaEsporadicaDAO.existsByDiasEsporadica_FechaAndDiasEsporadica_Aula_Numero(
@@ -204,6 +202,9 @@ public class GestorReserva {
                         dia.getDiaSemana().equals(detalle.getFecha().getDayOfWeek()) &&
                                 horaSeSuperpone(dia.getHoraInicio(), dia.getHoraFinal(), detalle.getHorarioInicio(), detalle.getHorarioFinal())
                 );
+
+
+        return true;
     }
 
 
@@ -257,7 +258,7 @@ public class GestorReserva {
         return !(fin1.isBefore(inicio2) || inicio1.isAfter(fin2));
     }
 
-
+    */
     //========================================================================================================================
 
 

@@ -16,16 +16,22 @@ public abstract class Aula {
     @Column(name = "numero")
     private Integer numero;
 
-    @Column(name = "aire_acondicionado")
-    private Boolean aireAcondicionado;
-
-    @Column(name = "pizarron")
-    private Boolean pizarron;
+    @Column(name = "piso")
+    private Integer piso;
 
     @Column(name = "capacidad")
     private Integer capacidad;
 
-    @Column(name = "piso")
-    private Integer piso;
+    @Column(name = "pizarron")
+    private Boolean pizarron;
+
+    @Column(name = "aire_acondicionado")
+    private Boolean aireAcondicionado;
+
+
+
+
+
+
 }
 

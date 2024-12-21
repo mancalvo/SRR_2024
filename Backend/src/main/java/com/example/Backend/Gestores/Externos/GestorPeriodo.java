@@ -1,5 +1,6 @@
 package com.example.Backend.Gestores.Externos;
 
+import com.example.Backend.Entidades.Periodo;
 import com.example.Backend.Enum.Tipo_Periodo;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
@@ -7,7 +8,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GestorPeriodo {
