@@ -53,5 +53,5 @@ public class ReservaPeriodica {
     private Usuario bedel;
 
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<DiaPeriodica> diasPeriodica  = new ArrayList<>();;
+    private List<DiaPeriodica> diasPeriodica  = new ArrayList<>();
 }

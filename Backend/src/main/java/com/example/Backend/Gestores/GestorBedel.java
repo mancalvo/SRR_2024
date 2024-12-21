@@ -144,6 +144,7 @@ public class GestorBedel {
             throw new BedelException("No se encontro el usuario que se quiere modificar");
         }
 
+        validarUsuario(usuarioDTO);
 
         Usuario usuario = usuarioOpt.get();
 

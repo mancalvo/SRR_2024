@@ -28,5 +28,6 @@ public interface ReservaPeriodicaDAO extends JpaRepository<ReservaPeriodica, Int
                                                 @Param("fechaInicio") LocalDate fechaInicio,
                                                 @Param("fechaFinal") LocalDate fechaFinal);
 
+
 }
 

@@ -17,5 +17,7 @@ public interface ReservaEsporadicaDAO extends JpaRepository<ReservaEsporadica, I
     @Query("SELECT re FROM ReservaEsporadica re WHERE re.fecha = :fecha")
     List<DiaEsporadica> findByFecha(@Param("fecha") LocalDate fecha);
 
+    @Query("SELECT de FROM DiaEsporadica de WHERE de.fecha = :fecha AND de.aula.numero IN :aulaIds")
+    List<DiaEsporadica> findDiaEsporadicaByFechaAndAulaIds(@Param("fecha") LocalDate fecha, @Param("aulaIds") List<Integer> aulaIds);
 }
 

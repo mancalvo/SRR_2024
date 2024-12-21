@@ -58,7 +58,7 @@ public class GestorAula {
         // Conjunto de aulas ocupadas
         Set<Aula> aulasOcupadas = new HashSet<>();
 
-
+            // Dejamos aca
         if ("ESPORADICA".equalsIgnoreCase(requestDTO.getTipoReserva())) {
             manejarReservaEsporadica(requestDTO, aulasOcupadas);
         } else if ("PERIODICA".equalsIgnoreCase(requestDTO.getTipoReserva())) {
@@ -79,6 +79,7 @@ public class GestorAula {
             throw new IllegalArgumentException("Para una reserva ESPORÁDICA, fecha, horaInicio y horaFinal son obligatorios.");
         }
 
+        List<Periodo> listaPeriodos = gestorPeriodo.obtenerPeriodosPorFecha(requestDTO.getFecha());
 
         LocalTime horaInicio = LocalTime.parse(requestDTO.getHoraInicio());
         LocalTime horaFinal = LocalTime.parse(requestDTO.getHoraFinal());
