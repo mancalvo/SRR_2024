@@ -132,15 +132,18 @@ public class GestorBedel {
 
 
     public void actualizarBedel(Integer id, UsuarioDTO usuarioDTO) {
+
+        if (!validarPoliticasContrasenia(usuarioDTO.getContrasenia())) {
+            throw new BedelException("Políticas de contraseña inválidas");
+        }
+
+
         Optional<Usuario> usuarioOpt = bedelDAO.buscarBedelPorId(id);
 
         if (usuarioOpt.isEmpty()) {
             throw new BedelException("No se encontro el usuario que se quiere modificar");
         }
 
-        if (!validarPoliticasContrasenia(usuarioDTO.getContrasenia())) {
-            throw new BedelException("Políticas de contraseña inválidas");
-        }
 
         Usuario usuario = usuarioOpt.get();
 

@@ -2,32 +2,57 @@ import React, { useState, useEffect } from "react";
 import "../App.css";
 
 
-const fetchSolicitantes = async () => [
-  { id: "1", nombre: "Sanchez Dardo" },
-  { id: "2", nombre: "Benjamin Pozzi" },
-  { id: "3", nombre: "Ignacio Ramirez" },
-  { id: "4", nombre: "Manuel Calvo" },
-];
+const fetchSolicitantes = async () => {
+  try {
+    const response = await fetch("http://localhost:8080/sistema-externo/docentes"); 
+    if (!response.ok) {
+      throw new Error("Error al obtener los solicitantes");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error al obtener los solicitantes:", error);
+    return [];
+  }
+};
 
-const fetchCatedras = async () => [
-  { id: "1", nombre: "Diseño de Sistemas" },
-  { id: "2", nombre: "Base de Datos" },
-  { id: "3", nombre: "Física II" },
-  { id: "4", nombre: "Desarrollo de Software" },
-];
+const fetchCatedras = async () => {
+  try {
+    const response = await fetch("http://localhost:8080/sistema-externo/catedras");
+    if (!response.ok) {
+      throw new Error("Error al obtener las cátedras");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error al obtener las cátedras:", error);
+    return [];
+  }
+};
 
-const fetchTiposReserva = async () => [
-  { id: "1", nombre: "1er Cuatrimestre" },
-  { id: "2", nombre: "2do Cuatrimestre" },
-  { id: "3", nombre: "Anual" },
-  { id: "4", nombre: "Esporadica" },
-];
+const fetchTiposReserva = async () => {
+  try {
+    const response = await fetch("http://localhost:8080/sistema-externo/tipos-reserva");
+    if (!response.ok) {
+      throw new Error("Error al obtener los tipos de reserva");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error al obtener los tipos de reserva:", error);
+    return [];
+  }
+};
 
-const fetchTiposAula = async () => [
-  { id: "1", nombre: "Aula Multimedios" },
-  { id: "2", nombre: "Aula Informática" },
-  { id: "3", nombre: "Aula sin recursos" },
-];
+const fetchTiposAula = async () => {
+  try {
+    const response = await fetch("http://localhost:8080/sistema-externo/tipos-aula");
+    if (!response.ok) {
+      throw new Error("Error al obtener los tipos de aula");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error al obtener los tipos de aula:", error);
+    return [];
+  }
+};
 
 const validarCampos = (formData) => {
   const camposRequeridos = [
@@ -57,18 +82,23 @@ const Seccion1 = ({ formData, setFormData, setDatosFormulario, siguienteSeccion 
   
   useEffect(() => {
     const fetchData = async () => {
-      const solicitantesData = await fetchSolicitantes();
-      const catedrasData = await fetchCatedras();
-      const tiposReservaData = await fetchTiposReserva();
-      const tiposAulaData = await fetchTiposAula();
-
-      setSolicitantes(solicitantesData);
-      setCatedras(catedrasData);
-      setTiposReserva(tiposReservaData);
-      setTiposAula(tiposAulaData);
+      try {
+        const solicitantesData = await fetchSolicitantes();
+        const catedrasData = await fetchCatedras();
+        const tiposReservaData = await fetchTiposReserva();
+        const tiposAulaData = await fetchTiposAula();
+  
+        setSolicitantes(solicitantesData);
+        setCatedras(catedrasData);
+        setTiposReserva(tiposReservaData);
+        setTiposAula(tiposAulaData);
+      } catch (error) {
+        console.error("Error al cargar los datos iniciales:", error);
+      }
     };
     fetchData();
   }, []);
+  
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));

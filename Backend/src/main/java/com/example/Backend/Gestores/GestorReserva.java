@@ -47,7 +47,7 @@ public class GestorReserva {
 
 
     public Integer crearReserva(ReservaDTO reservaDTO) {
-        mostrarDatos(reservaDTO);
+        // mostrarDatos(reservaDTO);
         if (!validarDisponibilidadAula(reservaDTO.getDetalleReserva(), tipoPeriodo(reservaDTO.getPeriodo()))) {
             throw new ReservaException("Aulas no disponibles");
         }
@@ -103,7 +103,6 @@ public class GestorReserva {
                 }
 
                 return reservaEsporadicaDAO.save(reservaEsporadica).getIdReservaEsporadica();
-
             default:
                 System.out.println("No es PERIODICA ni ESPORADICA");
                 throw new ReservaException("Error al guardar la reserva");
