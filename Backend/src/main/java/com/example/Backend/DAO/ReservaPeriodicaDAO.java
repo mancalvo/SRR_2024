@@ -22,11 +22,11 @@ public interface ReservaPeriodicaDAO extends JpaRepository<ReservaPeriodica, Int
     @Query("SELECT dp FROM ReservaPeriodica rp " +
             "JOIN rp.diasPeriodica dp " +
             "WHERE dp.diaSemana = :diaSemana " +
-            "AND rp.fecha >= :fechaInicio " +
-            "AND rp.fecha <= :fechaFinal")
-    List<DiaPeriodica> findByDiaSemanaAndFechas(@Param("diaSemana") DiaSemana diaSemana,
-                                                @Param("fechaInicio") LocalDate fechaInicio,
-                                                @Param("fechaFinal") LocalDate fechaFinal);
+            "AND rp.periodoId IN :periodos " +
+            "AND dp.aula.numero IN :aulaIds")
+    List<DiaPeriodica> findByDiaSemanaAndPeriodosAndAulaIds(@Param("diaSemana") DiaSemana diaSemana,
+                                                            @Param("periodos") List<Integer> periodos,
+                                                            @Param("aulaIds") List<Integer> aulaIds);
 
 
 }

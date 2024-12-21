@@ -57,9 +57,10 @@ public class GestorReserva {
                 reservaPeriodica.setCatedra(reservaDTO.getCatedra());
                 reservaPeriodica.setFecha(reservaDTO.getFechaRealizada());
                 reservaPeriodica.setCorreo(reservaDTO.getCorreo());
+
                 reservaPeriodica.setTipoAula(reservaDTO.getTipoAula());
-                Periodo periodo = gestorPeriodos.traerPeriodo(reservaDTO.getPeriodo());
-                reservaPeriodica.setTipoPeriodo(periodo.getTipo_periodo());
+                reservaPeriodica.setPeriodoId(gestorPeriodos.obtenerPeriodoMasProximoPorTipo(reservaDTO.getPeriodo()));
+
                 Usuario bedel = buscarBedelPorNombreUsuario(reservaDTO.getNombreUsuario());
                 reservaPeriodica.setBedel(bedel);
 

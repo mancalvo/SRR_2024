@@ -37,16 +37,16 @@ public class ReservaPeriodica {
 
     @Column(name = "fecha")
     private LocalDate fecha;
-
+    /*
     @Column(name = "tipo_periodo")
     @Enumerated(EnumType.STRING)
     private Tipo_Periodo tipoPeriodo;
-
+    */
     @Transient  // No se mapea con la BBDD
     private Tipo_Aula tipoAula;
 
-    @Transient // No se mapea con la BBDD
-    private Periodo periodo;
+    @Column(name = "periodo")
+    private Integer periodoId;
 
     @ManyToOne
     @JoinColumn(name = "id_bedel")
