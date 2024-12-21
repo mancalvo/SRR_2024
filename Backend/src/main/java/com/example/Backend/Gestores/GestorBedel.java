@@ -100,14 +100,13 @@ public class GestorBedel {
 
         // Convertimos el Usuario a BedelDTO
 
-
         usuariodto.setIdUsuario(usuarioBBDD.get().getIdUsuario());
         usuariodto.setNombre(usuarioBBDD.get().getNombre());
         usuariodto.setApellido(usuarioBBDD.get().getApellido());
         usuariodto.setNombreUsuario(usuarioBBDD.get().getNombreUsuario());
+        usuariodto.setTipoTurno(usuarioBBDD.get().getTipoTurno());
         usuariodto.setContrasenia(usuarioBBDD.get().getContrasenia());
         usuariodto.setTipoUsuario(usuarioBBDD.get().getTipoUsuario());
-        usuariodto.setTipoTurno(usuarioBBDD.get().getTipoTurno());
         usuariodto.setActivo(usuarioBBDD.get().getActivo());
 
         return usuariodto;
@@ -115,15 +114,18 @@ public class GestorBedel {
 
     }
 
-    public List<BedelDTO> obtenerTodosLosBedels() {
+    public List<UsuarioDTO> obtenerTodosLosBedels() {
         List<Usuario> bedels = bedelDAO.buscarTodosLosBedels();
         return bedels.stream().map(usuario -> {
-            BedelDTO dto = new BedelDTO();
+            UsuarioDTO dto = new UsuarioDTO();
             dto.setIdUsuario(usuario.getIdUsuario());
             dto.setNombreUsuario(usuario.getNombreUsuario());
             dto.setNombre(usuario.getNombre());
             dto.setApellido(usuario.getApellido());
             dto.setTipoTurno(usuario.getTipoTurno());
+            dto.setContrasenia(usuario.getContrasenia());
+            dto.setTipoUsuario(usuario.getTipoUsuario());
+            dto.setActivo(usuario.getActivo());
             return dto;
         }).collect(Collectors.toList());
     }
@@ -131,8 +133,13 @@ public class GestorBedel {
 
     public void actualizarBedel(Integer id, UsuarioDTO usuarioDTO) {
         Optional<Usuario> usuarioOpt = bedelDAO.buscarBedelPorId(id);
+
         if (usuarioOpt.isEmpty()) {
-            throw new BedelException("No se encontro el usuario que se quiere modificar"); // No se encontró el usuario
+            throw new BedelException("No se encontro el usuario que se quiere modificar");
+        }
+
+        if (!validarPoliticasContrasenia(usuarioDTO.getContrasenia())) {
+            throw new BedelException("Políticas de contraseña inválidas");
         }
 
         Usuario usuario = usuarioOpt.get();
@@ -163,15 +170,14 @@ public class GestorBedel {
         if (apellido != null && turno != null) {
             bedeles = bedelDAO.findByApellidoAndTipoTurno(apellido, turno);
         } else if (apellido != null) {
-            bedeles = bedelDAO.findByApellido(apellido);
+            bedeles = bedelDAO.findByApellidoActivo(apellido);
         } else if (turno != null) {
-            bedeles = bedelDAO.findByTipoTurno(turno);
+            bedeles = bedelDAO.findByTipoTurnoActivo(turno);
         } else {
-            bedeles = bedelDAO.findAll();
+            throw new BedelException("Debe proporcionar al menos un filtro (apellido o turno)");
         }
 
         return bedeles.stream()
-                .filter(usuario -> usuario.getTipoTurno() != null)
                 .map(usuario -> new BedelDTO(
                         usuario.getIdUsuario(),
                         usuario.getNombreUsuario(),
@@ -180,8 +186,6 @@ public class GestorBedel {
                         usuario.getTipoTurno()
                 ))
                 .collect(Collectors.toList());
-
-
     }
 }
 

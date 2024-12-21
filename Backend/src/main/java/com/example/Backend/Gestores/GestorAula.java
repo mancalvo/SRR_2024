@@ -35,30 +35,30 @@ public class GestorAula {
     private GestorPeriodo gestorPeriodo;
 
     public List<Aula> buscarAulasDisponibles(AulaDisponibilidadRequestDTO requestDTO) {
-        // Lista para almacenar las aulas disponibles
+
         List<Aula> aulasDisponibles = new ArrayList<>();
 
-        // Buscar aulas según el tipo
+
         if ("INFORMATICA".equalsIgnoreCase(requestDTO.getTipoAula())) {
-            // Buscar Aulas de Informática
+
             List<AulaInformatica> aulasInformatica = aulaInformaticaDAO.findByCapacidad(requestDTO.getCapacidad());
             aulasDisponibles.addAll(aulasInformatica);
         } else if ("MULTIMEDIOS".equalsIgnoreCase(requestDTO.getTipoAula())) {
-            // Buscar Aulas Multimedios
+
             List<AulaMultimedios> aulasMultimedios = aulaMultimediosDAO.findByCapacidad(requestDTO.getCapacidad());
             aulasDisponibles.addAll(aulasMultimedios);
         } else if ("SINRECURSOS".equalsIgnoreCase(requestDTO.getTipoAula())) {
-            // Buscar Aulas sin recursos
+
             List<AulaSinRecursos> aulasSinRecursos = aulaSinRecursosDAO.findByCapacidad(requestDTO.getCapacidad());
             aulasDisponibles.addAll(aulasSinRecursos);
         } else {
             throw new IllegalArgumentException("El tipo de aula debe ser 'INFORMATICA', 'MULTIMEDIOS' o 'SINRECURSOS'.");
         }
 
-        // Crear un conjunto de aulas ocupadas
+        // Conjunto de aulas ocupadas
         Set<Aula> aulasOcupadas = new HashSet<>();
 
-        // Verificar el tipo de reserva y manejar según corresponda
+
         if ("ESPORADICA".equalsIgnoreCase(requestDTO.getTipoReserva())) {
             manejarReservaEsporadica(requestDTO, aulasOcupadas);
         } else if ("PERIODICA".equalsIgnoreCase(requestDTO.getTipoReserva())) {
@@ -67,7 +67,7 @@ public class GestorAula {
             throw new IllegalArgumentException("El tipo de reserva debe ser 'ESPORADICA' o 'PERIODICA'.");
         }
 
-        // Filtrar las aulas disponibles (aquellas que no están ocupadas)
+        // Filtramos las aulas disponibles (que no están ocupadas)
         return aulasDisponibles.stream()
                 .filter(aula -> !aulasOcupadas.contains(aula))
                 .collect(Collectors.toList());
@@ -82,7 +82,7 @@ public class GestorAula {
 
         LocalTime horaInicio = LocalTime.parse(requestDTO.getHoraInicio());
         LocalTime horaFinal = LocalTime.parse(requestDTO.getHoraFinal());
-        // Obtener todas las reservas esporádicas que coinciden con la fecha
+        // Obtenemos todas las reservas esporádicas que coinciden con la fecha
         List<DiaEsporadica> diasEsporadicos = reservaEsporadicaDAO.findByFecha(requestDTO.getFecha());
         for (DiaEsporadica dia : diasEsporadicos) {
             if (hayConflictoHorario(horaInicio, horaFinal, dia.getHoraInicio(), dia.getHoraFinal())) {
@@ -101,11 +101,11 @@ public class GestorAula {
         DiaSemana diaSemana = DiaSemana.valueOf(requestDTO.getDia().toUpperCase());
         Tipo_Periodo tipoPeriodo = Tipo_Periodo.valueOf(requestDTO.getTipoPeriodo().toUpperCase());
 
-        // Obtener el rango de fechas del periodo
+        // Obtenemos el rango de fechas del periodo
         LocalDate fechaInicio = gestorPeriodo.calcularFechaInicio(tipoPeriodo);
         LocalDate fechaFinal = gestorPeriodo.calcularFechaFinal(tipoPeriodo);
 
-        // Obtener todas las reservas periódicas que coinciden con el periodo y el día
+        // Obtenemos todas las reservas periódicas que coinciden con el periodo y el día
         List<DiaPeriodica> diasPeriodicos = reservaPeriodicaDAO.findByDiaSemanaAndFechas(diaSemana, fechaInicio, fechaFinal);
         for (DiaPeriodica dia : diasPeriodicos) {
             if (hayConflictoHorario(horaInicio, horaFinal, dia.getHoraInicio(), dia.getHoraFinal())) {

@@ -6,21 +6,45 @@ function Bedel() {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [listaBedeles, setListaBedeles] = useState([]);
   const [editarBedel, setEditarBedel] = useState(null);
-  const [busqueda, setBusqueda] = useState("");
+  const [busquedaApellido, setBusquedaApellido] = useState("");
+  const [busquedaTurno, setBusquedaTurno] = useState("");
   const [paginaActual, setPaginaActual] = useState(1);
   const [bedelesPorPagina] = useState(5);
-  
+
   const obtenerBedeles = async () => {
     try {
-      const respuesta = await axios.get(
-        "http://localhost:8080/usuarios/bedels"
-      );
+      const respuesta = await axios.get("http://localhost:8080/usuarios/bedels");
       setListaBedeles(respuesta.data);
     } catch (error) {
       console.error("Error:", error);
       alert("Error al cargar bedeles.");
     }
   };
+
+  const buscarBedeles = async () => {
+    try {
+      // Si ambos campos están vacíos, cargar todos los bedeles
+      if (!busquedaApellido.trim() && !busquedaTurno.trim()) {
+        obtenerBedeles();
+        return;
+      }
+  
+      // Crear los parámetros de búsqueda
+      const params = {};
+      if (busquedaApellido) params.apellido = busquedaApellido;
+      if (busquedaTurno) params.tipoTurno = busquedaTurno;
+  
+      // Realizar la búsqueda
+      const respuesta = await axios.get("http://localhost:8080/usuarios/bedels/AYT", {
+        params,
+      });
+      setListaBedeles(respuesta.data);
+    } catch (error) {
+      console.error("Error al buscar bedeles:", error);
+      alert("Error al realizar la búsqueda.");
+    }
+  };
+  
 
   useEffect(() => {
     obtenerBedeles();
@@ -38,20 +62,19 @@ function Bedel() {
   };
 
   const manejarEliminarBedel = async (idUsuario, nombre, apellido) => {
-    const confirmacion = window.confirm(`¿Estás seguro de que deseas borrar el bedel ${nombre} ${apellido}?`);
-    
-    if (!confirmacion) {
-      // Si el usuario cancela, no hacemos nada
-      return;
-    }
-  
+    const confirmacion = window.confirm(
+      `¿Estás seguro de que deseas borrar el bedel ${nombre} ${apellido}?`
+    );
+
+    if (!confirmacion) return;
+
     try {
       const respuesta = await axios.delete(
         `http://localhost:8080/usuarios/bedel/${idUsuario}`
       );
-  
+
       alert(respuesta.data);
-  
+
       setListaBedeles((prevLista) =>
         prevLista.filter((bedel) => bedel.idUsuario !== idUsuario)
       );
@@ -61,51 +84,40 @@ function Bedel() {
     }
   };
 
-  const normalizarTexto = (texto) =>
-    texto
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");  // Sacamos los acentos
-  
-  const bedelesFiltrados = listaBedeles.filter((bedel) => {
-    const nombreCompleto = normalizarTexto(`${bedel.nombre} ${bedel.apellido}`);
-    const turno = normalizarTexto(bedel.tipoTurno);
-    const busquedaNormalizada = normalizarTexto(busqueda);
-    return (
-      nombreCompleto.includes(busquedaNormalizada) ||
-      turno.includes(busquedaNormalizada)
-    );
-  });
-  
-  
-
   const indiceInicio = (paginaActual - 1) * bedelesPorPagina;
   const indiceFin = indiceInicio + bedelesPorPagina;
-  const bedelesPaginados = bedelesFiltrados.slice(indiceInicio, indiceFin);
+  const bedelesPaginados = listaBedeles.slice(indiceInicio, indiceFin);
 
-  const totalPaginas = Math.ceil(bedelesFiltrados.length / bedelesPorPagina);
+  const totalPaginas = Math.ceil(listaBedeles.length / bedelesPorPagina);
 
   return (
     <div className="container">
       <div className="row mt-4 justify-content-center">
-        <div className="col-6 text-center">
-          <h2>ADMINISTRACION DE BEDEL</h2>
+        <div className="col-6 text-center mb-3">
+          <h2>ADMINISTRACION DE BEDELES</h2>
         </div>
       </div>
 
       <div className="row">
         <div className="col-6 d-flex justify-content-start align-items-center">
           <input
-            className="form-control w-50 me-2 w-auto"
+            className="form-control w-50 me-2"
             type="text"
-            placeholder="Buscar"
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
+            placeholder="Buscar por Apellido"
+            value={busquedaApellido}
+            onChange={(e) => setBusquedaApellido(e.target.value)}
+          />
+          <input
+            className="form-control w-50 me-2"
+            type="text"
+            placeholder="Buscar por Turno"
+            value={busquedaTurno}
+            onChange={(e) => setBusquedaTurno(e.target.value.toUpperCase())}
           />
           <button
             type="button"
             className="btn btn-outline-dark ms-2"
-            id="btnBuscar"
+            onClick={buscarBedeles}
           >
             Buscar
           </button>
@@ -130,7 +142,7 @@ function Bedel() {
             <table className="table table-hover table-bordered">
               <thead>
                 <tr className="table-dark text-center align-middle">
-                  <th>Nombre Y Apellido</th>
+                  <th>Nombre y Apellido</th>
                   <th>Turno</th>
                   <th>Nombre de Usuario</th>
                   <th style={{ width: "210px" }}>Acciones</th>
@@ -155,7 +167,13 @@ function Bedel() {
                         <button
                           type="button"
                           className="btn btn-danger ms-1"
-                          onClick={() => manejarEliminarBedel(bedel.idUsuario, bedel.nombre, bedel.apellido)}
+                          onClick={() =>
+                            manejarEliminarBedel(
+                              bedel.idUsuario,
+                              bedel.nombre,
+                              bedel.apellido
+                            )
+                          }
                         >
                           Eliminar
                         </button>
@@ -168,7 +186,7 @@ function Bedel() {
           </div>
 
           <div className="d-flex justify-content-between">
-            <span>Cantidad de Bedeles: {bedelesFiltrados.length}</span>
+            <span>Cantidad de Bedeles: {listaBedeles.length}</span>
 
             <div>
               <button

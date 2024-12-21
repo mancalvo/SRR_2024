@@ -16,8 +16,12 @@ const ModalBedel = ({ cerrar, bedel, actualizarBedeles }) => {
       setNombreUsuario(bedel.nombreUsuario || "");
       setTurno(bedel.tipoTurno || "");
       setActivo(bedel.activo !== undefined ? bedel.activo : true);
+      setPassword(bedel.contrasenia); 
+      setConfirmarPassword(bedel.contrasenia);
     }
   }, [bedel]);
+  
+  
 
   const guardarBedel = async (e) => {
     e.preventDefault();

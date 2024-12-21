@@ -37,8 +37,8 @@ public class ControllerUsuario {
     }
 
     @GetMapping("/bedels")
-    public ResponseEntity<List<BedelDTO>> obtenerTodosLosBedels() {
-        List<BedelDTO> bedels = gestorBedel.obtenerTodosLosBedels();
+    public ResponseEntity<List<UsuarioDTO>> obtenerTodosLosBedels() {
+        List<UsuarioDTO> bedels = gestorBedel.obtenerTodosLosBedels();
         return ResponseEntity.ok(bedels);
     }
 
@@ -58,8 +58,8 @@ public class ControllerUsuario {
 
     @GetMapping("/bedels/AYT")
     public ResponseEntity<List<BedelDTO>> buscarBedelesPorApellidoYTurno(
-            @RequestParam String apellido,
-            @RequestParam Tipo_Turno tipoTurno) {
+            @RequestParam (required = false) String apellido,
+            @RequestParam (required = false) Tipo_Turno tipoTurno) {
         List<BedelDTO> bedeles = gestorBedel.buscarBedelesPorApellidoYTurno(apellido, tipoTurno);
         return ResponseEntity.ok(bedeles);
     }
