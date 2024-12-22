@@ -24,6 +24,10 @@ public interface BedelDAO extends JpaRepository <Usuario,Integer> {
 
     Optional<Usuario> findByNombreUsuarioAndTipoUsuarioAndActivo(String nombreUsuario, Tipo_Usuario tipoUsuario, boolean activo);
 
+
+    // ============================================================================================================================================
+
+
     @Query("SELECT u FROM Usuario u WHERE u.apellido = :apellido AND u.tipoTurno = :tipoTurno AND u.tipoUsuario = 'BEDEL' AND u.activo = true")
     List<Usuario> findByApellidoAndTipoTurno(@Param("apellido") String apellido, @Param("tipoTurno") Tipo_Turno tipoTurno);
 

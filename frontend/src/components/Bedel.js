@@ -23,8 +23,9 @@ function Bedel() {
 
   const buscarBedeles = async () => {
     try {
+      console.log("Buscando con parámetros:", busquedaApellido, busquedaTurno);
       if (!busquedaApellido.trim() && !busquedaTurno.trim()) {
-        obtenerBedeles();
+        obtenerBedeles(); // Si no hay filtros, obtenemos todos los bedeles
         return;
       }
   
@@ -33,20 +34,18 @@ function Bedel() {
       if (busquedaTurno) params.tipoTurno = busquedaTurno;
   
       const respuesta = await axios.get(
-        "http://localhost:8080/usuarios/bedels/AYT",
-        { params }
+        "http://localhost:8080/usuarios/bedels/AYT", { params }
       );
   
-      alert(respuesta.data.message || "Búsqueda realizada correctamente.");
-  
-      setListaBedeles(respuesta.data.bedeles || []);
+      console.log("Respuesta de la API:", respuesta.data); // Verifica la estructura de la respuesta
+      setListaBedeles(respuesta.data);  // Cambié de 'respuesta.data.bedeles' a 'respuesta.data'
     } catch (error) {
       console.error("Error al buscar bedeles:", error);
-      alert(
-        error.response?.data?.message || "Error al realizar la búsqueda."
-      );
+      alert(error.response?.data?.message || "Error al realizar la búsqueda.");
     }
   };
+  
+  
   
   
 
@@ -62,8 +61,11 @@ function Bedel() {
   const manejarCerrarModal = () => {
     setMostrarModal(false);
     setEditarBedel(null);
+    setBusquedaApellido("");  // Limpiar el campo de búsqueda de apellido
+    setBusquedaTurno("");     // Limpiar el campo de búsqueda de turno
     obtenerBedeles();
   };
+  
 
   const manejarEliminarBedel = async (idUsuario, nombre, apellido) => {
     const confirmacion = window.confirm(

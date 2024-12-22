@@ -16,16 +16,14 @@ const ModalBedel = ({ cerrar, bedel, actualizarBedeles }) => {
       setNombreUsuario(bedel.nombreUsuario || "");
       setTurno(bedel.tipoTurno || "");
       setActivo(bedel.activo !== undefined ? bedel.activo : true);
-      setPassword(bedel.contrasenia); 
+      setPassword(bedel.contrasenia);
       setConfirmarPassword(bedel.contrasenia);
     }
   }, [bedel]);
-  
-  
 
   const guardarBedel = async (e) => {
     e.preventDefault();
-  
+
     const nuevoBedel = {
       idUsuario: bedel?.idUsuario || null,
       nombre,
@@ -37,7 +35,7 @@ const ModalBedel = ({ cerrar, bedel, actualizarBedeles }) => {
       contrasenia: password,
       repetirContrasenia: confirmarPassword,
     };
-  
+
     try {
       const respuesta = bedel?.idUsuario
         ? await fetch(
@@ -57,22 +55,34 @@ const ModalBedel = ({ cerrar, bedel, actualizarBedeles }) => {
             },
             body: JSON.stringify(nuevoBedel),
           });
-  
+
       if (respuesta.ok) {
         const mensaje = await respuesta.text();
         alert(mensaje);
-  
+
         // Llamar a actualizarBedeles para recargar la lista de bedeles después de guardar
         actualizarBedeles();
-  
+
         cerrar();
       } else {
-        const errorData = await respuesta.json(); 
-        alert(errorData.message || "Error al guardar el usuario"); 
+        const errorData = await respuesta.json();
+        alert(errorData.message || "Error al guardar el usuario");
       }
     } catch (error) {
       console.error("Error:", error);
       alert("Hubo un problema al guardar el usuario");
+    }
+  };
+
+  const manejarCancelar = () => {
+    const mensajeConfirmacion = bedel
+      ? "¿Estás seguro de que quieres cancelar? Los cambios no se guardarán."
+      : "¿Estás seguro de que quieres cancelar? El bedel no se guardará.";
+  
+    const confirmacion = window.confirm(mensajeConfirmacion);
+    
+    if (confirmacion) {
+      cerrar(); // Llama a la función 'cerrar' solo si el usuario confirma.
     }
   };
   
@@ -155,7 +165,7 @@ const ModalBedel = ({ cerrar, bedel, actualizarBedeles }) => {
                   placeholder="Nombre de usuario"
                   value={nombreUsuario}
                   onChange={(e) => setNombreUsuario(e.target.value)}
-                  disabled={!!bedel} 
+                  disabled={!!bedel}
                 />
               </div>
 
@@ -200,10 +210,11 @@ const ModalBedel = ({ cerrar, bedel, actualizarBedeles }) => {
                 <button
                   type="button"
                   className="btn btn-light me-2"
-                  onClick={cerrar}
+                  onClick={manejarCancelar}
                 >
                   Cancelar
                 </button>
+
                 <button type="submit" className="btn btn-warning">
                   {bedel ? "Actualizar" : "Guardar"} Bedel
                 </button>
