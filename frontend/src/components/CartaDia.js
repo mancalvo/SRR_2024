@@ -91,7 +91,6 @@ const CartaDia = ({ formData,dia, id , agregarDia }) => {
   };
 
   const isButtonDisabled = !isChecked || horaInicial === "--:--" || horaFinal === "--:--";
-
   return (
     <div className="col-auto mt-3">
       <div className="card text-center" id={`carta${id}`}>
@@ -178,7 +177,8 @@ const CartaDia = ({ formData,dia, id , agregarDia }) => {
           id={`aula${id}`}
         >
           {aulaSeleccionada ? (
-            <p className="mb-0">{aulaSeleccionada.nombre}</p>
+            <p className="mb-0">Aula {aulaSeleccionada.numero}</p>
+
           ) : (
             <p className="mb-0"> </p>
           )}
@@ -186,10 +186,10 @@ const CartaDia = ({ formData,dia, id , agregarDia }) => {
         
         <DisponibilidadAulaEsporadica
           formData={formData}
+          dia={dia}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
           actualizarAulaSeleccionada={actualizarAulaSeleccionada}
-          dia={dia.toUpperCase()}
           horaInicio={horaInicial}
           horaFinal={horaFinal}
         />

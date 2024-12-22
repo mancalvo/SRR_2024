@@ -53,7 +53,11 @@ function NuevaReservaMain() {
   };
 
   const volverSeccion = () => {
-    setCurrentSection(1); // Vuelve siempre a la primera sección
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      detallesReserva: [], 
+    }));
+    setCurrentSection(1); 
   };
 
   const enviarReserva = () => {
@@ -80,7 +84,7 @@ function NuevaReservaMain() {
         aulaId: detalle.aulaId, 
       })),
     };
-    console.log(reservaDTO);
+    console.log("Esto se envia: " ,reservaDTO);
    
     axios.post("http://localhost:8080/reservas", reservaDTO, {
       headers: {
@@ -122,7 +126,7 @@ function NuevaReservaMain() {
       ...prev,
       detallesReserva: [
         ...prev.detallesReserva,
-        { diaSemana: dia, horarioInicio, horarioFinal, aulaId: aulaId.id },
+        { diaSemana: dia, horarioInicio, horarioFinal, aulaId: aulaId.numero },
       ],
     }));
   };

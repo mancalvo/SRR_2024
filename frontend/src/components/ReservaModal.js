@@ -60,16 +60,14 @@ function ReservaModal({ formData, reserva, onGuardar, onCerrar }) {
   const handleFechaChange = (e) => {
     const nuevaFecha = e.target.value;
     setFecha(nuevaFecha);
-  
-    
+
     const diaSemana = new Date(nuevaFecha).getDay();
     if (diaSemana === 6) {
       setErrorFecha("No se permiten reservas los domingos.");
     } else {
-      setErrorFecha(""); 
+      setErrorFecha("");
     }
   };
-  
 
   const handleHoraInicialChange = (e) => {
     const seleccion = e.target.value;
@@ -185,7 +183,7 @@ function ReservaModal({ formData, reserva, onGuardar, onCerrar }) {
                 <button
                   className="btn btn-warning"
                   onClick={manejarGuardar}
-                  disabled={!!errorFecha} // Deshabilitar si hay un error
+                  disabled={!!errorFecha || !aulaSeleccionada} // Deshabilitar si hay error o no hay aula seleccionada
                 >
                   Guardar
                 </button>
@@ -201,8 +199,8 @@ function ReservaModal({ formData, reserva, onGuardar, onCerrar }) {
         onClose={() => setModalAulaAbierto(false)}
         actualizarAulaSeleccionada={actualizarAulaSeleccionada}
         fecha={fecha}
-        horaInicio={horaInicial} 
-        horaFinal={horaFinal} 
+        horaInicio={horaInicial}
+        horaFinal={horaFinal}
       />
     </div>
   );

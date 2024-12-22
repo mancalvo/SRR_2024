@@ -5,12 +5,16 @@ import "../App.css";
 const Seccion2 = ({ formData, setFormData, volverSeccion, agregarDia, enviarReserva }) => {
   const dias = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO"];
 
-  console.log("DESDE PERIODICAL ",formData);
+  
+  console.log("DESDE PERIODICA ",formData);
 
+   
   
   const manejarGuardarReserva = () => {
     enviarReserva();
   };
+
+
 
   return (
     <div className="form-container encuadro mb-0 mt-2 " style={{ width: "auto", overflowX: "auto" }}>

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/reservas")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ReservaController {
 
     @Autowired

@@ -31,9 +31,6 @@ public class GestorBedel {
             throw new BedelException("Políticas de contraseña inválidas");
         }
 
-        if (encontrarBedelPorNyA(usuarioDTO.getNombre(), usuarioDTO.getApellido())) {
-            throw new BedelException("Ya existe un usuario registrado con ese nombre y apellido");
-        }
 
         validarUsuario(usuarioDTO);
 
@@ -54,9 +51,6 @@ public class GestorBedel {
         return gestorContrasenia.validarPoliticasContrasenia(contrasenia);
     }
 
-    public Boolean encontrarBedelPorNyA(String nombre, String apellido) {
-        return bedelDAO.existsByNombreAndApellido(nombre,apellido);
-    }
 
     public void validarUsuario(UsuarioDTO usuarioDTO) {
 
@@ -98,7 +92,7 @@ public class GestorBedel {
 
         UsuarioDTO usuariodto = new UsuarioDTO();
 
-        // Convertimos el Usuario a BedelDTO
+        // Convertimos el Usuario a UsuarioDTO
 
 
         usuariodto.setIdUsuario(usuarioBBDD.get().getIdUsuario());
@@ -115,15 +109,19 @@ public class GestorBedel {
 
     }
 
-    public List<BedelDTO> obtenerTodosLosBedels() {
+    public List<UsuarioDTO> obtenerTodosLosBedels() {
         List<Usuario> bedels = bedelDAO.buscarTodosLosBedels();
         return bedels.stream().map(usuario -> {
-            BedelDTO dto = new BedelDTO();
+            UsuarioDTO dto = new UsuarioDTO();
             dto.setIdUsuario(usuario.getIdUsuario());
-            dto.setNombreUsuario(usuario.getNombreUsuario());
             dto.setNombre(usuario.getNombre());
             dto.setApellido(usuario.getApellido());
+            dto.setNombreUsuario(usuario.getNombreUsuario());
+            dto.setContrasenia(usuario.getContrasenia());
+            dto.setRepetirContrasenia(usuario.getContrasenia());
+            dto.setTipoUsuario(usuario.getTipoUsuario());
             dto.setTipoTurno(usuario.getTipoTurno());
+            dto.setActivo(usuario.getActivo());
             return dto;
         }).collect(Collectors.toList());
     }
@@ -131,8 +129,13 @@ public class GestorBedel {
 
     public void actualizarBedel(Integer id, UsuarioDTO usuarioDTO) {
         Optional<Usuario> usuarioOpt = bedelDAO.buscarBedelPorId(id);
+
+        if (!validarPoliticasContrasenia(usuarioDTO.getContrasenia())) {
+            throw new BedelException("Políticas de contraseña inválidas");
+        }
+
         if (usuarioOpt.isEmpty()) {
-            throw new BedelException("No se encontro el usuario que se quiere modificar"); // No se encontró el usuario
+            throw new BedelException("No se encontro el usuario que se quiere modificar");
         }
 
         Usuario usuario = usuarioOpt.get();
@@ -152,36 +155,38 @@ public class GestorBedel {
         }
 
         Usuario usuario = usuarioOpt.get();
-        usuario.setActivo(false);  // Marcamos el usuario como eliminado
+        usuario.setActivo(false);
 
         bedelDAO.save(usuario);
     }
 
-    public List<BedelDTO> buscarBedelesPorApellidoYTurno(String apellido, Tipo_Turno turno) {
+    public List<UsuarioDTO> buscarBedelesPorApellidoYTurno(String apellido, Tipo_Turno turno) {
         List<Usuario> bedeles;
 
         if (apellido != null && turno != null) {
             bedeles = bedelDAO.findByApellidoAndTipoTurno(apellido, turno);
         } else if (apellido != null) {
-            bedeles = bedelDAO.findByApellido(apellido);
+            bedeles = bedelDAO.findByApellidoActivo(apellido);
         } else if (turno != null) {
-            bedeles = bedelDAO.findByTipoTurno(turno);
+            bedeles = bedelDAO.findByTipoTurnoActivo(turno);
         } else {
-            bedeles = bedelDAO.findAll();
+            throw new BedelException("Debe proporcionar al menos un filtro (apellido o turno)");
         }
 
         return bedeles.stream()
-                .filter(usuario -> usuario.getTipoTurno() != null)
-                .map(usuario -> new BedelDTO(
+                .map(usuario -> new UsuarioDTO(
                         usuario.getIdUsuario(),
-                        usuario.getNombreUsuario(),
                         usuario.getNombre(),
                         usuario.getApellido(),
-                        usuario.getTipoTurno()
+                        usuario.getNombreUsuario(),
+                        usuario.getContrasenia(),
+                        usuario.getContrasenia(),
+                        usuario.getTipoUsuario(),
+                        usuario.getTipoTurno(),
+                        usuario.getActivo()
                 ))
                 .collect(Collectors.toList());
-
-
     }
+
 }
 

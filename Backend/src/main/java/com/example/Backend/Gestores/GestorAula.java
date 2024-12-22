@@ -44,6 +44,9 @@ public class GestorAula {
     private GestorPeriodo gestorPeriodo;
 
     public AulaDisponibilidadResponseDTO buscarAulasDisponibles(AulaDisponibilidadRequestDTO requestDTO) {
+
+        imprimirAulaDisponibilidad(requestDTO);
+
         // Lista para almacenar las aulas disponibles
         List<Aula> aulasDisponibles = new ArrayList<>();
 
@@ -72,20 +75,20 @@ public class GestorAula {
         if ("ESPORADICA".equalsIgnoreCase(requestDTO.getTipoReserva())) {
             return manejarReservaEsporadica(requestDTO, aulasDisponibles,
                     aulasOcupadasEsporadicas, aulasOcupadasPeriodica);
-            
+
         } else if ("PERIODICA".equalsIgnoreCase(requestDTO.getTipoReserva())) {
             return manejarReservaPeriodica(requestDTO, aulasDisponibles,
                     aulasOcupadasEsporadicas, aulasOcupadasPeriodica);
-            
+
         } else {
             throw new IllegalArgumentException("El tipo de reserva debe ser 'ESPORADICA' o 'PERIODICA'.");
         }
-        
+
     }
 
     private AulaDisponibilidadResponseDTO manejarReservaEsporadica(AulaDisponibilidadRequestDTO requestDTO,
-            List<Aula> aulasCompatibles, HashMap<Aula, List<DiaEsporadica>> aulasOcupadasEsporadicas,
-            HashMap<Aula, List<DiaPeriodica>> aulasOcupadasPeriodica) {
+                                                                   List<Aula> aulasCompatibles, HashMap<Aula, List<DiaEsporadica>> aulasOcupadasEsporadicas,
+                                                                   HashMap<Aula, List<DiaPeriodica>> aulasOcupadasPeriodica) {
 
         if (requestDTO.getFecha() == null || requestDTO.getHoraInicio() == null || requestDTO.getHoraFinal() == null) {
             throw new IllegalArgumentException("Para una reserva ESPORÁDICA, fecha, horaInicio y horaFinal son obligatorios.");
@@ -145,8 +148,8 @@ public class GestorAula {
     }
 
     private AulaDisponibilidadResponseDTO manejarReservaPeriodica(AulaDisponibilidadRequestDTO requestDTO,
-            List<Aula> aulasCompatibles, HashMap<Aula, List<DiaEsporadica>> aulasOcupadasEsporadicas,
-            HashMap<Aula, List<DiaPeriodica>> aulasOcupadasPeriodica) {
+                                                                  List<Aula> aulasCompatibles, HashMap<Aula, List<DiaEsporadica>> aulasOcupadasEsporadicas,
+                                                                  HashMap<Aula, List<DiaPeriodica>> aulasOcupadasPeriodica) {
 
         if (requestDTO.getTipoPeriodo() == null || requestDTO.getDia() == null
                 || requestDTO.getHoraInicio() == null || requestDTO.getHoraFinal() == null) {
@@ -155,10 +158,10 @@ public class GestorAula {
 
         Tipo_Periodo periodoSolicitado = Tipo_Periodo.valueOf(requestDTO.getTipoPeriodo());
         List<Integer> periodosCoincidentes = gestorPeriodo.obtenerPeriodosMasProximoPorTipo(periodoSolicitado);
-        DiaSemana diaSemana = DiaSemana.valueOf(requestDTO.getDia());        
+        DiaSemana diaSemana = DiaSemana.valueOf(requestDTO.getDia());
         List<LocalDate> fechas = obtenerFechasParaPeriodosYDia(convertirDiaSemanaAWeekOfDay(diaSemana),
                 gestorPeriodo.traerPeriodos(periodosCoincidentes));
-      
+
         LocalTime horaInicio = LocalTime.parse(requestDTO.getHoraInicio());
         LocalTime horaFinal = LocalTime.parse(requestDTO.getHoraFinal());
 
@@ -227,8 +230,8 @@ public class GestorAula {
     }
 
     private long calcularMaximoIntervalo(LocalTime horaInicial, LocalTime horaFinal,
-            List<DiaEsporadica> esporadicas,
-            List<DiaPeriodica> periodicas) {
+                                         List<DiaEsporadica> esporadicas,
+                                         List<DiaPeriodica> periodicas) {
 
         List<LocalTime[]> intervalos = new ArrayList<>();
 
@@ -265,54 +268,54 @@ public class GestorAula {
         return maximoIntervalo;
 
     }
-    
+
     private long calcularMaximasHorasSolapadas(LocalTime horaInicial, LocalTime horaFinal,
-            List<DiaEsporadica> esporadicas,
-            List<DiaPeriodica> periodicas,
-            HashMap<Tipo_Periodo, Long> cantidadDiasPorPeriodo,
-            Tipo_Periodo tipoPeriodo) {
-        
+                                               List<DiaEsporadica> esporadicas,
+                                               List<DiaPeriodica> periodicas,
+                                               HashMap<Tipo_Periodo, Long> cantidadDiasPorPeriodo,
+                                               Tipo_Periodo tipoPeriodo) {
+
         long minutos = 0;
-        
+
         if(esporadicas != null) {
             for (DiaEsporadica de : esporadicas) {
                 minutos += minutosSolapados(horaInicial, horaFinal, de.getHoraInicio(), de.getHoraFinal());
             }
         }
-        
+
         if(periodicas != null) {
             for (DiaPeriodica dp : periodicas) {
-                long minutosIndividual = minutosSolapados(horaInicial, 
+                long minutosIndividual = minutosSolapados(horaInicial,
                         horaFinal, dp.getHoraInicio(), dp.getHoraFinal());
-                
-                if (tipoPeriodo == Tipo_Periodo.PRIMER_CUATRIMESTRE 
+
+                if (tipoPeriodo == Tipo_Periodo.PRIMER_CUATRIMESTRE
                         || tipoPeriodo == Tipo_Periodo.ANUAL) {
-                    
+
                     boolean existeEnPrimerCuatrimestre = gestorPeriodo
                             .traerPeriodos(dp.getReserva().getPeriodosId())
                             .stream().anyMatch(p -> p.getTipoPeriodo().equals(Tipo_Periodo.PRIMER_CUATRIMESTRE));
-                    
+
                     if (existeEnPrimerCuatrimestre) {
-                        minutos += 
+                        minutos +=
                                 cantidadDiasPorPeriodo.get(Tipo_Periodo.PRIMER_CUATRIMESTRE) * minutosIndividual;
                     }
                 }
-                
-                if (tipoPeriodo == Tipo_Periodo.SEGUNDO_CUATRIMESTRE 
+
+                if (tipoPeriodo == Tipo_Periodo.SEGUNDO_CUATRIMESTRE
                         || tipoPeriodo == Tipo_Periodo.ANUAL) {
-                    
+
                     boolean existeEnSegundoCuatrimestre = gestorPeriodo
                             .traerPeriodos(dp.getReserva().getPeriodosId())
                             .stream().anyMatch(p -> p.getTipoPeriodo().equals(Tipo_Periodo.SEGUNDO_CUATRIMESTRE));
-                    
+
                     if (existeEnSegundoCuatrimestre) {
-                        minutos += 
+                        minutos +=
                                 cantidadDiasPorPeriodo.get(Tipo_Periodo.SEGUNDO_CUATRIMESTRE) * minutosIndividual;
                     }
                 }
             }
         }
-        
+
         return minutos;
     }
 
@@ -422,7 +425,7 @@ public class GestorAula {
             aulaDTOs.add(aulaDTO);
             reservaSolapadaDTOs.add(reservaSolapadaDTO);
         }
-        
+
         HashMap<Tipo_Periodo, Long> cantidadDiasPorPeriodo = new HashMap<>();
         List<Integer> periodosCoincidentes = gestorPeriodo.obtenerPeriodosMasProximoPorTipo(tipoPeriodo);
         for (Integer pId : periodosCoincidentes) {
@@ -435,11 +438,11 @@ public class GestorAula {
                 .sorted((i, j) -> {
                     long valor1 = calcularMaximasHorasSolapadas(horaInicial, horaFinal,
                             mapaEsporadicas.getOrDefault(aulas.get(i), null), mapaPeriodicas.getOrDefault(aulas.get(i), null),
-                                    cantidadDiasPorPeriodo, tipoPeriodo);
+                            cantidadDiasPorPeriodo, tipoPeriodo);
 
                     long valor2 = calcularMaximasHorasSolapadas(horaInicial, horaFinal,
                             mapaEsporadicas.getOrDefault(aulas.get(j), null), mapaPeriodicas.getOrDefault(aulas.get(j), null),
-                                    cantidadDiasPorPeriodo, tipoPeriodo);
+                            cantidadDiasPorPeriodo, tipoPeriodo);
 
                     return Long.compare(valor1, valor2);
                 })
@@ -457,11 +460,11 @@ public class GestorAula {
         }
         return periodicas.stream()
                 .map(per -> new ReservaPeriodicaSolapadaDTO(
-                per.getReserva().getSolicitante(),
-                per.getReserva().getCatedra(),
-                per.getReserva().getCorreo(),
-                per.getHoraInicio().toString(),
-                per.getHoraFinal().toString()))
+                        per.getReserva().getSolicitante(),
+                        per.getReserva().getCatedra(),
+                        per.getReserva().getCorreo(),
+                        per.getHoraInicio().toString(),
+                        per.getHoraFinal().toString()))
                 .collect(Collectors.toList());
     }
 
@@ -471,39 +474,39 @@ public class GestorAula {
         }
         return esporadicas.stream()
                 .map(esp -> new ReservaEsporadicaSolapadaDTO(
-                esp.getReserva().getSolicitante(),
-                esp.getReserva().getCatedra(),
-                esp.getReserva().getCorreo(),
-                esp.getHoraInicio().toString(),
-                esp.getHoraFinal().toString()))
+                        esp.getReserva().getSolicitante(),
+                        esp.getReserva().getCatedra(),
+                        esp.getReserva().getCorreo(),
+                        esp.getHoraInicio().toString(),
+                        esp.getHoraFinal().toString()))
                 .collect(Collectors.toList());
     }
 
     private boolean hayConflictoHorario(LocalTime inicio1, LocalTime fin1, LocalTime inicio2, LocalTime fin2) {
         return !inicio1.isAfter(fin2) && !fin1.isBefore(inicio2);
     }
-    
+
     private long minutosSolapados(LocalTime inicio1, LocalTime fin1, LocalTime inicio2, LocalTime fin2) {
-            
-    if (fin1.isBefore(inicio2) || fin2.isBefore(inicio1)) {
-        return 0;
+
+        if (fin1.isBefore(inicio2) || fin2.isBefore(inicio1)) {
+            return 0;
+        }
+
+
+        LocalTime solapadoInicio = inicio1.isAfter(inicio2) ? inicio1 : inicio2;
+        LocalTime solapadoFinal = fin1.isBefore(fin2) ? fin1 : fin2;
+
+        // Calculate the difference in minutes
+        return ChronoUnit.MINUTES.between(solapadoInicio, solapadoFinal);
     }
 
- 
-    LocalTime solapadoInicio = inicio1.isAfter(inicio2) ? inicio1 : inicio2;
-    LocalTime solapadoFinal = fin1.isBefore(fin2) ? fin1 : fin2;
-
-    // Calculate the difference in minutes
-    return ChronoUnit.MINUTES.between(solapadoInicio, solapadoFinal);
-    }
-    
     private Long cantidadDeDiasEntreFechas(LocalDate fechaInicio, LocalDate fechaFin, DiaSemana diaSemana) {
         DayOfWeek dia = convertirDiaSemanaAWeekOfDay(diaSemana);
         return fechaInicio.datesUntil(fechaFin.plusDays(1))
-            .filter(d -> d.getDayOfWeek() == dia)
-            .count();
+                .filter(d -> d.getDayOfWeek() == dia)
+                .count();
     }
-    
+
 
     private ArrayList<LocalDate> obtenerFechasParaPeriodosYDia(DayOfWeek dia, List<Periodo> periodos) {
         ArrayList<LocalDate> fechas = new ArrayList<>();
@@ -524,4 +527,23 @@ public class GestorAula {
 
         return fechas;
     }
+
+    public void imprimirAulaDisponibilidad(AulaDisponibilidadRequestDTO aulaDisponibilidad) {
+        System.out.println("Datos de la disponibilidad del aula:");
+        System.out.println("Tipo de Aula: " + aulaDisponibilidad.getTipoAula());
+        System.out.println("Capacidad Mínima: " + aulaDisponibilidad.getCapacidad());
+        System.out.println("Tipo de Reserva: " + aulaDisponibilidad.getTipoReserva());
+
+        if ("PERIODICA".equalsIgnoreCase(aulaDisponibilidad.getTipoReserva())) {
+            System.out.println("Tipo de Periodo: " + aulaDisponibilidad.getTipoPeriodo());
+            System.out.println("Día de la Semana: " + aulaDisponibilidad.getDia());
+        } else if ("ESPORADICA".equalsIgnoreCase(aulaDisponibilidad.getTipoReserva())) {
+            System.out.println("Fecha de la Reserva: " + aulaDisponibilidad.getFecha());
+        }
+
+        System.out.println("Hora de Inicio: " + aulaDisponibilidad.getHoraInicio());
+        System.out.println("Hora de Fin: " + aulaDisponibilidad.getHoraFinal());
+    }
+
+
 }

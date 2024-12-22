@@ -17,7 +17,7 @@ const DisponibilidadAula = ({
   const [aulaSeleccionada, setAulaSeleccionada] = useState(null);
   const [cargando, setCargando] = useState(false); // Estado para manejar la carga de datos
   const [error, setError] = useState(null); // Estado para manejar errores
-  console.log("DESDE DISPONIBILIDAD: ", formData);
+  
   const tipoAulaMap = {
     "Aula Multimedios": "MULTIMEDIOS",
     "Aula Informática": "INFORMATICA",
@@ -45,13 +45,13 @@ const DisponibilidadAula = ({
             tipoAula: tipoAulaBackend,
             capacidad: formData.cantAlumnos,
             tipoReserva: formData.tipoReserva === "Esporadica" ? "ESPORADICA" : "PERIODICA",
-            tipoPeriodo: formData.tipoPeriodo || '',
+            tipoPeriodo: formData.periodo || '',
             fecha: fechaObj ? fechaObj.toISOString().split('T')[0] : '',
-            dia: formData.dia || '',
+            dia: dia || '',
             horaInicio,
             horaFinal,
           });
-
+          console.log(params);
           const response = await fetch(`http://localhost:8080/aulas/disponibles?${params.toString()}`, {
             method: "GET",
           });

@@ -36,7 +36,7 @@ public class ReservaPeriodica {
     @Column(name = "correo")
     private String correo;
 
-    @ElementCollection // Map the list of period IDs
+    @ElementCollection
     @CollectionTable(name = "reserva_periodica_periodos", joinColumns = @JoinColumn(name = "id_reservaPeriodica"))
     @Column(name = "periodo_id")
     private List<Integer> periodosId = new ArrayList<>();

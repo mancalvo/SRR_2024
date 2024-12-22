@@ -22,10 +22,14 @@ public interface BedelDAO extends JpaRepository <Usuario,Integer> {
     @Query("SELECT u FROM Usuario u WHERE u.tipoUsuario = 'BEDEL' AND u.activo = true")
     List<Usuario> buscarTodosLosBedels();
 
-    List<Usuario> findByApellido(String apellido);
-    List<Usuario> findByTipoTurno(Tipo_Turno tipoTurno);
-    List<Usuario> findByApellidoAndTipoTurno(String apellido, Tipo_Turno tipoTurno);
-
     Optional<Usuario> findByNombreUsuarioAndTipoUsuarioAndActivo(String nombreUsuario, Tipo_Usuario tipoUsuario, boolean activo);
 
+    @Query("SELECT u FROM Usuario u WHERE u.apellido = :apellido AND u.tipoTurno = :tipoTurno AND u.tipoUsuario = 'BEDEL' AND u.activo = true")
+    List<Usuario> findByApellidoAndTipoTurno(@Param("apellido") String apellido, @Param("tipoTurno") Tipo_Turno tipoTurno);
+
+    @Query("SELECT u FROM Usuario u WHERE u.apellido = :apellido AND u.tipoUsuario = 'BEDEL' AND u.activo = true")
+    List<Usuario> findByApellidoActivo(@Param("apellido") String apellido);
+
+    @Query("SELECT u FROM Usuario u WHERE u.tipoTurno = :tipoTurno AND u.tipoUsuario = 'BEDEL' AND u.activo = true")
+    List<Usuario> findByTipoTurnoActivo(@Param("tipoTurno") Tipo_Turno tipoTurno);
 }
