@@ -58,8 +58,6 @@ public class GestorReserva {
             throw new ReservaException("Aulas no disponibles");
         }
 
-        System.out.println("Tipo de Reserva recibido: " + reservaDTO.getTipoReserva());
-
         switch (reservaDTO.getTipoReserva()) {
             case "PERIODICA":
                 ReservaPeriodica reservaPeriodica = new ReservaPeriodica();
@@ -114,7 +112,6 @@ public class GestorReserva {
                 return reservaEsporadicaDAO.save(reservaEsporadica).getIdReservaEsporadica();
 
             default:
-                System.out.println("No es PERIODICA ni ESPORADICA");
                 throw new ReservaException("Error al guardar la reserva");
         }
     }

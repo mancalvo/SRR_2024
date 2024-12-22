@@ -106,8 +106,6 @@ public class GestorPeriodo {
     }
  
     public Integer periodoIdQueContieneFecha(LocalDate fecha) {
-        System.out.println("Date: " + fecha);
-        System.out.println("Periodos: " + periodos);
         for (Periodo periodo : periodos) {
             if ((fecha.isEqual(periodo.getFechaInicio()) || fecha.isAfter(periodo.getFechaInicio())) &&
                 (fecha.isEqual(periodo.getFechaFin()) || fecha.isBefore(periodo.getFechaFin()))) {

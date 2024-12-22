@@ -155,10 +155,10 @@ public class GestorAula {
 
         Tipo_Periodo periodoSolicitado = Tipo_Periodo.valueOf(requestDTO.getTipoPeriodo());
         List<Integer> periodosCoincidentes = gestorPeriodo.obtenerPeriodosMasProximoPorTipo(periodoSolicitado);
-        DiaSemana diaSemana = DiaSemana.valueOf(requestDTO.getDia());
+        DiaSemana diaSemana = DiaSemana.valueOf(requestDTO.getDia());        
         List<LocalDate> fechas = obtenerFechasParaPeriodosYDia(convertirDiaSemanaAWeekOfDay(diaSemana),
                 gestorPeriodo.traerPeriodos(periodosCoincidentes));
-
+      
         LocalTime horaInicio = LocalTime.parse(requestDTO.getHoraInicio());
         LocalTime horaFinal = LocalTime.parse(requestDTO.getHoraFinal());
 
