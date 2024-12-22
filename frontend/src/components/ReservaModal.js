@@ -9,6 +9,7 @@ function ReservaModal({ formData, reserva, onGuardar, onCerrar }) {
   const [opcionesHoraFinal, setOpcionesHoraFinal] = useState([]);
   const [aulaSeleccionada, setAulaSeleccionada] = useState(null);
   const [modalAulaAbierto, setModalAulaAbierto] = useState(false);
+  const [errorFecha, setErrorFecha] = useState(""); // Estado para el mensaje de error
 
   useEffect(() => {
     generarOpcionesIniciales();
@@ -56,6 +57,20 @@ function ReservaModal({ formData, reserva, onGuardar, onCerrar }) {
     setOpcionesHoraFinal(opciones);
   };
 
+  const handleFechaChange = (e) => {
+    const nuevaFecha = e.target.value;
+    setFecha(nuevaFecha);
+  
+    
+    const diaSemana = new Date(nuevaFecha).getDay();
+    if (diaSemana === 6) {
+      setErrorFecha("No se permiten reservas los domingos.");
+    } else {
+      setErrorFecha(""); 
+    }
+  };
+  
+
   const handleHoraInicialChange = (e) => {
     const seleccion = e.target.value;
     setHoraInicial(seleccion);
@@ -84,10 +99,9 @@ function ReservaModal({ formData, reserva, onGuardar, onCerrar }) {
     });
   };
 
-  // Función que actualizará el aula seleccionada cuando se confirme
   const actualizarAulaSeleccionada = (aula) => {
     setAulaSeleccionada(aula);
-    setModalAulaAbierto(false); // Cerrar el modal de selección de aula
+    setModalAulaAbierto(false);
   };
 
   return (
@@ -114,8 +128,11 @@ function ReservaModal({ formData, reserva, onGuardar, onCerrar }) {
                 type="date"
                 className="form-control"
                 value={fecha}
-                onChange={(e) => setFecha(e.target.value)}
+                onChange={handleFechaChange}
               />
+              {errorFecha && (
+                <div className="text-danger mt-2">{errorFecha}</div>
+              )}
             </div>
             <div className="mb-3">
               <label className="form-label">Hora Inicial</label>
@@ -165,7 +182,11 @@ function ReservaModal({ formData, reserva, onGuardar, onCerrar }) {
                 <button className="btn btn-secondary me-2" onClick={onCerrar}>
                   Cancelar
                 </button>
-                <button className="btn btn-warning " onClick={manejarGuardar}>
+                <button
+                  className="btn btn-warning"
+                  onClick={manejarGuardar}
+                  disabled={!!errorFecha} // Deshabilitar si hay un error
+                >
                   Guardar
                 </button>
               </div>
