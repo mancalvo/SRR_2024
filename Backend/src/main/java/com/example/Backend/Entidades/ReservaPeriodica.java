@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.ToString;
 
 @Entity
 @Table(name = "reserva_periodica")
@@ -45,6 +46,7 @@ public class ReservaPeriodica {
     @JoinColumn(name = "id_bedel")
     private Usuario bedel;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DiaPeriodica> diasPeriodica = new ArrayList<>();
 }

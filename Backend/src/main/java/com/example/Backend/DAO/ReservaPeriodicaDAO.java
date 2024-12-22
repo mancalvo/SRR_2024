@@ -20,18 +20,19 @@ public interface ReservaPeriodicaDAO extends JpaRepository<ReservaPeriodica, Int
     List<ReservaPeriodica> findByDiasPeriodica_Aula_Numero(@Param("aulaId") Integer aulaId);
     
     @Query("SELECT dp FROM ReservaPeriodica rp " +
-            "JOIN rp.diasPeriodica dp " +
-            "WHERE dp.diaSemana = :diaSemana " +
-            "AND EXISTS (SELECT 1 FROM rp.periodosId pid WHERE pid IN :periodos) " +
-            "AND dp.aula.numero IN :aulaIds")
+           "JOIN rp.diasPeriodica dp " +
+           "JOIN rp.periodosId pid " +
+           "WHERE dp.diaSemana = :diaSemana " +
+           "AND pid IN :periodos " +
+           "AND dp.aula.numero IN :aulaIds")
     List<DiaPeriodica> findByDiaSemanaAndPeriodosAndAulaIds(@Param("diaSemana") DiaSemana diaSemana,
-                                                            @Param("periodos") List<Integer> periodos,
-                                                            @Param("aulaIds") List<Integer> aulaIds);
-    
+                                                        @Param("periodos") List<Integer> periodos,
+                                                        @Param("aulaIds") List<Integer> aulaIds);
+
     @Query("SELECT dp FROM ReservaPeriodica rp " +
             "JOIN rp.diasPeriodica dp " +
             "WHERE dp.diaSemana = :diaSemana " +
-            "AND EXISTS (SELECT 1 FROM rp.periodosId pid WHERE pid = :periodo) " +
+            "AND :periodo MEMBER OF rp.periodosId " +
             "AND dp.aula.numero IN :aulaIds")
     List<DiaPeriodica> findByDiaSemanaAndPeriodoAndAulaIds(@Param("diaSemana") DiaSemana diaSemana,
                                                             @Param("periodo") Integer periodo,
@@ -39,8 +40,9 @@ public interface ReservaPeriodicaDAO extends JpaRepository<ReservaPeriodica, Int
     
         @Query("SELECT dp FROM ReservaPeriodica rp " +
             "JOIN rp.diasPeriodica dp " +
+            "JOIN rp.periodosId pid " +
             "WHERE dp.diaSemana = :diaSemana " +
-            "AND EXISTS (SELECT 1 FROM rp.periodosId pid WHERE pid IN :periodos) " +
+            "AND pid IN :periodos " +
             "AND dp.aula.numero = :aulaId")
     List<DiaPeriodica> findByDiaSemanaAndPeriodosAndAulaId(@Param("diaSemana") DiaSemana diaSemana,
                                                             @Param("periodos") List<Integer> periodos,
@@ -49,7 +51,7 @@ public interface ReservaPeriodicaDAO extends JpaRepository<ReservaPeriodica, Int
             @Query("SELECT dp FROM ReservaPeriodica rp " +
             "JOIN rp.diasPeriodica dp " +
             "WHERE dp.diaSemana = :diaSemana " +
-            "AND EXISTS (SELECT 1 FROM rp.periodosId pid WHERE pid = :periodo) " +
+            "AND :periodo MEMBER OF rp.periodosId " +
             "AND dp.aula.numero = :aulaId")
     List<DiaPeriodica> findByDiaSemanaAndPeriodoAndAulaId(@Param("diaSemana") DiaSemana diaSemana,
                                                             @Param("periodo") Integer periodo,

@@ -68,8 +68,8 @@ public class GestorAula {
         }
 
         // Crear conjuntos de aulas ocupadas
-        HashMap<Aula, List<DiaEsporadica>> aulasOcupadasEsporadicas = new HashMap<>();
-        HashMap<Aula, List<DiaPeriodica>> aulasOcupadasPeriodica = new HashMap<>();
+        HashMap<Integer, List<DiaEsporadica>> aulasOcupadasEsporadicas = new HashMap<>();
+        HashMap<Integer, List<DiaPeriodica>> aulasOcupadasPeriodica = new HashMap<>();
 
         // Verificar el tipo de reserva y manejar según corresponda
         if ("ESPORADICA".equalsIgnoreCase(requestDTO.getTipoReserva())) {
@@ -79,16 +79,14 @@ public class GestorAula {
         } else if ("PERIODICA".equalsIgnoreCase(requestDTO.getTipoReserva())) {
             return manejarReservaPeriodica(requestDTO, aulasDisponibles,
                     aulasOcupadasEsporadicas, aulasOcupadasPeriodica);
-
-        } else {
-            throw new IllegalArgumentException("El tipo de reserva debe ser 'ESPORADICA' o 'PERIODICA'.");
         }
 
+        throw new IllegalArgumentException("El tipo de reserva debe ser 'ESPORADICA' o 'PERIODICA'.");
     }
 
     private AulaDisponibilidadResponseDTO manejarReservaEsporadica(AulaDisponibilidadRequestDTO requestDTO,
-                                                                   List<Aula> aulasCompatibles, HashMap<Aula, List<DiaEsporadica>> aulasOcupadasEsporadicas,
-                                                                   HashMap<Aula, List<DiaPeriodica>> aulasOcupadasPeriodica) {
+                                                                   List<Aula> aulasCompatibles, HashMap<Integer, List<DiaEsporadica>> aulasOcupadasEsporadicas,
+                                                                   HashMap<Integer, List<DiaPeriodica>> aulasOcupadasPeriodica) {
 
         if (requestDTO.getFecha() == null || requestDTO.getHoraInicio() == null || requestDTO.getHoraFinal() == null) {
             throw new IllegalArgumentException("Para una reserva ESPORÁDICA, fecha, horaInicio y horaFinal son obligatorios.");
@@ -101,7 +99,7 @@ public class GestorAula {
         List<DiaEsporadica> diasEsporadicos = reservaEsporadicaDAO.findDiaEsporadicaByFechaAndAulaIds(requestDTO.getFecha(), aulasIds);
         for (DiaEsporadica dia : diasEsporadicos) {
             if (hayConflictoHorario(horaInicio, horaFinal, dia.getHoraInicio(), dia.getHoraFinal())) {
-                aulasOcupadasEsporadicas.computeIfAbsent(dia.getAula(), k -> new ArrayList<>()).add(dia);
+                aulasOcupadasEsporadicas.computeIfAbsent(dia.getAula().getNumero(), k -> new ArrayList<>()).add(dia);
             }
         }
 
@@ -117,20 +115,20 @@ public class GestorAula {
 
             for (DiaPeriodica dia : diasPeriodicos) {
                 if (hayConflictoHorario(horaInicio, horaFinal, dia.getHoraInicio(), dia.getHoraFinal())) {
-                    aulasOcupadasPeriodica.computeIfAbsent(dia.getAula(), k -> new ArrayList<>()).add(dia);
+                    aulasOcupadasPeriodica.computeIfAbsent(dia.getAula().getNumero(), k -> new ArrayList<>()).add(dia);
                 }
             }
         }
 
-        Set<Aula> ocupadasCombinadas = new HashSet<>(aulasOcupadasEsporadicas.keySet());
+        Set<Integer> aulasOcupadasCombinadas = new HashSet<>(aulasOcupadasEsporadicas.keySet());
         if (periodoId != null) {
-            ocupadasCombinadas.addAll(aulasOcupadasPeriodica.keySet());
+            aulasOcupadasCombinadas.addAll(aulasOcupadasPeriodica.keySet());
         }
 
         ArrayList<Aula> aulasDisponibles = new ArrayList<>();
 
         for (Aula aula : aulasCompatibles) {
-            if (!ocupadasCombinadas.contains(aula)) {
+            if (!aulasOcupadasCombinadas.contains(aula.getNumero())) {
                 aulasDisponibles.add(aula);
             }
         }
@@ -148,8 +146,8 @@ public class GestorAula {
     }
 
     private AulaDisponibilidadResponseDTO manejarReservaPeriodica(AulaDisponibilidadRequestDTO requestDTO,
-                                                                  List<Aula> aulasCompatibles, HashMap<Aula, List<DiaEsporadica>> aulasOcupadasEsporadicas,
-                                                                  HashMap<Aula, List<DiaPeriodica>> aulasOcupadasPeriodica) {
+                                                                  List<Aula> aulasCompatibles, HashMap<Integer, List<DiaEsporadica>> aulasOcupadasEsporadicas,
+                                                                  HashMap<Integer, List<DiaPeriodica>> aulasOcupadasPeriodica) {
 
         if (requestDTO.getTipoPeriodo() == null || requestDTO.getDia() == null
                 || requestDTO.getHoraInicio() == null || requestDTO.getHoraFinal() == null) {
@@ -170,7 +168,7 @@ public class GestorAula {
         List<DiaEsporadica> diasEsporadicos = reservaEsporadicaDAO.findDiaEsporadicaByFechasAndAulaIds(fechas, aulasIds);
         for (DiaEsporadica dia : diasEsporadicos) {
             if (hayConflictoHorario(horaInicio, horaFinal, dia.getHoraInicio(), dia.getHoraFinal())) {
-                aulasOcupadasEsporadicas.computeIfAbsent(dia.getAula(), k -> new ArrayList<>()).add(dia);
+                aulasOcupadasEsporadicas.computeIfAbsent(dia.getAula().getNumero(), k -> new ArrayList<>()).add(dia);
             }
         }
 
@@ -178,20 +176,19 @@ public class GestorAula {
         ArrayList<DiaPeriodica> diasPeriodicos = new ArrayList<>(List.of());
 
         diasPeriodicos.addAll(reservaPeriodicaDAO.findByDiaSemanaAndPeriodosAndAulaIds(diaSemana, periodosCoincidentes, aulasIds));
-
         for (DiaPeriodica dia : diasPeriodicos) {
             if (hayConflictoHorario(horaInicio, horaFinal, dia.getHoraInicio(), dia.getHoraFinal())) {
-                aulasOcupadasPeriodica.computeIfAbsent(dia.getAula(), k -> new ArrayList<>()).add(dia);
+                aulasOcupadasPeriodica.computeIfAbsent(dia.getAula().getNumero(), k -> new ArrayList<>()).add(dia);
             }
         }
 
-        Set<Aula> ocupadasCombinadas = new HashSet<>(aulasOcupadasEsporadicas.keySet());
-        ocupadasCombinadas.addAll(aulasOcupadasPeriodica.keySet());
-
+        Set<Integer> aulasOcupadasCombinadas = new HashSet<>(aulasOcupadasEsporadicas.keySet());
+        aulasOcupadasCombinadas.addAll(aulasOcupadasPeriodica.keySet());
+        
         ArrayList<Aula> aulasDisponibles = new ArrayList<>();
 
         for (Aula aula : aulasCompatibles) {
-            if (!ocupadasCombinadas.contains(aula)) {
+            if (!aulasOcupadasCombinadas.contains(aula.getNumero())) {
                 aulasDisponibles.add(aula);
             }
         }
@@ -276,7 +273,7 @@ public class GestorAula {
                                                Tipo_Periodo tipoPeriodo) {
 
         long minutos = 0;
-
+        
         if(esporadicas != null) {
             for (DiaEsporadica de : esporadicas) {
                 minutos += minutosSolapados(horaInicial, horaFinal, de.getHoraInicio(), de.getHoraFinal());
@@ -290,14 +287,13 @@ public class GestorAula {
 
                 if (tipoPeriodo == Tipo_Periodo.PRIMER_CUATRIMESTRE
                         || tipoPeriodo == Tipo_Periodo.ANUAL) {
-
                     boolean existeEnPrimerCuatrimestre = gestorPeriodo
                             .traerPeriodos(dp.getReserva().getPeriodosId())
-                            .stream().anyMatch(p -> p.getTipoPeriodo().equals(Tipo_Periodo.PRIMER_CUATRIMESTRE));
+                            .stream().anyMatch(p -> p.getTipoPeriodo() == (Tipo_Periodo.PRIMER_CUATRIMESTRE));
 
                     if (existeEnPrimerCuatrimestre) {
                         minutos +=
-                                cantidadDiasPorPeriodo.get(Tipo_Periodo.PRIMER_CUATRIMESTRE) * minutosIndividual;
+                                ((cantidadDiasPorPeriodo.get(Tipo_Periodo.PRIMER_CUATRIMESTRE)) * minutosIndividual);
                     }
                 }
 
@@ -306,11 +302,11 @@ public class GestorAula {
 
                     boolean existeEnSegundoCuatrimestre = gestorPeriodo
                             .traerPeriodos(dp.getReserva().getPeriodosId())
-                            .stream().anyMatch(p -> p.getTipoPeriodo().equals(Tipo_Periodo.SEGUNDO_CUATRIMESTRE));
+                            .stream().anyMatch(p -> p.getTipoPeriodo() == (Tipo_Periodo.SEGUNDO_CUATRIMESTRE));
 
                     if (existeEnSegundoCuatrimestre) {
                         minutos +=
-                                cantidadDiasPorPeriodo.get(Tipo_Periodo.SEGUNDO_CUATRIMESTRE) * minutosIndividual;
+                                ((cantidadDiasPorPeriodo.get(Tipo_Periodo.SEGUNDO_CUATRIMESTRE)) * minutosIndividual);
                     }
                 }
             }
@@ -357,102 +353,113 @@ public class GestorAula {
         }
     }
 
-    private AulaDisponibilidadResponseDTO generarDTOMenosSuperpuestoEsporadico(
-            List<Aula> aulas,
-            LocalTime horaInicial,
-            LocalTime horaFinal,
-            HashMap<Aula, List<DiaEsporadica>> mapaEsporadicas,
-            HashMap<Aula, List<DiaPeriodica>> mapaPeriodicas) {
+private AulaDisponibilidadResponseDTO generarDTOMenosSuperpuestoEsporadico(
+        List<Aula> aulas,
+        LocalTime horaInicial,
+        LocalTime horaFinal,
+        HashMap<Integer, List<DiaEsporadica>> mapaEsporadicas,
+        HashMap<Integer, List<DiaPeriodica>> mapaPeriodicas) {
 
-        List<AulaDTO> aulaDTOs = new ArrayList<>();
-        List<ReservaSolapadaDTO> reservaSolapadaDTOs = new ArrayList<>();
+    List<AulaDTO> aulaDTOs = new ArrayList<>();
+    List<ReservaSolapadaDTO> reservaSolapadaDTOs = new ArrayList<>();
 
-        for (Aula aula : aulas) {
-            List<DiaEsporadica> esporadicas = mapaEsporadicas.getOrDefault(aula, null);
-            List<DiaPeriodica> periodicas = mapaPeriodicas.getOrDefault(aula, null);
+    for (Aula aula : aulas) {
+        List<DiaEsporadica> esporadicas = mapaEsporadicas.getOrDefault(aula.getNumero(), null);
+        List<DiaPeriodica> periodicas = mapaPeriodicas.getOrDefault(aula.getNumero(), null);
 
-            ReservaSolapadaDTO reservaSolapadaDTO = new ReservaSolapadaDTO(
-                    crearListaReservasEsporadicasSolapadaDTO(esporadicas),
-                    crearListaReservasPeriodicasSolapadaDTO(periodicas)
-            );
+        ReservaSolapadaDTO reservaSolapadaDTO = new ReservaSolapadaDTO(
+                crearListaReservasEsporadicasSolapadaDTO(esporadicas),
+                crearListaReservasPeriodicasSolapadaDTO(periodicas)
+        );
 
-            AulaDTO aulaDTO = aulaToAulaDTO(aula);
-            aulaDTOs.add(aulaDTO);
-            reservaSolapadaDTOs.add(reservaSolapadaDTO);
-        }
-
-        List<Integer> indicesSorted = IntStream.range(0, aulaDTOs.size())
-                .boxed()
-                .sorted((i, j) -> {
-                    long valor1 = calcularMaximoIntervalo(horaInicial, horaFinal,
-                            mapaEsporadicas.getOrDefault(aulas.get(i), null), mapaPeriodicas.getOrDefault(aulas.get(i), null));
-
-                    long valor2 = calcularMaximoIntervalo(horaInicial, horaFinal,
-                            mapaEsporadicas.getOrDefault(aulas.get(j), null), mapaPeriodicas.getOrDefault(aulas.get(j), null));
-
-                    return Long.compare(valor2, valor1);
-                })
-                .collect(Collectors.toList());
-
-        List<AulaDTO> sortedAulaDTOs = indicesSorted.stream().map(aulaDTOs::get).collect(Collectors.toList());
-        List<ReservaSolapadaDTO> sortedReservaSolapadaDTOs = indicesSorted.stream().map(reservaSolapadaDTOs::get).collect(Collectors.toList());
-
-        return new AulaDisponibilidadResponseDTO(sortedAulaDTOs, sortedReservaSolapadaDTOs);
+        AulaDTO aulaDTO = aulaToAulaDTO(aula);
+        aulaDTOs.add(aulaDTO);
+        reservaSolapadaDTOs.add(reservaSolapadaDTO);
     }
 
-    private AulaDisponibilidadResponseDTO generarDTOMenosSuperpuestoPeriodico(
-            List<Aula> aulas,
-            DiaSemana dia,
-            LocalTime horaInicial,
-            LocalTime horaFinal,
-            HashMap<Aula, List<DiaEsporadica>> mapaEsporadicas,
-            HashMap<Aula, List<DiaPeriodica>> mapaPeriodicas,
-            Tipo_Periodo tipoPeriodo) {
+    List<Long> valores = IntStream.range(0, aulaDTOs.size())
+            .mapToObj(i -> calcularMaximoIntervalo(horaInicial, horaFinal,
+                    mapaEsporadicas.getOrDefault(aulas.get(i).getNumero(), null),
+                    mapaPeriodicas.getOrDefault(aulas.get(i).getNumero(), null)))
+            .collect(Collectors.toList());
 
-        List<AulaDTO> aulaDTOs = new ArrayList<>();
-        List<ReservaSolapadaDTO> reservaSolapadaDTOs = new ArrayList<>();
+    long maxValue = valores.stream().max(Long::compare).orElse(Long.MIN_VALUE);
 
-        for (Aula aula : aulas) {
-            List<DiaEsporadica> esporadicas = mapaEsporadicas.getOrDefault(aula, null);
-            List<DiaPeriodica> periodicas = mapaPeriodicas.getOrDefault(aula, null);
+    List<Integer> indicesWithMaxValue = IntStream.range(0, valores.size())
+            .filter(i -> valores.get(i) == maxValue)
+            .boxed()
+            .collect(Collectors.toList());
 
-            ReservaSolapadaDTO reservaSolapadaDTO = new ReservaSolapadaDTO(
-                    crearListaReservasEsporadicasSolapadaDTO(esporadicas),
-                    crearListaReservasPeriodicasSolapadaDTO(periodicas)
-            );
+    List<AulaDTO> filteredAulaDTOs = indicesWithMaxValue.stream().map(aulaDTOs::get).collect(Collectors.toList());
+    List<ReservaSolapadaDTO> filteredReservaSolapadaDTOs = indicesWithMaxValue.stream().map(reservaSolapadaDTOs::get).collect(Collectors.toList());
 
-            AulaDTO aulaDTO = aulaToAulaDTO(aula);
-            aulaDTOs.add(aulaDTO);
-            reservaSolapadaDTOs.add(reservaSolapadaDTO);
-        }
+    return new AulaDisponibilidadResponseDTO(filteredAulaDTOs, filteredReservaSolapadaDTOs);
+}
 
-        HashMap<Tipo_Periodo, Long> cantidadDiasPorPeriodo = new HashMap<>();
-        List<Integer> periodosCoincidentes = gestorPeriodo.obtenerPeriodosMasProximoPorTipo(tipoPeriodo);
-        for (Integer pId : periodosCoincidentes) {
-            Periodo p = gestorPeriodo.traerPeriodo(pId);
-            cantidadDiasPorPeriodo.put(p.getTipoPeriodo(), cantidadDeDiasEntreFechas(p.getFechaInicio(), p.getFechaFin(), dia));
-        }
+private AulaDisponibilidadResponseDTO generarDTOMenosSuperpuestoPeriodico(
+        List<Aula> aulas,
+        DiaSemana dia,
+        LocalTime horaInicial,
+        LocalTime horaFinal,
+        HashMap<Integer, List<DiaEsporadica>> mapaEsporadicas,
+        HashMap<Integer, List<DiaPeriodica>> mapaPeriodicas,
+        Tipo_Periodo tipoPeriodo) {
 
-        List<Integer> indicesSorted = IntStream.range(0, aulaDTOs.size())
-                .boxed()
-                .sorted((i, j) -> {
-                    long valor1 = calcularMaximasHorasSolapadas(horaInicial, horaFinal,
-                            mapaEsporadicas.getOrDefault(aulas.get(i), null), mapaPeriodicas.getOrDefault(aulas.get(i), null),
-                            cantidadDiasPorPeriodo, tipoPeriodo);
+    List<AulaDTO> aulaDTOs = new ArrayList<>();
+    List<ReservaSolapadaDTO> reservaSolapadaDTOs = new ArrayList<>();
 
-                    long valor2 = calcularMaximasHorasSolapadas(horaInicial, horaFinal,
-                            mapaEsporadicas.getOrDefault(aulas.get(j), null), mapaPeriodicas.getOrDefault(aulas.get(j), null),
-                            cantidadDiasPorPeriodo, tipoPeriodo);
+    for (Aula aula : aulas) {
+        List<DiaEsporadica> esporadicas = mapaEsporadicas.getOrDefault(aula.getNumero(), null);
+        List<DiaPeriodica> periodicas = mapaPeriodicas.getOrDefault(aula.getNumero(), null);
 
-                    return Long.compare(valor1, valor2);
-                })
-                .collect(Collectors.toList());
+        ReservaSolapadaDTO reservaSolapadaDTO = new ReservaSolapadaDTO(
+                crearListaReservasEsporadicasSolapadaDTO(esporadicas),
+                crearListaReservasPeriodicasSolapadaDTO(periodicas)
+        );
 
-        List<AulaDTO> sortedAulaDTOs = indicesSorted.stream().map(aulaDTOs::get).collect(Collectors.toList());
-        List<ReservaSolapadaDTO> sortedReservaSolapadaDTOs = indicesSorted.stream().map(reservaSolapadaDTOs::get).collect(Collectors.toList());
-
-        return new AulaDisponibilidadResponseDTO(sortedAulaDTOs, sortedReservaSolapadaDTOs);
+        AulaDTO aulaDTO = aulaToAulaDTO(aula);
+        aulaDTOs.add(aulaDTO);
+        reservaSolapadaDTOs.add(reservaSolapadaDTO);
     }
+
+    HashMap<Tipo_Periodo, Long> cantidadDiasPorPeriodo = new HashMap<>();
+    List<Integer> periodosCoincidentes = gestorPeriodo.obtenerPeriodosMasProximoPorTipo(tipoPeriodo);
+    for (Integer pId : periodosCoincidentes) {
+        Periodo p = gestorPeriodo.traerPeriodo(pId);
+        cantidadDiasPorPeriodo.put(p.getTipoPeriodo(), cantidadDeDiasEntreFechas(p.getFechaInicio(), p.getFechaFin(), dia));
+    }
+
+    long valorMinimo = Long.MAX_VALUE;
+    for (int i = 0; i < aulas.size(); i++) {
+        long valorActual = calcularMaximasHorasSolapadas(horaInicial, horaFinal,
+                mapaEsporadicas.getOrDefault(aulas.get(i).getNumero(), null),
+                mapaPeriodicas.getOrDefault(aulas.get(i).getNumero(), null),
+                cantidadDiasPorPeriodo, tipoPeriodo);
+        valorMinimo = Math.min(valorMinimo, valorActual);
+    }
+
+    List<Integer> indicesMinimos = new ArrayList<>();
+    for (int i = 0; i < aulas.size(); i++) {
+        long valorActual = calcularMaximasHorasSolapadas(horaInicial, horaFinal,
+                mapaEsporadicas.getOrDefault(aulas.get(i).getNumero(), null),
+                mapaPeriodicas.getOrDefault(aulas.get(i).getNumero(), null),
+                cantidadDiasPorPeriodo, tipoPeriodo);
+        if (valorActual == valorMinimo) {
+            indicesMinimos.add(i);
+        }
+    }
+
+    List<AulaDTO> aulasDTOMinimas = indicesMinimos.stream()
+            .map(aulaDTOs::get)
+            .collect(Collectors.toList());
+    List<ReservaSolapadaDTO> reservasSolapadasDTOMinimas = indicesMinimos.stream()
+            .map(reservaSolapadaDTOs::get)
+            .collect(Collectors.toList());
+    
+
+    return new AulaDisponibilidadResponseDTO(aulasDTOMinimas, reservasSolapadasDTOMinimas);
+}
+
 
     private List<ReservaPeriodicaSolapadaDTO> crearListaReservasPeriodicasSolapadaDTO(List<DiaPeriodica> periodicas) {
         if (periodicas == null) {
@@ -483,7 +490,7 @@ public class GestorAula {
     }
 
     private boolean hayConflictoHorario(LocalTime inicio1, LocalTime fin1, LocalTime inicio2, LocalTime fin2) {
-        return !inicio1.isAfter(fin2) && !fin1.isBefore(inicio2);
+        return inicio1.isBefore(fin2) && inicio2.isBefore(fin1);
     }
 
     private long minutosSolapados(LocalTime inicio1, LocalTime fin1, LocalTime inicio2, LocalTime fin2) {

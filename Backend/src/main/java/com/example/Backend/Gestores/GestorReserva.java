@@ -320,7 +320,7 @@ public class GestorReserva {
     }
 
     private boolean hayConflictoHorario(LocalTime inicio1, LocalTime fin1, LocalTime inicio2, LocalTime fin2) {
-        return !inicio1.isAfter(fin2) && !fin1.isBefore(inicio2);
+        return inicio1.isBefore(fin2) && inicio2.isBefore(fin1);
     }
     
     
