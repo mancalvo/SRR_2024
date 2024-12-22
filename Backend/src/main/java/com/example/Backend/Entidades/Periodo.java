@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class Periodo {
 
     private Integer id;
-    private Tipo_Periodo tipo_periodo;
+    private Tipo_Periodo tipoPeriodo;
     private Integer anio;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
@@ -26,12 +26,12 @@ public class Periodo {
         this.id = id;
     }
 
-    public Tipo_Periodo getTipo_periodo() {
-        return tipo_periodo;
+    public Tipo_Periodo getTipoPeriodo() {
+        return tipoPeriodo;
     }
 
-    public void setTipo_periodo(Tipo_Periodo tipo_periodo) {
-        this.tipo_periodo = tipo_periodo;
+    public void setTipoPeriodo(Tipo_Periodo tipoPeriodo) {
+        this.tipoPeriodo = tipoPeriodo;
     }
 
     public Integer getAnio() {

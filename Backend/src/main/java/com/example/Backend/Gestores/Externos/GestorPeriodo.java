@@ -20,34 +20,10 @@ public class GestorPeriodo {
     public void init() {
         // Datos simulados de periodos como si provinieran de un sistema externo
         periodos = new ArrayList<>();
-
-        periodos.add(new Periodo(1, Tipo_Periodo.PRIMER_CUATRIMESTRE,
-                2024,
-                LocalDate.of(2024, 3, 1),
-                LocalDate.of(2024, 6, 30)));
-
-        periodos.add(new Periodo(2, Tipo_Periodo.SEGUNDO_CUATRIMESTRE,
-                2024, LocalDate.of(2024, 8, 1),
-                LocalDate.of(2024, 11, 30)));
-
-        periodos.add(new Periodo(3, Tipo_Periodo.ANUAL,
-                2024, LocalDate.of(2024, 3, 1),
-                LocalDate.of(2024, 11, 30)));
-    }
-
-    /**
-     * Devuelve el periodo actual en función de la fecha actual.
-     *
-     * @return Periodo actual o null si no hay ninguno activo.
-     */
-    public Periodo obtenerPeriodoActual() {
-        // LocalDate hoy = LocalDate.now(); // Comentado para probar con una fecha específica
-        LocalDate hoy = LocalDate.of(2024, 5, 20); // Fecha fija (20/05/2024)
-
-        return periodos.stream()
-                .filter(periodo -> !hoy.isBefore(periodo.getFechaInicio()) && !hoy.isAfter(periodo.getFechaFin()))
-                .findFirst()
-                .orElse(null);
+        periodos.add(new Periodo(1, Tipo_Periodo.PRIMER_CUATRIMESTRE, 2024, LocalDate.of(2024, 3, 1), LocalDate.of(2024, 6, 30)));
+        periodos.add(new Periodo(2, Tipo_Periodo.SEGUNDO_CUATRIMESTRE, 2024, LocalDate.of(2024, 8, 1), LocalDate.of(2024, 11, 30)));
+        periodos.add(new Periodo(3, Tipo_Periodo.PRIMER_CUATRIMESTRE, 2025, LocalDate.of(2025, 3, 1), LocalDate.of(2025, 6, 30)));
+        periodos.add(new Periodo(4, Tipo_Periodo.SEGUNDO_CUATRIMESTRE, 2025, LocalDate.of(2025, 8, 1), LocalDate.of(2025, 11, 30)));
     }
 
 
@@ -60,36 +36,6 @@ public class GestorPeriodo {
         return periodos;
     }
 
-    /**
-     * Filtra y devuelve periodos de tipo general PERIODICA.
-     *
-     * @return Lista de periodos periódicos.
-     */
-    public List<Periodo> obtenerPeriodosPeriodicos() {
-        return periodos.stream()
-                .filter(periodo -> esPeriodoPeriodico(periodo.getTipo_periodo()))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Filtra y devuelve periodos ESPORADICOS.
-     *
-     * @return Lista de periodos esporádicos.
-     */
-    public List<Periodo> obtenerPeriodosEsporadicos() {
-        return periodos.stream()
-                .filter(periodo -> periodo.getTipo_periodo() == Tipo_Periodo.ESPORADICA)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Determina si un Tipo_Periodo es PERIODICO.
-     */
-    private boolean esPeriodoPeriodico(Tipo_Periodo tipo) {
-        return tipo == Tipo_Periodo.PRIMER_CUATRIMESTRE
-                || tipo == Tipo_Periodo.SEGUNDO_CUATRIMESTRE
-                || tipo == Tipo_Periodo.ANUAL;
-    }
 
     /**
      * Obtiene un periodo específico dado un periodoId.
@@ -103,8 +49,22 @@ public class GestorPeriodo {
                 .findFirst()
                 .orElse(null);
     }
-
-
+    
+        /**
+     * Obtiene un periodo específico dado un tipo_periodo y año.
+     *
+     * @param tipoPeriodo
+     * @param anio
+     * @return Periodo correspondiente o null si no existe.
+     */
+    public Periodo traerPeriodo(Tipo_Periodo tipoPeriodo, Integer anio) {
+        return periodos.stream()
+                .filter(periodo -> periodo.getAnio().equals(anio) && periodo.getTipoPeriodo() == tipoPeriodo)
+                .findFirst()
+                .orElse(null);
+    }
+ 
+    
     /**
      * Obtiene un periodo específico dado un Tipo_Periodo.
      *
@@ -144,25 +104,50 @@ public class GestorPeriodo {
         }
         throw new IllegalArgumentException("No se encontró un periodo para el tipo especificado.");
     }
-
-    public ArrayList<Integer> periodosIdQueContienenFecha(LocalDate fecha) {
-        ArrayList<Integer> periodosIdQueContienen = new ArrayList<>();
+ 
+    public Integer periodoIdQueContieneFecha(LocalDate fecha) {
         for (Periodo periodo : periodos) {
             if ((fecha.isEqual(periodo.getFechaInicio()) || fecha.isAfter(periodo.getFechaInicio())) &&
-                    (fecha.isEqual(periodo.getFechaFin()) || fecha.isBefore(periodo.getFechaFin()))) {
-                periodosIdQueContienen.add(periodo.getId());
+                (fecha.isEqual(periodo.getFechaFin()) || fecha.isBefore(periodo.getFechaFin()))) {
+                return periodo.getId();
             }
         }
-        return periodosIdQueContienen;
+        return null;
     }
-
-    public Integer obtenerPeriodoMasProximoPorTipo(Tipo_Periodo tipoPeriodo) {
-        return periodos.stream()
-                .filter(periodo -> periodo.getTipo_periodo() == tipoPeriodo && LocalDate.now().isBefore(periodo.getFechaFin()))
-                .min(Comparator.comparing(Periodo::getFechaInicio))
-                .map(Periodo::getId)
-                .orElse(-1);
+    
+    public ArrayList<Integer> obtenerPeriodosMasProximoPorTipo(Tipo_Periodo tipoPeriodo) {
+        ArrayList<Integer> ps = new ArrayList<>();
+        try {
+            if(tipoPeriodo == Tipo_Periodo.PRIMER_CUATRIMESTRE || tipoPeriodo == Tipo_Periodo.SEGUNDO_CUATRIMESTRE) {
+                ps.add(periodos.stream()
+                    .filter(periodo -> periodo.getTipoPeriodo() == tipoPeriodo && LocalDate.now().isBefore(periodo.getFechaFin()))
+                    .min(Comparator.comparing(Periodo::getFechaInicio))
+                    .map(Periodo::getId)
+                    .orElse(null));
+            } else if (tipoPeriodo == Tipo_Periodo.ANUAL) {
+                Integer primerCuatrimestreId = periodos.stream()
+                    .filter(periodo -> LocalDate.now().isBefore(periodo.getFechaFin()) 
+                            && periodo.getTipoPeriodo() == Tipo_Periodo.PRIMER_CUATRIMESTRE)
+                    .min(Comparator.comparing(Periodo::getFechaInicio))
+                    .map(Periodo::getId)
+                    .orElse(-1);
+            
+                Periodo primerCuatrimestre = traerPeriodo(primerCuatrimestreId);
+                Integer segundoCuatrimestreId = periodos.stream()
+                    .filter(periodo -> primerCuatrimestre.getAnio().compareTo(periodo.getAnio()) == 0 
+                            && periodo.getTipoPeriodo() == Tipo_Periodo.SEGUNDO_CUATRIMESTRE)
+                    .min(Comparator.comparing(Periodo::getFechaInicio))
+                    .map(Periodo::getId)
+                    .orElse(-1);
+                ps.add(primerCuatrimestreId);
+                ps.add(segundoCuatrimestreId);
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+            
+            
+        return ps;
     }
-
-
+    
 }

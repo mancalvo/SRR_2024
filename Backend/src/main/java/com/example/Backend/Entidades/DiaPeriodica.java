@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
-
 @Entity
 @Table(name = "dia_periodica")
 @Data
@@ -26,8 +25,8 @@ public class DiaPeriodica {
     @Column(name = "hora_final")
     private LocalTime horaFinal;
 
+    @Enumerated(EnumType.STRING) // Explicitly map the enum
     @Column(name = "dia_semana")
-    @Enumerated(EnumType.STRING)
     private DiaSemana diaSemana;
 
     @ManyToOne

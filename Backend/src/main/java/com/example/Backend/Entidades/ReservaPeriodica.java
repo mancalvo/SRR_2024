@@ -1,7 +1,5 @@
 package com.example.Backend.Entidades;
 
-import com.example.Backend.Enum.Tipo_Aula;
-import com.example.Backend.Enum.Tipo_Periodo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,35 +21,30 @@ public class ReservaPeriodica {
     @Column(name = "id_reservaPeriodica")
     private Integer idReservaPeriodica;
 
+    @Column(name = "cantidad_alumnos")
+    private Integer cantidadAlumnos;
+
     @Column(name = "solicitante")
     private String solicitante;
-
-    @Column(name = "correo")
-    private String correo;
 
     @Column(name = "catedra")
     private String catedra;
 
-    @Column(name = "cantidad_alumnos")
-    private Integer cantidadAlumnos;
-
     @Column(name = "fecha")
     private LocalDate fecha;
-    /*
-    @Column(name = "tipo_periodo")
-    @Enumerated(EnumType.STRING)
-    private Tipo_Periodo tipoPeriodo;
-    */
-    @Transient  // No se mapea con la BBDD
-    private Tipo_Aula tipoAula;
 
-    @Column(name = "periodo")
-    private Integer periodoId;
+    @Column(name = "correo")
+    private String correo;
+
+    @ElementCollection // Map the list of period IDs
+    @CollectionTable(name = "reserva_periodica_periodos", joinColumns = @JoinColumn(name = "id_reservaPeriodica"))
+    @Column(name = "periodo_id")
+    private List<Integer> periodosId = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "id_bedel")
     private Usuario bedel;
 
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<DiaPeriodica> diasPeriodica  = new ArrayList<>();
+    private List<DiaPeriodica> diasPeriodica = new ArrayList<>();
 }

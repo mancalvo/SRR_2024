@@ -29,6 +29,7 @@ public class AulaController {
             @RequestParam(required = false) String dia,
             @RequestParam @DateTimeFormat(pattern = "HH:mm") String horaInicio,
             @RequestParam @DateTimeFormat(pattern = "HH:mm") String horaFinal) {
+        
         AulaDisponibilidadRequestDTO request = new AulaDisponibilidadRequestDTO(tipoAula,capacidad,tipoReserva,tipoPeriodo,fecha,dia,horaInicio,horaFinal);
         AulaDisponibilidadResponseDTO response =  gestorAula.buscarAulasDisponibles(request);
         return ResponseEntity.ok(response);
