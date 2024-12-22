@@ -33,7 +33,7 @@ public class UsuarioController {
     @GetMapping("/bedel/{id}")
     public ResponseEntity<UsuarioDTO> buscarBedel(@PathVariable Integer id) {
         UsuarioDTO usuario = gestorBedel.buscarBedelPorId(id);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(usuario);
+        return ResponseEntity.ok(usuario);
     }
 
     @GetMapping("/bedels")

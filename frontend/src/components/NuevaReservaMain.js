@@ -37,15 +37,15 @@ function NuevaReservaMain() {
       alert("Por favor selecciona un tipo de reserva");
       return;
     }
-   
+
     // Mapeamos el periodo según lo que seleccionó el usuario
-    const periodoSeleccionado = periodoMap[formData.tipoReserva] || "ESPORADICA";
+    const periodoSeleccionado =
+      periodoMap[formData.tipoReserva] || "ESPORADICA";
     setFormData((prevData) => ({
       ...prevData,
       periodo: periodoSeleccionado,
     }));
     if (formData.tipoReserva.toUpperCase() === "ESPORADICA") {
-      
       setCurrentSection(2); // Navegar a la sección de reservas esporádicas
     } else {
       setCurrentSection(3); // Navegar a la sección de reservas periódicas
@@ -55,15 +55,16 @@ function NuevaReservaMain() {
   const volverSeccion = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
-      detallesReserva: [], 
+      detallesReserva: [],
     }));
-    setCurrentSection(1); 
+    setCurrentSection(1);
   };
 
   const enviarReserva = () => {
+    console.log("Antes de Enviar: ", formData);
+
     const nombreUsuario = localStorage.getItem("nombreUsuario");
     const tipoAulaBackend = tipoAulaMap[formData.tipoAula];
-    
 
     const reservaDTO = {
       nombreUsuario: nombreUsuario || "UsuarioDemo",
@@ -71,44 +72,45 @@ function NuevaReservaMain() {
       correo: formData.correo,
       catedra: formData.catedra.toUpperCase(),
       fechaRealizada: new Date().toISOString().split("T")[0],
-      tipoReserva: formData.tipoReserva === "Esporadica" ? "ESPORADICA" : "PERIODICA",
+      tipoReserva:
+        formData.tipoReserva === "Esporadica" ? "ESPORADICA" : "PERIODICA",
       periodo: formData.periodo,
       tipoAula: tipoAulaBackend,
       cantidadAlumnos: parseInt(formData.cantAlumnos),
       detalleReserva: formData.detallesReserva.map((detalle) => ({
-        
         diaSemana: detalle.diaSemana,
         fecha: detalle.fecha,
         horarioInicio: detalle.horarioInicio,
         horarioFinal: detalle.horarioFinal,
-        aulaId: detalle.aulaId, 
+        aulaId: detalle.aulaId,
       })),
     };
-    console.log("Esto se envia: " ,reservaDTO);
-   
-    axios.post("http://localhost:8080/reservas", reservaDTO, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+
+    console.log("Esto se envia: ", reservaDTO);
+
+    axios
+      .post("http://localhost:8080/reservas", reservaDTO, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then((response) => {
         console.log("Reserva enviada con éxito:", response);
         alert("La reserva se ha guardado correctamente.");
-        navigate("/bedel"); 
+        navigate("/bedel");
       })
       .catch((error) => {
         console.error("Error al enviar la reserva:", error);
-    
+
         // Verifica si el backend envió un mensaje de error
         const errorMessage =
           error.response && error.response.data && error.response.data.message
             ? error.response.data.message
             : "Hubo un error al enviar la reserva. Intenta de nuevo.";
-    
+
         // Muestra el mensaje en un alert
         alert(errorMessage);
       });
-    
   };
 
   const agregarFecha = (fecha, horarioInicio, horarioFinal, aulaId) => {
@@ -126,7 +128,7 @@ function NuevaReservaMain() {
       ...prev,
       detallesReserva: [
         ...prev.detallesReserva,
-        { diaSemana: dia, horarioInicio, horarioFinal, aulaId: aulaId.numero },
+        { diaSemana: dia, horarioInicio, horarioFinal, aulaId },
       ],
     }));
   };

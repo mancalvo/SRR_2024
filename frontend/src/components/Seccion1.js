@@ -70,13 +70,17 @@ const validarCampos = (formData) => {
   ];
 
   const campoInvalido = camposRequeridos.find((campo) => !campo.campo);
-
   if (campoInvalido) {
-    return campoInvalido.mensaje; 
+    return campoInvalido.mensaje;
+  }
+
+  if (formData.cantAlumnos <= 0) {
+    return "La cantidad de alumnos debe ser mayor a 0.";
   }
 
   return null;
 };
+
 
 const Seccion1 = ({ formData, setFormData, setDatosFormulario, siguienteSeccion }) => {
   const [solicitantes, setSolicitantes] = useState([]);
@@ -200,7 +204,9 @@ const Seccion1 = ({ formData, setFormData, setDatosFormulario, siguienteSeccion 
             </select>
           </div>
         </div>
-
+        <div className="text-danger small mt-2">
+            (*) Todos los campos son obligatorios.
+          </div>
         <div className="mt-4 d-flex justify-content-center align-items-center">
           <button
             type="button"

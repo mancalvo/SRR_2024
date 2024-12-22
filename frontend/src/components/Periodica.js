@@ -1,27 +1,21 @@
-import React, {  } from "react";
+import React from "react";
 import CartaDia from "./CartaDia";
 import "../App.css";
 
 const Seccion2 = ({ formData, setFormData, volverSeccion, agregarDia, enviarReserva }) => {
   const dias = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO"];
-
   
-  console.log("DESDE PERIODICA ",formData);
 
-   
-  
+  // Manejar el evento de guardar reserva
   const manejarGuardarReserva = () => {
-    enviarReserva();
+    enviarReserva(); // Si todo está bien, proceder con el envío de la reserva
   };
-
-
 
   return (
     <div className="form-container encuadro mb-0 mt-2 " style={{ width: "auto", overflowX: "auto" }}>
       <div id="seccion2">
         <h5 className="text-center">RESERVA PERIODICA</h5>
 
-    
         <div
           className="d-flex justify-content-center align-items-center"
           style={{
@@ -34,10 +28,11 @@ const Seccion2 = ({ formData, setFormData, volverSeccion, agregarDia, enviarRese
           {dias.map((dia, index) => (
             <div className="d-flex justify-content-center" key={index}>
               <CartaDia 
-              formData={formData}
-              dia={dia} 
-              id={index + 1} 
-              agregarDia={agregarDia} />
+                formData={formData}
+                dia={dia} 
+                id={index + 1} 
+                agregarDia={agregarDia} 
+              />
             </div>
           ))}
         </div>

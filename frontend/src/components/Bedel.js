@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import BedelModal from "./BedelModal";
+import EliminarBedel from "./EliminarBedel";
 
 function Bedel() {
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -10,10 +11,14 @@ function Bedel() {
   const [busquedaTurno, setBusquedaTurno] = useState("");
   const [paginaActual, setPaginaActual] = useState(1);
   const [bedelesPorPagina] = useState(5);
+  const [mostrarEliminarModal, setMostrarEliminarModal] = useState(false);
+  const [bedelAEliminar, setBedelAEliminar] = useState(null);
 
   const obtenerBedeles = async () => {
     try {
-      const respuesta = await axios.get("http://localhost:8080/usuarios/bedels");
+      const respuesta = await axios.get(
+        "http://localhost:8080/usuarios/bedels"
+      );
       setListaBedeles(respuesta.data);
     } catch (error) {
       console.error("Error:", error);
@@ -28,26 +33,23 @@ function Bedel() {
         obtenerBedeles(); // Si no hay filtros, obtenemos todos los bedeles
         return;
       }
-  
+
       const params = {};
       if (busquedaApellido) params.apellido = busquedaApellido;
       if (busquedaTurno) params.tipoTurno = busquedaTurno;
-  
+
       const respuesta = await axios.get(
-        "http://localhost:8080/usuarios/bedels/AYT", { params }
+        "http://localhost:8080/usuarios/bedels/AYT",
+        { params }
       );
-  
+
       console.log("Respuesta de la API:", respuesta.data); // Verifica la estructura de la respuesta
-      setListaBedeles(respuesta.data);  // Cambié de 'respuesta.data.bedeles' a 'respuesta.data'
+      setListaBedeles(respuesta.data); // Cambié de 'respuesta.data.bedeles' a 'respuesta.data'
     } catch (error) {
       console.error("Error al buscar bedeles:", error);
       alert(error.response?.data?.message || "Error al realizar la búsqueda.");
     }
   };
-  
-  
-  
-  
 
   useEffect(() => {
     obtenerBedeles();
@@ -61,37 +63,15 @@ function Bedel() {
   const manejarCerrarModal = () => {
     setMostrarModal(false);
     setEditarBedel(null);
-    setBusquedaApellido("");  // Limpiar el campo de búsqueda de apellido
-    setBusquedaTurno("");     // Limpiar el campo de búsqueda de turno
+    setBusquedaApellido(""); // Limpiar el campo de búsqueda de apellido
+    setBusquedaTurno(""); // Limpiar el campo de búsqueda de turno
     obtenerBedeles();
   };
-  
 
-  const manejarEliminarBedel = async (idUsuario, nombre, apellido) => {
-    const confirmacion = window.confirm(
-      `¿Estás seguro de que deseas borrar el bedel ${nombre} ${apellido}?`
-    );
-  
-    if (!confirmacion) return;
-  
-    try {
-      const respuesta = await axios.delete(
-        `http://localhost:8080/usuarios/bedel/${idUsuario}`
-      );
-  
-      alert(respuesta.data.message || "Bedel eliminado correctamente.");
-  
-      setListaBedeles((prevLista) =>
-        prevLista.filter((bedel) => bedel.idUsuario !== idUsuario)
-      );
-    } catch (error) {
-      console.error("Error al eliminar el bedel:", error);
-      alert(
-        error.response?.data?.message || "Error al eliminar el bedel."
-      );
-    }
+  const manejarEliminarBedel = (idUsuario) => {
+    setBedelAEliminar(idUsuario);
+    setMostrarEliminarModal(true);
   };
-  
 
   const indiceInicio = (paginaActual - 1) * bedelesPorPagina;
   const indiceFin = indiceInicio + bedelesPorPagina;
@@ -225,6 +205,14 @@ function Bedel() {
           cerrar={manejarCerrarModal}
           bedel={editarBedel}
           actualizarBedeles={obtenerBedeles}
+        />
+      )}
+      {mostrarEliminarModal && (
+        <EliminarBedel
+          idUsuario={bedelAEliminar} 
+          abrirModal={setMostrarEliminarModal}
+          cerrarModal={() => setMostrarEliminarModal(false)}
+          actualizarBedeles={obtenerBedeles} 
         />
       )}
     </div>
