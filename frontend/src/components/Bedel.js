@@ -23,27 +23,31 @@ function Bedel() {
 
   const buscarBedeles = async () => {
     try {
-      // Si ambos campos están vacíos, cargar todos los bedeles
       if (!busquedaApellido.trim() && !busquedaTurno.trim()) {
         obtenerBedeles();
         return;
       }
   
-      // Crear los parámetros de búsqueda
       const params = {};
       if (busquedaApellido) params.apellido = busquedaApellido;
       if (busquedaTurno) params.tipoTurno = busquedaTurno;
   
-      // Realizar la búsqueda
-      const respuesta = await axios.get("http://localhost:8080/usuarios/bedels/AYT", {
-        params,
-      });
-      setListaBedeles(respuesta.data);
+      const respuesta = await axios.get(
+        "http://localhost:8080/usuarios/bedels/AYT",
+        { params }
+      );
+  
+      alert(respuesta.data.message || "Búsqueda realizada correctamente.");
+  
+      setListaBedeles(respuesta.data.bedeles || []);
     } catch (error) {
       console.error("Error al buscar bedeles:", error);
-      alert("Error al realizar la búsqueda.");
+      alert(
+        error.response?.data?.message || "Error al realizar la búsqueda."
+      );
     }
   };
+  
   
 
   useEffect(() => {
@@ -65,24 +69,27 @@ function Bedel() {
     const confirmacion = window.confirm(
       `¿Estás seguro de que deseas borrar el bedel ${nombre} ${apellido}?`
     );
-
+  
     if (!confirmacion) return;
-
+  
     try {
       const respuesta = await axios.delete(
         `http://localhost:8080/usuarios/bedel/${idUsuario}`
       );
-
-      alert(respuesta.data);
-
+  
+      alert(respuesta.data.message || "Bedel eliminado correctamente.");
+  
       setListaBedeles((prevLista) =>
         prevLista.filter((bedel) => bedel.idUsuario !== idUsuario)
       );
     } catch (error) {
       console.error("Error al eliminar el bedel:", error);
-      alert("Error al eliminar el bedel.");
+      alert(
+        error.response?.data?.message || "Error al eliminar el bedel."
+      );
     }
   };
+  
 
   const indiceInicio = (paginaActual - 1) * bedelesPorPagina;
   const indiceFin = indiceInicio + bedelesPorPagina;

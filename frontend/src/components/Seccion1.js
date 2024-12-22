@@ -4,14 +4,15 @@ import "../App.css";
 
 const fetchSolicitantes = async () => {
   try {
-    const response = await fetch("http://localhost:8080/sistema-externo/docentes"); 
+    const response = await fetch("http://localhost:8080/sistema-externo/docentes");
     if (!response.ok) {
-      throw new Error("Error al obtener los solicitantes");
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error al obtener los solicitantes");
     }
     return await response.json();
   } catch (error) {
     console.error("Error al obtener los solicitantes:", error);
-    return [];
+    throw error;
   }
 };
 
@@ -19,25 +20,28 @@ const fetchCatedras = async () => {
   try {
     const response = await fetch("http://localhost:8080/sistema-externo/catedras");
     if (!response.ok) {
-      throw new Error("Error al obtener las cátedras");
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error al obtener las cátedras");
     }
     return await response.json();
   } catch (error) {
     console.error("Error al obtener las cátedras:", error);
-    return [];
+    throw error;
   }
 };
+
 
 const fetchTiposReserva = async () => {
   try {
     const response = await fetch("http://localhost:8080/sistema-externo/tipos-reserva");
     if (!response.ok) {
-      throw new Error("Error al obtener los tipos de reserva");
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error al obtener los tipos de reserva");
     }
     return await response.json();
   } catch (error) {
     console.error("Error al obtener los tipos de reserva:", error);
-    return [];
+    throw error;
   }
 };
 
@@ -45,12 +49,13 @@ const fetchTiposAula = async () => {
   try {
     const response = await fetch("http://localhost:8080/sistema-externo/tipos-aula");
     if (!response.ok) {
-      throw new Error("Error al obtener los tipos de aula");
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error al obtener los tipos de aula");
     }
     return await response.json();
   } catch (error) {
     console.error("Error al obtener los tipos de aula:", error);
-    return [];
+    throw error;
   }
 };
 

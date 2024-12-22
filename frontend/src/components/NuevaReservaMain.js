@@ -44,8 +44,8 @@ function NuevaReservaMain() {
       ...prevData,
       periodo: periodoSeleccionado,
     }));
-    console.log("DESDE NUEVARESERVA: ",formData);
     if (formData.tipoReserva.toUpperCase() === "ESPORADICA") {
+      
       setCurrentSection(2); // Navegar a la sección de reservas esporádicas
     } else {
       setCurrentSection(3); // Navegar a la sección de reservas periódicas
@@ -83,17 +83,28 @@ function NuevaReservaMain() {
     console.log(reservaDTO);
    
     axios.post("http://localhost:8080/reservas", reservaDTO, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).then((response) => {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
         console.log("Reserva enviada con éxito:", response);
         alert("La reserva se ha guardado correctamente.");
         navigate("/bedel"); 
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.error("Error al enviar la reserva:", error);
-        alert("Hubo un error al enviar la reserva. Intenta de nuevo.");
+    
+        // Verifica si el backend envió un mensaje de error
+        const errorMessage =
+          error.response && error.response.data && error.response.data.message
+            ? error.response.data.message
+            : "Hubo un error al enviar la reserva. Intenta de nuevo.";
+    
+        // Muestra el mensaje en un alert
+        alert(errorMessage);
       });
+    
   };
 
   const agregarFecha = (fecha, horarioInicio, horarioFinal, aulaId) => {
