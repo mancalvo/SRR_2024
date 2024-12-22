@@ -44,7 +44,7 @@ function NuevaReservaMain() {
       ...prevData,
       periodo: periodoSeleccionado,
     }));
-   
+    console.log("DESDE NUEVARESERVA: ",formData);
     if (formData.tipoReserva.toUpperCase() === "ESPORADICA") {
       setCurrentSection(2); // Navegar a la sección de reservas esporádicas
     } else {
@@ -80,7 +80,7 @@ function NuevaReservaMain() {
         aulaId: detalle.aulaId, 
       })),
     };
-
+    console.log(reservaDTO);
    
     axios.post("http://localhost:8080/reservas", reservaDTO, {
         headers: {

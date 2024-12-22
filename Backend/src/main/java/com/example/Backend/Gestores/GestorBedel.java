@@ -31,10 +31,6 @@ public class GestorBedel {
             throw new BedelException("Políticas de contraseña inválidas");
         }
 
-        if (encontrarBedelPorNyA(usuarioDTO.getNombre(), usuarioDTO.getApellido())) {
-            throw new BedelException("Ya existe un usuario registrado con ese nombre y apellido");
-        }
-
         validarUsuario(usuarioDTO);
 
         Usuario bedel = new Usuario();

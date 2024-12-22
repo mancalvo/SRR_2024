@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
-import DisponibilidadAula from "./DisponibilidadAula";
+import DisponibilidadAulaEsporadica from "./DisponibilidadAulaEsporadica";
 
-const CartaDia = ({ dia, id , agregarDia }) => {
+const CartaDia = ({ formData,dia, id , agregarDia }) => {
   const [horaInicial, setHoraInicial] = useState("--:--");
   const [horaFinal, setHoraFinal] = useState("--:--");
   const [opcionesHoraInicial, setOpcionesHoraInicial] = useState([]);
@@ -183,11 +183,15 @@ const CartaDia = ({ dia, id , agregarDia }) => {
             <p className="mb-0"> </p>
           )}
         </div>
-
-        <DisponibilidadAula
+        
+        <DisponibilidadAulaEsporadica
+          formData={formData}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
           actualizarAulaSeleccionada={actualizarAulaSeleccionada}
+          dia={dia.toUpperCase()}
+          horaInicio={horaInicial}
+          horaFinal={horaFinal}
         />
       </div>
     </div>

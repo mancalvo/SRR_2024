@@ -5,7 +5,7 @@ import "../App.css";
 const Seccion2 = ({ formData, setFormData, volverSeccion, agregarDia, enviarReserva }) => {
   const dias = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO"];
 
- 
+  console.log("DESDE PERIODICAL ",formData);
 
   
   const manejarGuardarReserva = () => {
@@ -30,6 +30,7 @@ const Seccion2 = ({ formData, setFormData, volverSeccion, agregarDia, enviarRese
           {dias.map((dia, index) => (
             <div className="d-flex justify-content-center" key={index}>
               <CartaDia 
+              formData={formData}
               dia={dia} 
               id={index + 1} 
               agregarDia={agregarDia} />

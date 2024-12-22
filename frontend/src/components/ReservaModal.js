@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import DisponibilidadAula from "./DisponibilidadAula"; 
+import DisponibilidadAulaEsporadica from "./DisponibilidadAulaEsporadica";
 
-function ReservaModal({ reserva, onGuardar, onCerrar }) {
+function ReservaModal({ formData, reserva, onGuardar, onCerrar }) {
   const [fecha, setFecha] = useState(reserva?.fecha || "");
   const [horaInicial, setHoraInicial] = useState("--:--");
   const [horaFinal, setHoraFinal] = useState("--:--");
   const [opcionesHoraInicial, setOpcionesHoraInicial] = useState([]);
   const [opcionesHoraFinal, setOpcionesHoraFinal] = useState([]);
   const [aulaSeleccionada, setAulaSeleccionada] = useState(null);
-  const [modalAulaAbierto, setModalAulaAbierto] = useState(false); 
+  const [modalAulaAbierto, setModalAulaAbierto] = useState(false);
 
   useEffect(() => {
     generarOpcionesIniciales();
@@ -67,7 +67,7 @@ function ReservaModal({ reserva, onGuardar, onCerrar }) {
   };
 
   const handleSeleccionarAula = () => {
-    setModalAulaAbierto(true); 
+    setModalAulaAbierto(true);
   };
 
   const manejarGuardar = () => {
@@ -148,18 +148,18 @@ function ReservaModal({ reserva, onGuardar, onCerrar }) {
             </div>
             <div className="mb-3">
               <button
-                className="btn btn-secondary"
+                className="btn btn-secondary mb-3"
                 onClick={handleSeleccionarAula}
                 disabled={horaInicial === "--:--" || horaFinal === "--:--"}
               >
                 Seleccionar Aula
               </button>
               {aulaSeleccionada && (
-                <p>Aula seleccionada: {aulaSeleccionada.nombre}</p>
+                <p>Aula seleccionada: {aulaSeleccionada.numero}</p>
               )}
             </div>
           </div>
-          <div className="modal-footer">
+          <div className="modal-footer mt-0">
             <div className="mt-3">
               <div className="col-8 d-flex justify-content-between">
                 <button className="btn btn-secondary me-2" onClick={onCerrar}>
@@ -174,11 +174,14 @@ function ReservaModal({ reserva, onGuardar, onCerrar }) {
         </div>
       </div>
 
-      
-      <DisponibilidadAula
+      <DisponibilidadAulaEsporadica
+        formData={formData}
         isOpen={modalAulaAbierto}
         onClose={() => setModalAulaAbierto(false)}
         actualizarAulaSeleccionada={actualizarAulaSeleccionada}
+        fecha={fecha}
+        horaInicio={horaInicial} 
+        horaFinal={horaFinal} 
       />
     </div>
   );

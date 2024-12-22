@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReservaModal from "./ReservaModal";
 
-function Esporadica({  setFormData, volverSeccion, enviarReserva }) {
+function Esporadica({  formData ,setFormData, volverSeccion, enviarReserva }) {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [listaReservas, setListaReservas] = useState([]);
   const [reservaActual, setReservaActual] = useState(null);
@@ -17,10 +17,10 @@ function Esporadica({  setFormData, volverSeccion, enviarReserva }) {
   };
 
   const manejarAgregarReserva = (nuevaReserva) => {
-    console.log("ID AULA ESPORADICA.js: ", nuevaReserva.aulaSeleccionada.id);
+    console.log("ID AULA ESPORADICA.js: ", nuevaReserva.aulaSeleccionada.numero);
     const reservaConIdAula = {
       ...nuevaReserva,
-      aulaId: nuevaReserva.aulaSeleccionada.id, 
+      aulaId: nuevaReserva.aulaSeleccionada.numero, 
     };
   
     if (reservaActual) {
@@ -58,7 +58,7 @@ function Esporadica({  setFormData, volverSeccion, enviarReserva }) {
         horarioInicio: reserva.horaInicial, 
         horarioFinal: reserva.horaFinal,   
         aulaId: reserva.aulaId, 
-        aulaSeleccionada: reserva.aulaSeleccionada,
+        aulaSeleccionada: reserva.aulaSeleccionada.numero,
       })),
     }));
     console.log("Detalles de la reserva actualizados:", listaReservas);
@@ -120,8 +120,8 @@ function Esporadica({  setFormData, volverSeccion, enviarReserva }) {
                     <td>
                       {reserva.aulaSeleccionada
                         ? typeof reserva.aulaSeleccionada === "object"
-                          ? reserva.aulaSeleccionada.nombre 
-                          : `Aula  ${reserva.aulaSeleccionada}` 
+                          ? ` Aula ${reserva.aulaSeleccionada.numero}`  
+                          : `Aula  ${reserva.aulaSeleccionada.numero}` 
                         : "No asignada"}
                     </td>
 
@@ -154,6 +154,7 @@ function Esporadica({  setFormData, volverSeccion, enviarReserva }) {
 
       {mostrarModal && (
         <ReservaModal
+          formData={formData}
           reserva={reservaActual}
           onGuardar={manejarAgregarReserva}
           onCerrar={manejarCerrarModal}
