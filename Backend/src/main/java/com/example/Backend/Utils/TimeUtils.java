@@ -1,4 +1,4 @@
-package Utils;
+package com.example.Backend.Utils;
 
 import com.example.Backend.Enum.DiaSemana;
 import static com.example.Backend.Enum.DiaSemana.JUEVES;
