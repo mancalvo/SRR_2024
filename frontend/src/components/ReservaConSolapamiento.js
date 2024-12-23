@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ReservaConSolapamiento = ({ conflictos, aulasDisponibles, onClose }) => {
-  console.log(conflictos);  // Verifica el contenido de los conflictos
+  console.log(conflictos); // Verifica el contenido de los conflictos
 
   return (
     <div className="modal fade show d-block" tabIndex="-1" aria-modal="true" role="dialog">
@@ -25,30 +25,47 @@ const ReservaConSolapamiento = ({ conflictos, aulasDisponibles, onClose }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {conflictos.map((conflicto, index) => (
-                    // Iterar sobre los conflictosEsporadicos
-                    conflicto.conflictosEsporadicos && conflicto.conflictosEsporadicos.map((conflictoEsporadico, idx) => {
-                      // Aquí asignamos el aula correspondiente por el índice
-                      const aula = aulasDisponibles[index];
+                  {conflictos.map((conflicto, index) => {
+                    const aula = aulasDisponibles[index];
 
-                      return (
-                        <tr key={index + '-' + idx}>
-                          <td>{aula ? `Aula ${aula.numero}` : 'No disponible'}</td> 
-                          <td>{conflictoEsporadico.docente}</td>  
-                          <td>{conflictoEsporadico.curso}</td> 
-                          <td>{conflictoEsporadico.email}</td>  
-                          <td>{conflictoEsporadico.horaInicio}</td>  
-                          <td>{conflictoEsporadico.horaFinal}</td>  
-                        </tr>
-                      );
-                    })
-                  ))}
+                    return (
+                      <>
+                        {/* Recorrer conflictosEsporadicos si existen */}
+                        {conflicto.conflictosEsporadicos &&
+                          conflicto.conflictosEsporadicos.map((conflictoEsporadico, idx) => (
+                            <tr key={`esporadico-${index}-${idx}`}>
+                              <td>{aula ? `Aula ${aula.numero}` : 'No disponible'}</td>
+                              <td>{conflictoEsporadico.docente}</td>
+                              <td>{conflictoEsporadico.curso}</td>
+                              <td>{conflictoEsporadico.email}</td>
+                              <td>{conflictoEsporadico.horaInicio}</td>
+                              <td>{conflictoEsporadico.horaFinal}</td>
+                            </tr>
+                          ))}
+
+                        {/* Recorrer conflictosPeriodicos si existen */}
+                        {conflicto.conflictosPeriodicos &&
+                          conflicto.conflictosPeriodicos.map((conflictoPeriodico, idx) => (
+                            <tr key={`periodico-${index}-${idx}`}>
+                              <td>{aula ? `Aula ${aula.numero}` : 'No disponible'}</td>
+                              <td>{conflictoPeriodico.docente}</td>
+                              <td>{conflictoPeriodico.curso}</td>
+                              <td>{conflictoPeriodico.email}</td>
+                              <td>{conflictoPeriodico.horaInicio}</td>
+                              <td>{conflictoPeriodico.horaFinal}</td>
+                            </tr>
+                          ))}
+                      </>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={onClose}>Cerrar</button>
+            <button type="button" className="btn btn-secondary" onClick={onClose}>
+              Cerrar
+            </button>
           </div>
         </div>
       </div>

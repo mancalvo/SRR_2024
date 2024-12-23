@@ -47,7 +47,7 @@ const EliminarBedel = ({ idUsuario, abrirModal, cerrarModal,actualizarBedeles })
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header justify-content-center">
-            <h5 className="modal-title">Esta seguro que desea elimnar?</h5>
+            <h5 className="modal-title">Esta seguro que desea eliminar?</h5>
             <button
               type="button"
               className="btn-close"
