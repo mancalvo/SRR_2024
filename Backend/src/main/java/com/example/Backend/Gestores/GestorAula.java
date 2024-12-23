@@ -1,5 +1,6 @@
 package com.example.Backend.Gestores;
 
+import Utils.TimeUtils;
 import com.example.Backend.DAO.*;
 import com.example.Backend.DTO.AulaDTO;
 import com.example.Backend.DTO.AulaDisponibilidadRequestDTO;
@@ -45,7 +46,6 @@ public class GestorAula {
 
     public AulaDisponibilidadResponseDTO buscarAulasDisponibles(AulaDisponibilidadRequestDTO requestDTO) {
 
-        imprimirAulaDisponibilidad(requestDTO);
 
         // Lista para almacenar las aulas disponibles
         List<Aula> aulasDisponibles = new ArrayList<>();
@@ -98,12 +98,12 @@ public class GestorAula {
         List<Integer> aulasIds = aulasCompatibles.stream().map(a -> a.getNumero()).collect(Collectors.toList());
         List<DiaEsporadica> diasEsporadicos = reservaEsporadicaDAO.findDiaEsporadicaByFechaAndAulaIds(requestDTO.getFecha(), aulasIds);
         for (DiaEsporadica dia : diasEsporadicos) {
-            if (hayConflictoHorario(horaInicio, horaFinal, dia.getHoraInicio(), dia.getHoraFinal())) {
+            if (TimeUtils.hayConflictoHorario(horaInicio, horaFinal, dia.getHoraInicio(), dia.getHoraFinal())) {
                 aulasOcupadasEsporadicas.computeIfAbsent(dia.getAula().getNumero(), k -> new ArrayList<>()).add(dia);
             }
         }
 
-        DiaSemana diaSemana = DiaSemana.valueOf(convertirDayOfWeekADiaSemana(requestDTO.getFecha().getDayOfWeek()).toString());
+        DiaSemana diaSemana = DiaSemana.valueOf(TimeUtils.convertirDayOfWeekADiaSemana(requestDTO.getFecha().getDayOfWeek()).toString());
         // GESTOR PERIODO -> Obtener periodos para esta fecha
         Integer periodoId = gestorPeriodo.periodoIdQueContieneFecha(requestDTO.getFecha());
 
@@ -114,7 +114,7 @@ public class GestorAula {
                     periodoId, aulasIds));
 
             for (DiaPeriodica dia : diasPeriodicos) {
-                if (hayConflictoHorario(horaInicio, horaFinal, dia.getHoraInicio(), dia.getHoraFinal())) {
+                if (TimeUtils.hayConflictoHorario(horaInicio, horaFinal, dia.getHoraInicio(), dia.getHoraFinal())) {
                     aulasOcupadasPeriodica.computeIfAbsent(dia.getAula().getNumero(), k -> new ArrayList<>()).add(dia);
                 }
             }
@@ -157,7 +157,7 @@ public class GestorAula {
         Tipo_Periodo periodoSolicitado = Tipo_Periodo.valueOf(requestDTO.getTipoPeriodo());
         List<Integer> periodosCoincidentes = gestorPeriodo.obtenerPeriodosMasProximoPorTipo(periodoSolicitado);
         DiaSemana diaSemana = DiaSemana.valueOf(requestDTO.getDia());
-        List<LocalDate> fechas = obtenerFechasParaPeriodosYDia(convertirDiaSemanaAWeekOfDay(diaSemana),
+        List<LocalDate> fechas = obtenerFechasParaPeriodosYDia(TimeUtils.convertirDiaSemanaADayOfWeek(diaSemana),
                 gestorPeriodo.traerPeriodos(periodosCoincidentes));
 
         LocalTime horaInicio = LocalTime.parse(requestDTO.getHoraInicio());
@@ -167,7 +167,7 @@ public class GestorAula {
         List<Integer> aulasIds = aulasCompatibles.stream().map(a -> a.getNumero()).collect(Collectors.toList());
         List<DiaEsporadica> diasEsporadicos = reservaEsporadicaDAO.findDiaEsporadicaByFechasAndAulaIds(fechas, aulasIds);
         for (DiaEsporadica dia : diasEsporadicos) {
-            if (hayConflictoHorario(horaInicio, horaFinal, dia.getHoraInicio(), dia.getHoraFinal())) {
+            if (TimeUtils.hayConflictoHorario(horaInicio, horaFinal, dia.getHoraInicio(), dia.getHoraFinal())) {
                 aulasOcupadasEsporadicas.computeIfAbsent(dia.getAula().getNumero(), k -> new ArrayList<>()).add(dia);
             }
         }
@@ -177,7 +177,7 @@ public class GestorAula {
 
         diasPeriodicos.addAll(reservaPeriodicaDAO.findByDiaSemanaAndPeriodosAndAulaIds(diaSemana, periodosCoincidentes, aulasIds));
         for (DiaPeriodica dia : diasPeriodicos) {
-            if (hayConflictoHorario(horaInicio, horaFinal, dia.getHoraInicio(), dia.getHoraFinal())) {
+            if (TimeUtils.hayConflictoHorario(horaInicio, horaFinal, dia.getHoraInicio(), dia.getHoraFinal())) {
                 aulasOcupadasPeriodica.computeIfAbsent(dia.getAula().getNumero(), k -> new ArrayList<>()).add(dia);
             }
         }
@@ -315,44 +315,7 @@ public class GestorAula {
         return minutos;
     }
 
-    private DiaSemana convertirDayOfWeekADiaSemana(DayOfWeek dayOfWeek) {
-        switch (dayOfWeek) {
-            case MONDAY:
-                return DiaSemana.LUNES;
-            case TUESDAY:
-                return DiaSemana.MARTES;
-            case WEDNESDAY:
-                return DiaSemana.MIERCOLES;
-            case THURSDAY:
-                return DiaSemana.JUEVES;
-            case FRIDAY:
-                return DiaSemana.VIERNES;
-            case SATURDAY:
-                return DiaSemana.SABADO;
-            default:
-                throw new IllegalArgumentException("Día de la semana no válido: " + dayOfWeek);
-        }
-    }
-
-    private DayOfWeek convertirDiaSemanaAWeekOfDay(DiaSemana dia) {
-        switch (dia) {
-            case LUNES:
-                return DayOfWeek.MONDAY;
-            case MARTES:
-                return DayOfWeek.TUESDAY;
-            case MIERCOLES:
-                return DayOfWeek.WEDNESDAY;
-            case JUEVES:
-                return DayOfWeek.THURSDAY;
-            case VIERNES:
-                return DayOfWeek.FRIDAY;
-            case SABADO:
-                return DayOfWeek.SATURDAY;
-            default:
-                throw new IllegalArgumentException("Día de la semana no válido: " + dia);
-        }
-    }
-
+ 
 private AulaDisponibilidadResponseDTO generarDTOMenosSuperpuestoEsporadico(
         List<Aula> aulas,
         LocalTime horaInicial,
@@ -489,9 +452,6 @@ private AulaDisponibilidadResponseDTO generarDTOMenosSuperpuestoPeriodico(
                 .collect(Collectors.toList());
     }
 
-    private boolean hayConflictoHorario(LocalTime inicio1, LocalTime fin1, LocalTime inicio2, LocalTime fin2) {
-        return inicio1.isBefore(fin2) && inicio2.isBefore(fin1);
-    }
 
     private long minutosSolapados(LocalTime inicio1, LocalTime fin1, LocalTime inicio2, LocalTime fin2) {
 
@@ -508,7 +468,7 @@ private AulaDisponibilidadResponseDTO generarDTOMenosSuperpuestoPeriodico(
     }
 
     private Long cantidadDeDiasEntreFechas(LocalDate fechaInicio, LocalDate fechaFin, DiaSemana diaSemana) {
-        DayOfWeek dia = convertirDiaSemanaAWeekOfDay(diaSemana);
+        DayOfWeek dia = TimeUtils.convertirDiaSemanaADayOfWeek(diaSemana);
         return fechaInicio.datesUntil(fechaFin.plusDays(1))
                 .filter(d -> d.getDayOfWeek() == dia)
                 .count();
@@ -533,23 +493,6 @@ private AulaDisponibilidadResponseDTO generarDTOMenosSuperpuestoPeriodico(
         }
 
         return fechas;
-    }
-
-    public void imprimirAulaDisponibilidad(AulaDisponibilidadRequestDTO aulaDisponibilidad) {
-        System.out.println("Datos de la disponibilidad del aula:");
-        System.out.println("Tipo de Aula: " + aulaDisponibilidad.getTipoAula());
-        System.out.println("Capacidad Mínima: " + aulaDisponibilidad.getCapacidad());
-        System.out.println("Tipo de Reserva: " + aulaDisponibilidad.getTipoReserva());
-
-        if ("PERIODICA".equalsIgnoreCase(aulaDisponibilidad.getTipoReserva())) {
-            System.out.println("Tipo de Periodo: " + aulaDisponibilidad.getTipoPeriodo());
-            System.out.println("Día de la Semana: " + aulaDisponibilidad.getDia());
-        } else if ("ESPORADICA".equalsIgnoreCase(aulaDisponibilidad.getTipoReserva())) {
-            System.out.println("Fecha de la Reserva: " + aulaDisponibilidad.getFecha());
-        }
-
-        System.out.println("Hora de Inicio: " + aulaDisponibilidad.getHoraInicio());
-        System.out.println("Hora de Fin: " + aulaDisponibilidad.getHoraFinal());
     }
 
 

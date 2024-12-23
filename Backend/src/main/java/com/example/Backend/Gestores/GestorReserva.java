@@ -1,5 +1,6 @@
 package com.example.Backend.Gestores;
 
+import Utils.TimeUtils;
 import com.example.Backend.DAO.*;
 import com.example.Backend.DTO.DetalleReservaDTO;
 import com.example.Backend.DTO.ReservaDTO;
@@ -14,12 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
-import static java.time.DayOfWeek.FRIDAY;
-import static java.time.DayOfWeek.MONDAY;
-import static java.time.DayOfWeek.SATURDAY;
-import static java.time.DayOfWeek.THURSDAY;
-import static java.time.DayOfWeek.TUESDAY;
-import static java.time.DayOfWeek.WEDNESDAY;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -148,19 +143,19 @@ public class GestorReserva {
                     .findDiaEsporadicaByFechaAndAulaId(detalle.getFecha(), detalle.getAulaId());
             
             for (DiaEsporadica de : reservasPeriodo) {
-                if (hayConflictoHorario(de.getHoraInicio(), de.getHoraFinal(), 
+                if (TimeUtils.hayConflictoHorario(de.getHoraInicio(), de.getHoraFinal(), 
                         detalle.getHorarioInicio(), detalle.getHorarioFinal())) {
                     return false;
                 }
             }
 
         Integer periodoId = gestorPeriodos.periodoIdQueContieneFecha(detalle.getFecha());
-        DiaSemana diaSemana = DiaSemana.valueOf(convertirDayOfWeekADiaSemana(detalle.getFecha().getDayOfWeek()).toString());
+        DiaSemana diaSemana = DiaSemana.valueOf(TimeUtils.convertirDayOfWeekADiaSemana(detalle.getFecha().getDayOfWeek()).toString());
         List<DiaPeriodica> DiasPer = reservaPeriodicaDAO
             .findByDiaSemanaAndPeriodoAndAulaId(diaSemana, periodoId, detalle.getAulaId());
 
         for (DiaPeriodica dp : DiasPer) {
-            if (hayConflictoHorario(dp.getHoraInicio(), dp.getHoraFinal(), 
+            if (TimeUtils.hayConflictoHorario(dp.getHoraInicio(), dp.getHoraFinal(), 
                     detalle.getHorarioInicio(), detalle.getHorarioFinal())) {
                 return false;
             }
@@ -181,7 +176,7 @@ public class GestorReserva {
                     .findDiaEsporadicaByFechasAndAulaId(fechasDelPeriodo, detalle.getAulaId());
             
             for (DiaEsporadica dr : reservasPeriodo) {
-                if (hayConflictoHorario(dr.getHoraInicio(), dr.getHoraFinal(), 
+                if (TimeUtils.hayConflictoHorario(dr.getHoraInicio(), dr.getHoraFinal(), 
                         detalle.getHorarioInicio(), detalle.getHorarioFinal())) {
                     return false;
                 }
@@ -192,7 +187,7 @@ public class GestorReserva {
                     .findByDiaSemanaAndPeriodosAndAulaId(detalle.getDiaSemana(), periodosIds, detalle.getAulaId());
 
             for (DiaPeriodica dp : DiasPer) {
-                if (hayConflictoHorario(dp.getHoraInicio(), dp.getHoraFinal(), 
+                if (TimeUtils.hayConflictoHorario(dp.getHoraInicio(), dp.getHoraFinal(), 
                         detalle.getHorarioInicio(), detalle.getHorarioFinal())) {
                     return false;
                 }
@@ -207,7 +202,7 @@ public class GestorReserva {
         List<LocalDate> fechas = new ArrayList<>();
         LocalDate fecha = periodo.getFechaInicio();
 
-        DayOfWeek dayOfWeek = convertirDiaADayOfWeek(diaSemana);
+        DayOfWeek dayOfWeek = TimeUtils.convertirDiaSemanaADayOfWeek(diaSemana);
 
         while (!fecha.isAfter(periodo.getFechaFin())) {
             if (fecha.getDayOfWeek().equals(dayOfWeek)) {
@@ -219,40 +214,7 @@ public class GestorReserva {
         return fechas;
     }
 
-    private DayOfWeek convertirDiaADayOfWeek(DiaSemana diaSemana) {
-        switch (diaSemana) {
-            case LUNES: return DayOfWeek.MONDAY;
-            case MARTES: return DayOfWeek.TUESDAY;
-            case MIERCOLES: return DayOfWeek.WEDNESDAY;
-            case JUEVES: return DayOfWeek.THURSDAY;
-            case VIERNES: return DayOfWeek.FRIDAY;
-            case SABADO: return DayOfWeek.SATURDAY;
-            default: throw new IllegalArgumentException("Día de la semana no válido: " + diaSemana);
-        }
-    }
     
-       private DiaSemana convertirDayOfWeekADiaSemana(DayOfWeek dayOfWeek) {
-        switch (dayOfWeek) {
-            case MONDAY: return DiaSemana.LUNES;
-            case TUESDAY: return DiaSemana.MARTES;
-            case WEDNESDAY: return DiaSemana.MIERCOLES;
-            case THURSDAY: return DiaSemana.JUEVES;
-            case FRIDAY: return DiaSemana.VIERNES;
-            case SATURDAY: return DiaSemana.SABADO;
-            default: throw new IllegalArgumentException("Día de la semana no válido: " + dayOfWeek);
-        }
-    }
-    
-    
-
-
-    private boolean horaSeSuperpone(LocalTime inicio1, LocalTime fin1, LocalTime inicio2, LocalTime fin2) {
-        return !(fin1.isBefore(inicio2) || inicio1.isAfter(fin2));
-    }
-
-
-
-
     private Usuario buscarBedelPorNombreUsuario(String nombreUsuario) {
         Optional<Usuario> bedelOpt = bedelDAO.findByNombreUsuarioAndTipoUsuarioAndActivo(
                 nombreUsuario, Tipo_Usuario.BEDEL, true
@@ -314,9 +276,7 @@ public class GestorReserva {
         }
     }
 
-    private boolean hayConflictoHorario(LocalTime inicio1, LocalTime fin1, LocalTime inicio2, LocalTime fin2) {
-        return inicio1.isBefore(fin2) && inicio2.isBefore(fin1);
-    }
+
     
     
 }
