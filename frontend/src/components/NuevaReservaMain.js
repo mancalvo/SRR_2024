@@ -128,7 +128,7 @@ function NuevaReservaMain() {
       ...prev,
       detallesReserva: [
         ...prev.detallesReserva,
-        { diaSemana: dia, horarioInicio, horarioFinal, aulaId },
+        { diaSemana: dia, horarioInicio, horarioFinal, aulaId: aulaId.numero },
       ],
     }));
   };

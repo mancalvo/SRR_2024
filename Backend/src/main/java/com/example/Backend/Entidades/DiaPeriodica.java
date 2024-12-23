@@ -25,7 +25,7 @@ public class DiaPeriodica {
     @Column(name = "hora_final")
     private LocalTime horaFinal;
 
-    @Enumerated(EnumType.STRING) // Explicitly map the enum
+    @Enumerated(EnumType.STRING)
     @Column(name = "dia_semana")
     private DiaSemana diaSemana;
 

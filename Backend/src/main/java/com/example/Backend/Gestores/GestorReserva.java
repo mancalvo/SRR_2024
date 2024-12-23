@@ -78,15 +78,14 @@ public class GestorReserva {
                     diaPeriodica.setHoraFinal(detalle.getHorarioFinal());
                     Aula aula = obtenerAula(detalle.getAulaId(), reservaDTO.getTipoAula());
                     diaPeriodica.setAula(aula);
-                    diaPeriodica.setReserva(reservaPeriodica); // Asegúrate de vincular al reservaPeriodica actual
-                    reservaPeriodica.getDiasPeriodica().add(diaPeriodica); // Ahora no lanzará NullPointerException
+                    diaPeriodica.setReserva(reservaPeriodica); // Vinculamos al reservaPeriodica actual
+                    reservaPeriodica.getDiasPeriodica().add(diaPeriodica); // Lo agregamos a la lista
                 }
 
 
                 return reservaPeriodicaDAO.save(reservaPeriodica).getIdReservaPeriodica();
 
             case "ESPORADICA":
-                // Código para reserva esporádica
                 ReservaEsporadica reservaEsporadica = new ReservaEsporadica();
                 reservaEsporadica.setSolicitante(reservaDTO.getSolicitante());
                 reservaEsporadica.setCantidadAlumnos(reservaDTO.getCantidadAlumnos());
@@ -105,8 +104,8 @@ public class GestorReserva {
                     diaEsporadica.setHoraFinal(detalle.getHorarioFinal());
                     Aula aula = obtenerAula(detalle.getAulaId(), reservaDTO.getTipoAula());
                     diaEsporadica.setAula(aula);
-                    diaEsporadica.setReserva(reservaEsporadica); // Asegúrate de vincular al reservaEsporadica actual
-                    reservaEsporadica.getDiasEsporadica().add(diaEsporadica);
+                    diaEsporadica.setReserva(reservaEsporadica); // Vinculamos al reservaEsporadica actual
+                    reservaEsporadica.getDiasEsporadica().add(diaEsporadica); // Lo agregamos a la lista
                 }
 
                 return reservaEsporadicaDAO.save(reservaEsporadica).getIdReservaEsporadica();
@@ -116,7 +115,6 @@ public class GestorReserva {
         }
     }
 
-    // ======================================================================================================================
 
     public boolean validarDisponibilidadAula(List<DetalleReservaDTO> listaDetalleReserva, Tipo_Periodo tipoReserva) {
         for (DetalleReservaDTO detalle : listaDetalleReserva) {
@@ -251,9 +249,6 @@ public class GestorReserva {
     private boolean horaSeSuperpone(LocalTime inicio1, LocalTime fin1, LocalTime inicio2, LocalTime fin2) {
         return !(fin1.isBefore(inicio2) || inicio1.isAfter(fin2));
     }
-
-
-    //========================================================================================================================
 
 
 

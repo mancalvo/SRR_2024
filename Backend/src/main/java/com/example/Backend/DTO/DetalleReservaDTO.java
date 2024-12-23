@@ -24,5 +24,5 @@ public class DetalleReservaDTO {
 
     @JsonFormat(pattern = "HH:mm")
     private LocalTime horarioFinal;
-    private Integer aulaId; // Identificador del aula
+    private Integer aulaId;
 }

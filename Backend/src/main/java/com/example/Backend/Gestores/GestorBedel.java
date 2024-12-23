@@ -162,29 +162,21 @@ public class GestorBedel {
 
     public List<UsuarioDTO> buscarBedelesPorApellidoYTurno(String apellido, Tipo_Turno turno) {
         List<Usuario> bedeles;
-        System.out.println("PASO POR ACA");
 
-        // Verificar que el apellido no sea null y no esté vacío
         if (apellido != null && !apellido.isEmpty() && turno != null) {
-            System.out.println("Quiere buscar por apellido y turno: " + turno + " " + apellido);
             bedeles = bedelDAO.findByApellidoAndTipoTurno(apellido, turno);
         }
-        // Verificar solo que el apellido no sea null y no esté vacío
         else if (apellido != null && !apellido.isEmpty()) {
-            System.out.println("Quiere buscar por apellido: " + apellido);
             bedeles = bedelDAO.findByApellidoActivo(apellido);
         }
-        // Verificar solo que el turno no sea null
         else if (turno != null) {
-            System.out.println("Quiere buscar por turno: " + turno);
             bedeles = bedelDAO.findByTipoTurnoActivo(turno);
         }
-        // Si ninguno de los parámetros se proporciona
         else {
             throw new BedelException("Debe proporcionar al menos un filtro (apellido o turno)");
         }
 
-        // Mapear los usuarios a DTOs
+        // Mapear los usuarios a DTO
         return bedeles.stream()
                 .map(usuario -> new UsuarioDTO(
                         usuario.getIdUsuario(),
