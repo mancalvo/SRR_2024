@@ -1,5 +1,6 @@
 package com.example.Backend.Entidades;
 
+import com.example.Backend.DTO.AulaDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,15 @@ public class AulaMultimedios extends Aula {
 
     @Column(name = "computadora")
     private Boolean computadora;
+
+    @Override
+    public AulaDTO toDto() {
+        Integer num = this.getNumero();
+        int cap = this.getCapacidad();
+        String tAula = "MULTIMEDIOS";
+
+        return new AulaDTO(num, cap, tAula);   
+    }
 }
 
 

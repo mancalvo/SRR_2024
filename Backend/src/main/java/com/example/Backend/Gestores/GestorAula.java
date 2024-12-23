@@ -136,7 +136,7 @@ public class GestorAula {
         AulaDisponibilidadResponseDTO responseDTO;
 
         if (!aulasDisponibles.isEmpty()) {
-            List<AulaDTO> aulasDTO = aulasDisponibles.stream().map(a -> aulaToAulaDTO(a)).collect(Collectors.toList());
+            List<AulaDTO> aulasDTO = aulasDisponibles.stream().map(a -> a.toDto()).collect(Collectors.toList());
             responseDTO = new AulaDisponibilidadResponseDTO(aulasDTO, null);
         } else {
             responseDTO = generarDTOMenosSuperpuestoEsporadico(aulasCompatibles, horaInicio, horaFinal, aulasOcupadasEsporadicas, aulasOcupadasPeriodica);
@@ -196,7 +196,7 @@ public class GestorAula {
         AulaDisponibilidadResponseDTO responseDTO;
 
         if (!aulasDisponibles.isEmpty()) {
-            List<AulaDTO> aulasDTO = aulasDisponibles.stream().map(a -> aulaToAulaDTO(a)).collect(Collectors.toList());
+            List<AulaDTO> aulasDTO = aulasDisponibles.stream().map(a -> a.toDto()).collect(Collectors.toList());
             responseDTO = new AulaDisponibilidadResponseDTO(aulasDTO, null);
         } else {
             responseDTO = generarDTOMenosSuperpuestoPeriodico(aulasCompatibles, diaSemana,
@@ -206,25 +206,7 @@ public class GestorAula {
         return responseDTO;
     }
 
-    private AulaDTO aulaToAulaDTO(Aula aula) {
-        if (aula == null) {
-            return null;
-        }
-        Integer numero = aula.getNumero();
-        int capacidad = aula.getCapacidad();
-        String tipoAula;
 
-        if (aula instanceof AulaInformatica) {
-            tipoAula = "INFORMATICA";
-        } else if (aula instanceof AulaMultimedios) {
-            tipoAula = "MULTIMEDIOS";
-        } else if (aula instanceof AulaSinRecursos) {
-            tipoAula = "SINRECURSOS";
-        } else {
-            return null;
-        }
-        return new AulaDTO(numero, capacidad, tipoAula);
-    }
 
     private long calcularMaximoIntervalo(LocalTime horaInicial, LocalTime horaFinal,
                                          List<DiaEsporadica> esporadicas,
@@ -335,7 +317,7 @@ private AulaDisponibilidadResponseDTO generarDTOMenosSuperpuestoEsporadico(
                 crearListaReservasPeriodicasSolapadaDTO(periodicas)
         );
 
-        AulaDTO aulaDTO = aulaToAulaDTO(aula);
+        AulaDTO aulaDTO = aula.toDto();
         aulaDTOs.add(aulaDTO);
         reservaSolapadaDTOs.add(reservaSolapadaDTO);
     }
@@ -380,7 +362,7 @@ private AulaDisponibilidadResponseDTO generarDTOMenosSuperpuestoPeriodico(
                 crearListaReservasPeriodicasSolapadaDTO(periodicas)
         );
 
-        AulaDTO aulaDTO = aulaToAulaDTO(aula);
+        AulaDTO aulaDTO = aula.toDto();
         aulaDTOs.add(aulaDTO);
         reservaSolapadaDTOs.add(reservaSolapadaDTO);
     }

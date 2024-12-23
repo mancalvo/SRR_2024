@@ -247,38 +247,6 @@ public class GestorReserva {
         }
     }
 
-
-
-    private void mostrarDatos(ReservaDTO reservaDTO) {
-        // Mostrar los datos principales de ReservaDTO
-        System.out.println("Nombre Usuario: " + reservaDTO.getNombreUsuario());
-        System.out.println("Solicitante: " + reservaDTO.getSolicitante());
-        System.out.println("Correo: " + reservaDTO.getCorreo());
-        System.out.println("Cátedra: " + reservaDTO.getCatedra());
-        System.out.println("Fecha Realizada: " + reservaDTO.getFechaRealizada());
-        System.out.println("Tipo de Reserva: " + reservaDTO.getTipoReserva());
-        System.out.println("Periodo: " + (reservaDTO.getPeriodo() != null ? reservaDTO.getPeriodo() : "N/A"));
-        System.out.println("Tipo de Aula: " + reservaDTO.getTipoAula());
-        System.out.println("Cantidad de Alumnos: " + reservaDTO.getCantidadAlumnos());
-
-        // Mostrar los detalles de cada reserva en la lista detalleReserva
-        if (reservaDTO.getDetalleReserva() != null && !reservaDTO.getDetalleReserva().isEmpty()) {
-            System.out.println("Detalles de la Reserva:");
-            for (DetalleReservaDTO detalle : reservaDTO.getDetalleReserva()) {
-                System.out.println("\tDía de la Semana: " + detalle.getDiaSemana());
-                System.out.println("\tFecha: " + detalle.getFecha());
-                System.out.println("\tHorario Inicio: " + detalle.getHorarioInicio());
-                System.out.println("\tHorario Final: " + detalle.getHorarioFinal());
-                System.out.println("\tAula ID: " + detalle.getAulaId());
-            }
-        } else {
-            System.out.println("No hay detalles de reserva.");
-        }
-    }
-
-
-    
-    
 }
 
 

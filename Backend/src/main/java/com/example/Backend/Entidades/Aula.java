@@ -1,5 +1,6 @@
 package com.example.Backend.Entidades;
 
+import com.example.Backend.DTO.AulaDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,5 +28,7 @@ public abstract class Aula {
 
     @Column(name = "piso")
     private Integer piso;
+    
+    public abstract AulaDTO toDto();
 }
 

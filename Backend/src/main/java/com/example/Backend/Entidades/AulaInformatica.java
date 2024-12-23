@@ -1,5 +1,6 @@
 package com.example.Backend.Entidades;
 
+import com.example.Backend.DTO.AulaDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,5 +17,13 @@ public class AulaInformatica extends Aula {
 
     @Column(name = "canion")
     private Boolean canion;
-}
+    
+    @Override
+    public AulaDTO toDto() {
+        Integer num = this.getNumero();
+        int cap = this.getCapacidad();
+        String tAula = "INFORMATICA";
 
+        return new AulaDTO(num, cap, tAula);    
+    }
+}
