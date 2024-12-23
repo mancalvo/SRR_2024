@@ -214,9 +214,9 @@ const Seccion1 = ({ formData, setFormData, setDatosFormulario, siguienteSeccion 
             onClick={() => {
               const errorMensaje = validarCampos(formData);
               if (errorMensaje) {
-                alert(errorMensaje); // Si hay error, muestra el mensaje
+                alert(errorMensaje); 
               } else {
-                siguienteSeccion(); // Si todo está bien, pasa a la siguiente sección
+                siguienteSeccion(); 
               }
             }}
           >

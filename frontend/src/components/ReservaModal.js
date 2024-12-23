@@ -183,7 +183,7 @@ function ReservaModal({ formData, reserva, onGuardar, onCerrar }) {
                 <button
                   className="btn btn-warning"
                   onClick={manejarGuardar}
-                  disabled={!!errorFecha || !aulaSeleccionada} // Deshabilitar si hay error o no hay aula seleccionada
+                  disabled={!!errorFecha || !aulaSeleccionada} 
                 >
                   Guardar
                 </button>

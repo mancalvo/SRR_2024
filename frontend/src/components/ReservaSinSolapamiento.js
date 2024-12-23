@@ -1,8 +1,7 @@
-// ReservaSinSolapamiento.js
 import React from 'react';
 
 const ReservaSinSolapamiento = ({ aulas, aulaSeleccionada, handleSelection, handleConfirm, cargando, error, onClose }) => {
-  // Función para mapear el tipo de aula al texto correspondiente
+  
   const obtenerTextoAula = (tipoAula) => {
     switch (tipoAula) {
       case 'INFORMATICA':
@@ -12,7 +11,7 @@ const ReservaSinSolapamiento = ({ aulas, aulaSeleccionada, handleSelection, hand
       case 'SINRECURSOS':
         return 'Aula sin recursos';
       default:
-        return tipoAula; // En caso de que el tipo no sea reconocido
+        return tipoAula; 
     }
   };
 
@@ -51,7 +50,7 @@ const ReservaSinSolapamiento = ({ aulas, aulaSeleccionada, handleSelection, hand
                             />
                           </td>
                           <td>{`Aula ${aula.numero}`}</td>
-                          <td>{obtenerTextoAula(aula.tipoAula)}</td> {/* Mostrar el tipo de aula con el texto adecuado */}
+                          <td>{obtenerTextoAula(aula.tipoAula)}</td> 
                           <td>{aula.capacidad}</td>
                         </tr>
                       ))}

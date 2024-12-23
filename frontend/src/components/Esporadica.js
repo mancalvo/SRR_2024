@@ -17,7 +17,6 @@ function Esporadica({  formData ,setFormData, volverSeccion, enviarReserva }) {
   };
 
   const manejarAgregarReserva = (nuevaReserva) => {
-    console.log("ID AULA ESPORADICA.js: ", nuevaReserva.aulaSeleccionada.numero);
     const reservaConIdAula = {
       ...nuevaReserva,
       aulaId: nuevaReserva.aulaSeleccionada.numero, 

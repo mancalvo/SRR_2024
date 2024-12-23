@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import ReservaSinSolapamiento from './ReservaSinSolapamiento'; // Importa el componente
-import ReservaConSolapamiento from './ReservaConSolapamiento'; // Importa el componente
+import ReservaSinSolapamiento from './ReservaSinSolapamiento'; 
+import ReservaConSolapamiento from './ReservaConSolapamiento'; 
 
 const DisponibilidadAula = ({
   formData,
@@ -96,8 +96,8 @@ const DisponibilidadAula = ({
     <div>
       {conflictos && conflictos.length > 0 ? (
         <ReservaConSolapamiento
-        conflictos={conflictos} // Aquí pasas los conflictos
-        aulasDisponibles={aulas} // Aquí pasas las aulas disponibles
+        conflictos={conflictos} 
+        aulasDisponibles={aulas} 
         onClose={onClose}
       />
       ) : (

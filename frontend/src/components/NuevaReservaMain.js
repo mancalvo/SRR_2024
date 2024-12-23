@@ -15,8 +15,8 @@ function NuevaReservaMain() {
     catedra: "",
     cantAlumnos: "",
     tipoReserva: "",
-    tipoAula: "", // "Multimedios", "Sin Recursos", "Informática"
-    periodo: null, // Solo para reservas periódicas
+    tipoAula: "", 
+    periodo: null, 
     detallesReserva: [],
   });
 
@@ -46,9 +46,9 @@ function NuevaReservaMain() {
       periodo: periodoSeleccionado,
     }));
     if (formData.tipoReserva.toUpperCase() === "ESPORADICA") {
-      setCurrentSection(2); // Navegar a la sección de reservas esporádicas
+      setCurrentSection(2); // Navegamos a la sección de reservas esporádicas
     } else {
-      setCurrentSection(3); // Navegar a la sección de reservas periódicas
+      setCurrentSection(3); // Navegamos a la sección de reservas periódicas
     }
   };
 
@@ -102,13 +102,12 @@ function NuevaReservaMain() {
       .catch((error) => {
         console.error("Error al enviar la reserva:", error);
 
-        // Verifica si el backend envió un mensaje de error
+        // Verificamos si el backend envió un mensaje de error
         const errorMessage =
           error.response && error.response.data && error.response.data.message
             ? error.response.data.message
             : "Hubo un error al enviar la reserva. Intenta de nuevo.";
 
-        // Muestra el mensaje en un alert
         alert(errorMessage);
       });
   };

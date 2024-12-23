@@ -32,8 +32,8 @@ const EliminarBedel = ({ idUsuario, abrirModal, cerrarModal,actualizarBedeles })
       );
       if (response.status === 200) {
         alert(`Bedel con Id ${idUsuario} eliminado correctamente`);
-        actualizarBedeles(); // Llama a la función para actualizar la lista de bedeles
-        cerrarModal(); // Cierra el modal después de eliminar
+        actualizarBedeles(); 
+        cerrarModal();
       }
     } catch (error) {
       console.error("Error al eliminar el bedel:", error);

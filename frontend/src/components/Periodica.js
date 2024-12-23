@@ -5,10 +5,8 @@ import "../App.css";
 const Seccion2 = ({ formData, setFormData, volverSeccion, agregarDia, enviarReserva }) => {
   const dias = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO"];
   
-
-  // Manejar el evento de guardar reserva
   const manejarGuardarReserva = () => {
-    enviarReserva(); // Si todo está bien, proceder con el envío de la reserva
+    enviarReserva(); 
   };
 
   return (
