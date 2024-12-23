@@ -15,8 +15,8 @@ function NuevaReservaMain() {
     catedra: "",
     cantAlumnos: "",
     tipoReserva: "",
-    tipoAula: "", 
-    periodo: null, 
+    tipoAula: "",
+    periodo: null,
     detallesReserva: [],
   });
 
@@ -31,8 +31,16 @@ function NuevaReservaMain() {
     "2do Cuatrimestre": "SEGUNDO_CUATRIMESTRE",
     Anual: "ANUAL",
   };
-
   const siguienteSeccion = () => {
+    // Validar correo electrónico con expresión regular
+    const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!correoRegex.test(formData.correo)) {
+      alert(
+        "Por favor ingresa un correo electrónico válido. El formato debería ser: usuario@dominio.com"
+      );
+      return;
+    }
+
     if (!formData.tipoReserva) {
       alert("Por favor selecciona un tipo de reserva");
       return;
@@ -145,8 +153,7 @@ function NuevaReservaMain() {
           id="formulario"
           onSubmit={(e) => {
             e.preventDefault();
-          }}
-        >
+          }}>
           {currentSection === 1 && (
             <Seccion1
               formData={formData}
