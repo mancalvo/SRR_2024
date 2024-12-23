@@ -35,9 +35,7 @@ function NuevaReservaMain() {
     // Validar correo electrónico con expresión regular
     const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!correoRegex.test(formData.correo)) {
-      alert(
-        "Por favor ingresa un correo electrónico válido. El formato debería ser: usuario@dominio.com"
-      );
+      alert("Por favor ingresa un correo electrónico válido. El formato debería ser: usuario@dominio.com");
       return;
     }
 
@@ -59,6 +57,8 @@ function NuevaReservaMain() {
       setCurrentSection(3); // Navegamos a la sección de reservas periódicas
     }
   };
+
+
 
   const volverSeccion = () => {
     setFormData((prevFormData) => ({

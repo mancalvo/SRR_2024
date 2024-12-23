@@ -14,20 +14,19 @@ const Seccion2 = ({
   const manejarGuardarReserva = () => {
     // Validación robusta
     const detallesValidos = formData.detallesReserva.filter((detalle) => {
-      const tieneDia =
-        detalle.diaSemana && dias.includes(detalle.diaSemana.toUpperCase());
+      const tieneDia = detalle.diaSemana && dias.includes(detalle.diaSemana.toUpperCase());
       const tieneHorario = detalle.horarioInicio && detalle.horarioFinal;
       const tieneAula = detalle.aulaId;
       const horarioValido =
-        tieneHorario && detalle.horarioInicio < detalle.horarioFinal; // Hora de inicio debe ser menor a la final
-
+        tieneHorario &&
+        detalle.horarioInicio < detalle.horarioFinal; // Hora de inicio debe ser menor a la final
       return tieneDia && horarioValido && tieneAula;
     });
 
     if (detallesValidos.length === 0) {
       alert(
         "Debe seleccionar al menos un día con un horario válido y un aula configurada.\n" +
-          "Formato válido: Día, Hora Inicio < Hora Fin, Aula seleccionada."
+        "Formato válido: Día, Hora Inicio < Hora Fin, Aula seleccionada."
       );
       return;
     }
@@ -37,9 +36,8 @@ const Seccion2 = ({
   };
 
   return (
-    <div
-      className="form-container encuadro mb-0 mt-2"
-      style={{ width: "auto", overflowX: "auto" }}>
+
+    <div className="form-container encuadro mb-0 mt-2" style={{ width: "auto", overflowX: "auto" }}>
       <div id="seccion2">
         <h5 className="text-center">RESERVA PERIODICA</h5>
 
