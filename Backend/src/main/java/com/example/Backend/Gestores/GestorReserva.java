@@ -49,7 +49,7 @@ public class GestorReserva {
 
 
     public Integer crearReserva(ReservaDTO reservaDTO) {
-        if (!validarDisponibilidadAula(reservaDTO.getDetalleReserva(), reservaDTO.getPeriodo())) {
+        if (!confirmarDisponibilidadAula(reservaDTO.getDetalleReserva(), reservaDTO.getPeriodo())) {
             throw new ReservaException("Aulas no disponibles");
         }
 
@@ -111,12 +111,12 @@ public class GestorReserva {
     }
 
 
-    public boolean validarDisponibilidadAula(List<DetalleReservaDTO> listaDetalleReserva, Tipo_Periodo tipoReserva) {
+    public boolean confirmarDisponibilidadAula(List<DetalleReservaDTO> listaDetalleReserva, Tipo_Periodo tipoReserva) {
         for (DetalleReservaDTO detalle : listaDetalleReserva) {
 
             switch (tipoReserva) {
                 case ESPORADICA:
-                    if (!validarDisponibilidadEsporadica(detalle)) {
+                    if (!confirmarDisponibilidadEsporadica(detalle)) {
                         return false;
                     }
                     break;
@@ -125,7 +125,7 @@ public class GestorReserva {
                 case PRIMER_CUATRIMESTRE:
                 case SEGUNDO_CUATRIMESTRE:
                 case ANUAL:
-                    if (!validarDisponibilidadPeriodica(detalle, tipoReserva)) {
+                    if (!confirmarDisponibilidadPeriodica(detalle, tipoReserva)) {
                         return false;
                     }
                     break;
@@ -137,7 +137,7 @@ public class GestorReserva {
         return true;
     }
 
-    private boolean validarDisponibilidadEsporadica(DetalleReservaDTO detalle) {
+    private boolean confirmarDisponibilidadEsporadica(DetalleReservaDTO detalle) {
         // Validar si existe una reserva esporádica en la fecha y aula
         List<DiaEsporadica> reservasPeriodo = reservaEsporadicaDAO
                     .findDiaEsporadicaByFechaAndAulaId(detalle.getFecha(), detalle.getAulaId());
@@ -164,13 +164,14 @@ public class GestorReserva {
         return true;
     }
 
-    private boolean validarDisponibilidadPeriodica(DetalleReservaDTO detalle, Tipo_Periodo tipoPeriodo) {
+    private boolean confirmarDisponibilidadPeriodica(DetalleReservaDTO detalle, Tipo_Periodo tipoPeriodo) {
         
         ArrayList<Integer> periodosIds = gestorPeriodos.obtenerPeriodosMasProximoPorTipo(tipoPeriodo);
         List<Periodo> periodos = gestorPeriodos.traerPeriodos(periodosIds);
         
         for(Periodo p : periodos) {
-            List<LocalDate> fechasDelPeriodo = calcularFechasPorDia(p, detalle.getDiaSemana());
+            List<LocalDate> fechasDelPeriodo = TimeUtils.obtenerFechasParaPeriodosYDia(
+                    TimeUtils.convertirDiaSemanaADayOfWeek(detalle.getDiaSemana()), p);
             
             List<DiaEsporadica> reservasPeriodo = reservaEsporadicaDAO
                     .findDiaEsporadicaByFechasAndAulaId(fechasDelPeriodo, detalle.getAulaId());
@@ -198,23 +199,7 @@ public class GestorReserva {
     }
 
 
-    private List<LocalDate> calcularFechasPorDia(Periodo periodo, DiaSemana diaSemana) {
-        List<LocalDate> fechas = new ArrayList<>();
-        LocalDate fecha = periodo.getFechaInicio();
 
-        DayOfWeek dayOfWeek = TimeUtils.convertirDiaSemanaADayOfWeek(diaSemana);
-
-        while (!fecha.isAfter(periodo.getFechaFin())) {
-            if (fecha.getDayOfWeek().equals(dayOfWeek)) {
-                fechas.add(fecha);
-            }
-            fecha = fecha.plusDays(1);
-        }
-
-        return fechas;
-    }
-
-    
     private Usuario buscarBedelPorNombreUsuario(String nombreUsuario) {
         Optional<Usuario> bedelOpt = bedelDAO.findByNombreUsuarioAndTipoUsuarioAndActivo(
                 nombreUsuario, Tipo_Usuario.BEDEL, true

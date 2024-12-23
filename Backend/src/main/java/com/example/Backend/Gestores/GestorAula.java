@@ -157,7 +157,7 @@ public class GestorAula {
         Tipo_Periodo periodoSolicitado = Tipo_Periodo.valueOf(requestDTO.getTipoPeriodo());
         List<Integer> periodosCoincidentes = gestorPeriodo.obtenerPeriodosMasProximoPorTipo(periodoSolicitado);
         DiaSemana diaSemana = DiaSemana.valueOf(requestDTO.getDia());
-        List<LocalDate> fechas = obtenerFechasParaPeriodosYDia(TimeUtils.convertirDiaSemanaADayOfWeek(diaSemana),
+        List<LocalDate> fechas = TimeUtils.obtenerFechasParaPeriodosYDia(TimeUtils.convertirDiaSemanaADayOfWeek(diaSemana),
                 gestorPeriodo.traerPeriodos(periodosCoincidentes));
 
         LocalTime horaInicio = LocalTime.parse(requestDTO.getHoraInicio());
@@ -454,27 +454,6 @@ private AulaDisponibilidadResponseDTO generarDTOMenosSuperpuestoPeriodico(
         return fechaInicio.datesUntil(fechaFin.plusDays(1))
                 .filter(d -> d.getDayOfWeek() == dia)
                 .count();
-    }
-
-
-    private ArrayList<LocalDate> obtenerFechasParaPeriodosYDia(DayOfWeek dia, List<Periodo> periodos) {
-        ArrayList<LocalDate> fechas = new ArrayList<>();
-
-        for (Periodo p : periodos) {
-            LocalDate actual = p.getFechaInicio();
-            LocalDate fechaFinal = p.getFechaFin();
-
-            while (actual.getDayOfWeek() != dia) {
-                actual = actual.plusDays(1);
-            }
-
-            while (!actual.isAfter(fechaFinal)) {
-                fechas.add(actual);
-                actual = actual.plusWeeks(1);
-            }
-        }
-
-        return fechas;
     }
 
 
