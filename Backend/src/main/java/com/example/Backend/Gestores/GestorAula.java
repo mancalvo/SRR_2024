@@ -45,7 +45,7 @@ public class GestorAula {
 
     public AulaDisponibilidadResponseDTO buscarAulasDisponibles(AulaDisponibilidadRequestDTO requestDTO) {
 
-        imprimirAulaDisponibilidad(requestDTO);
+        // imprimirAulaDisponibilidad(requestDTO);
 
         // Lista para almacenar las aulas disponibles
         List<Aula> aulasDisponibles = new ArrayList<>();

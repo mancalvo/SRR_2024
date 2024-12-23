@@ -31,8 +31,14 @@ function NuevaReservaMain() {
     "2do Cuatrimestre": "SEGUNDO_CUATRIMESTRE",
     Anual: "ANUAL",
   };
-
   const siguienteSeccion = () => {
+    // Validar correo electrónico con expresión regular
+    const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!correoRegex.test(formData.correo)) {
+      alert("Por favor ingresa un correo electrónico válido. El formato debería ser: usuario@dominio.com");
+      return;
+    }
+
     if (!formData.tipoReserva) {
       alert("Por favor selecciona un tipo de reserva");
       return;
@@ -51,6 +57,8 @@ function NuevaReservaMain() {
       setCurrentSection(3); // Navegamos a la sección de reservas periódicas
     }
   };
+
+
 
   const volverSeccion = () => {
     setFormData((prevFormData) => ({
